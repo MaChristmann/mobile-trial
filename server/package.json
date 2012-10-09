@@ -19,6 +19,7 @@
 
   "dependencies": {
     "restify" : "1.4.x",
-    "mongoose": "3.2.x"
+    "mongoose": "3.2.x",
+    "async": "0.1.x"
   }
 }

@@ -3,7 +3,8 @@ var restify 	= require('restify')
 , mongoose 		= require('mongoose');
 
 // Mobile-Trail Services
-var	registerSv	= require('./service/register');
+var	registerSv	= require('./service/register')
+, customerSv = require('./service/customer');
 
 // Create Server
 var server = restify.createServer({
@@ -14,9 +15,9 @@ var server = restify.createServer({
 mongoose.connect('mongodb://localhost/mobile-trial-db'); 
 
 // Enable Bundles
-server.use(restify.queryParser({ mapParams: false }));
 server.use(restify.bodyParser());
 
+// Authorize user
 server.use(function authorization(req, res, next){
 	next();
 });
@@ -26,6 +27,11 @@ server.get('/register', registerSv.getAll);
 server.get('/register/:app', registerSv.get);
 server.put('/register/:app', registerSv.update);
 server.del('/register/:app', registerSv.delete);
+
+server.post('/authorize/:app/customer/:customer', customerSv.create);
+server.get('/authorize/:app/customer/:customer', customerSv.get);
+server.put('/authorize/:app/customer/:customer', customerSv.update);
+server.del('/authorize/:app/customer/:customer', customerSv.delete);
 
 //Start listen
 server.listen(3000, function(){
