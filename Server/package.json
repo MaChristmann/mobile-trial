@@ -1,0 +1,24 @@
+{
+  "name": "mobile-trial-server",
+  "version": "0.0.1",
+  "private": true,
+  "author":  "Martin Christmann <martin.christmann@gmail.com>",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MaChristmann/mobile-trial"
+  },
+  "keywords": [
+    "android",
+    "trial",
+    "authorization",
+    "license"
+  ], 
+
+  "dependencies": {
+    "restify" : "1.4.x",
+    "mongoose": "3.2.x"
+  }
+}
