@@ -4,7 +4,7 @@ var restify 	= require('restify')
 
 // Mobile-Trail Services
 var	registerSv	= require('./service/register')
-, customerSv = require('./service/customer');
+, customerSv = require('./service/authorize');
 
 // Create Server
 var server = restify.createServer({
@@ -22,16 +22,13 @@ server.use(function authorization(req, res, next){
 	next();
 });
 
-server.post('/register', registerSv.create);
-server.get('/register', registerSv.getAll);
-server.get('/register/:app', registerSv.get);
-server.put('/register/:app', registerSv.update);
-server.del('/register/:app', registerSv.delete);
+server.post('/register',	 		registerSv.create);
+server.get ('/register', 			registerSv.getAll);
+server.get ('/register/:app', registerSv.get);
+server.put ('/register/:app', registerSv.update);
+server.del ('/register/:app', registerSv.delete);
 
-server.post('/authorize/:app/customer/:customer', customerSv.create);
-server.get('/authorize/:app/customer/:customer', customerSv.get);
-server.put('/authorize/:app/customer/:customer', customerSv.update);
-server.del('/authorize/:app/customer/:customer', customerSv.delete);
+server.post('/authorize/:app/customer/:customer', customerSv.authorize);
 
 //Start listen
 server.listen(3000, function(){

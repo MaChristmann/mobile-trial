@@ -16,10 +16,14 @@
     "authorization",
     "license"
   ], 
-
   "dependencies": {
-    "restify" : "1.4.x",
+    "restify": "1.4.x",
     "mongoose": "3.2.x",
     "async": "0.1.x"
+  }, 
+  "devDependencies": {
+    "winston": "0.6.x",
+    "mocha": "1.6.x" 
   }
+
 }
