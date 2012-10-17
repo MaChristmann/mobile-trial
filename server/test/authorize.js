@@ -12,7 +12,7 @@ var client = restify.createJsonClient({
 var appObj = {
 	identifier: "de.mobiletrial.testid"
  	, constraints: [{
- 		trialtype: "days"
+ 		trialtype: "time"
  		, value: 30
  	}]
  };

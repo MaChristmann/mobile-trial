@@ -1,4 +1,4 @@
-package org.mobiletrial.library.connect;
+package org.mobiletrial.license.connect;
 
 import java.io.BufferedReader;
 import java.io.IOException;

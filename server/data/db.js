@@ -3,7 +3,7 @@ var mongoose = require('mongoose')
 , ObjectId = Schema.Types.ObjectId;
 
 var ConstraintSchema = new Schema({
-	trialtype: {type:String, enum: ['days'], unique:true}
+	trialtype: {type:String, enum: ['time'], unique:true}
 	, value: Number
 });
 
