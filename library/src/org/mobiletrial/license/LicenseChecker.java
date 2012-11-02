@@ -18,14 +18,22 @@ package org.mobiletrial.license;
 
 import com.google.android.vending.licensing.LicenseCheckerCallback;
 import com.google.android.vending.licensing.NullDeviceLimiter;
+import com.google.android.vending.licensing.Obfuscator;
 import com.google.android.vending.licensing.Policy;
+import com.google.android.vending.licensing.PreferenceObfuscator;
 import com.google.android.vending.licensing.util.Base64;
 import com.google.android.vending.licensing.util.Base64DecoderException;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -34,6 +42,8 @@ import android.os.RemoteException;
 import android.provider.Settings.Secure;
 import android.util.Log;
 
+import java.net.URI;
+import java.net.URL;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -43,6 +53,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
@@ -60,7 +71,7 @@ import java.util.Set;
  */
 public class LicenseChecker {
 	private static final String TAG = "LicenseChecker";
-
+	
 	private static final String KEY_FACTORY_ALGORITHM = "RSA";
 
 	// Timeout value (in milliseconds) for calls to service.
@@ -73,6 +84,7 @@ public class LicenseChecker {
 	private Context mContext;
 	private PublicKey mPublicKey;
 	private final Policy mPolicy;
+	private String mUserId;
 	/**
 	 * A handler for running tasks on a background thread. We don't want license
 	 * processing to block the UI thread.
@@ -83,13 +95,18 @@ public class LicenseChecker {
 	private final Set<LicenseValidator> mChecksInProgress = new HashSet<LicenseValidator>();
 	private final Queue<LicenseValidator> mPendingChecks = new LinkedList<LicenseValidator>();
 
+	/** 
+	 * Type of Account
+	 */
+	private IAccountType mAccountType;
+	
 	/**
 	 * @param context a Context
 	 * @param policy implementation of Policy
 	 * @param encodedPublicKey Base64-encoded RSA public key
 	 * @throws IllegalArgumentException if encodedPublicKey is invalid
 	 */
-	public LicenseChecker(Context context, Policy policy, String encodedPublicKey) {
+	public LicenseChecker(Context context, Policy policy, String encodedPublicKey, IAccountType accountType) {
 		mPolicy = policy;
 		//TODO: Uncomment Security Feature when ready
 		mPublicKey = null;
@@ -100,6 +117,8 @@ public class LicenseChecker {
 		HandlerThread handlerThread = new HandlerThread("background thread");
 		handlerThread.start();
 		mHandler = new Handler(handlerThread.getLooper());
+		
+		mAccountType = accountType;
 	}
 
 	/**
@@ -138,25 +157,40 @@ public class LicenseChecker {
 	 * <p>
 	 * @param callback
 	 */
-	public synchronized void checkAccess(LicenseCheckerCallback callback) {
+	public synchronized void checkAccess(final LicenseCheckerCallback callback) {
 		// If we have a valid recent LICENSED response, we can skip asking
 		// Market.
 		if (mPolicy.allowAccess()) {
 			Log.i(TAG, "Using cached license response");
 			callback.allow(Policy.LICENSED);
 		} else {
+			
 			LicenseValidator validator = new LicenseValidator(mPolicy, new NullDeviceLimiter(),
 					callback, generateNonce(), mPackageName, mVersionCode);
-
+			
 			if (mService == null) {
 				Log.i(TAG, "Creating licensing service.");
 				// Create the Service
 				// Check availibility
-				mService = new MockUpLicenseService();
+				mService = new MockUpLicenseService(null);
 			} 
 			mPendingChecks.offer(validator);
-			runChecks();
-
+			
+			
+			//Get unique UserID
+			AccountIdentifierResolver identifierResolver = new AccountIdentifierResolver(mContext) {
+				@Override
+				public void onIdentifactionFinished(String userId) {
+					if(userId== null){
+						callback.dontAllow(Policy.NOT_LICENSED);
+						return;
+					}	
+					mUserId = userId;
+					Log.d(TAG, ""+mUserId);
+					runChecks();
+				}
+			};	
+			identifierResolver.resolveIdentifier(mAccountType);
 		}
 	}
 
@@ -168,6 +202,7 @@ public class LicenseChecker {
 				mChecksInProgress.add(validator);
 				mService.checkLicense(
 						validator.getNonce(), validator.getPackageName(),
+						getVersionCode(mContext, mPackageName),mUserId,
 						new ResultListener(validator));
 			} catch (Exception e) {
 				Log.w(TAG, "RemoteException in checkLicense call.", e);
@@ -181,6 +216,86 @@ public class LicenseChecker {
 		if (mChecksInProgress.isEmpty()) {
 			cleanupService();
 		}
+	}
+
+	private abstract class AccountIdentifierResolver {
+		private static final String PREFS_FILE = "org.mobiletrial.license.LicenseChecker";
+		private static final String PPEF_USERID = "userId";
+		private final Context mContext;
+	    private SharedPreferences mPreferences;
+	    
+		public AccountIdentifierResolver(Context context){
+			mContext = context;
+		    SharedPreferences sp = mContext.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
+		    mPreferences = sp;
+		}
+		
+		private String getUserId(){
+	      return mPreferences.getString(PPEF_USERID, null);
+		}
+		
+		private void setUserId(String userId){
+			Editor edit = mPreferences.edit();
+			edit.putString(PPEF_USERID, userId);
+			edit.commit();
+		}
+		
+		public void resolveIdentifier(IAccountType accountType){
+			AccountManager manager = (AccountManager) mContext.getSystemService(Context.ACCOUNT_SERVICE);
+			Account[] accountList = manager.getAccounts();
+			Set<String> possibleAccount = new HashSet<String>();
+
+			for(Account account: accountList)
+			{
+				if(account.type.equalsIgnoreCase(accountType.getType()))
+				{
+					possibleAccount.add(account.name);
+				}
+			}
+			
+			int countAccounts = possibleAccount.size();
+			if(countAccounts == 1){
+				String userId = obfuscatedIdentifier((String)possibleAccount.toArray()[0]);
+				setUserId(userId);
+				onIdentifactionFinished(userId);
+			} else if(countAccounts <= 0){
+				//No Account with the given account type available
+				setUserId(null);
+				onIdentifactionFinished(null);
+			} else {
+				String preferredUserId = getUserId();
+				
+				if(preferredUserId != null){
+					if(possibleAccount.contains(preferredUserId)){
+						String userId = obfuscatedIdentifier(preferredUserId);
+						setUserId(userId);
+						onIdentifactionFinished(userId);
+					}
+				}
+				
+				//Start choose-Dialog and let the user decide
+				final String[] sequence = possibleAccount.toArray(new String[countAccounts]);
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setTitle("Choose your Account");
+				builder.setCancelable(false);
+
+				builder.setItems(sequence, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						String userId = obfuscatedIdentifier(sequence[which]);
+						setUserId(userId);
+						onIdentifactionFinished(userId);
+					}
+				});
+				builder.show();
+			}
+		}
+
+		private String obfuscatedIdentifier(String identifier){
+			return identifier;
+		}
+
+		public abstract void onIdentifactionFinished(String userId);
 	}
 
 	private class ResultListener implements ILicenseResultListener {
