@@ -175,7 +175,7 @@ public class LicenseChecker {
 			
 			if (mService == null) {
 				Log.i(TAG, "Creating licensing service.");
-				mService = new MockUpLicenseService(mServiceUrl);
+				mService = new ServerLicensingService(mServiceUrl);
 			} 
 			mPendingChecks.offer(validator);
 			

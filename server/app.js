@@ -1,4 +1,4 @@
-// NPM Modules
+	// NPM Modules
 var restify 	= require('restify')
 , mongoose 		= require('mongoose');
 
@@ -10,6 +10,8 @@ var	registerSv	= require('./service/register')
 var server = restify.createServer({
   name: 'mobile-trial'
 });
+
+var port = 3000;
 
 // Connect to Mongo DB
 mongoose.connect('mongodb://localhost/mobile-trial-db'); 
@@ -31,8 +33,8 @@ server.del ('/register/:app', registerSv.delete);
 server.post('/authorize/:app/customer/:customer', customerSv.authorize);
 
 //Start listen
-server.listen(3000, function(){
-	console.log("listen on port 3000");
+server.listen(port, function(){
+	console.log("listen on port " + port);
 });
 
 

@@ -4,7 +4,7 @@
   "private": true,
   "author":  "Martin Christmann <martin.christmann@gmail.com>",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon --watch app.js --watch service --watch data app.js"
   },
   "repository": {
     "type": "git",
