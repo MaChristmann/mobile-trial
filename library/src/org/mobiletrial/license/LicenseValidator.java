@@ -17,7 +17,6 @@
 package org.mobiletrial.license;
 
 import com.google.android.vending.licensing.DeviceLimiter;
-import com.google.android.vending.licensing.LicenseCheckerCallback;
 import com.google.android.vending.licensing.Policy;
 import com.google.android.vending.licensing.ResponseData;
 import com.google.android.vending.licensing.util.Base64;

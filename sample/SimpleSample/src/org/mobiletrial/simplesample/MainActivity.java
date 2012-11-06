@@ -17,10 +17,15 @@
 
 package org.mobiletrial.simplesample;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
+import org.mobiletrial.license.ChooseAccountDialog;
 import org.mobiletrial.license.LicenseChecker;
 import org.mobiletrial.license.PlaystoreAccountType;
 import com.google.android.vending.licensing.AESObfuscator;
-import com.google.android.vending.licensing.LicenseCheckerCallback;
+import org.mobiletrial.license.LicenseCheckerCallback;
 import com.google.android.vending.licensing.Policy;
 import com.google.android.vending.licensing.ServerManagedPolicy;
 
@@ -112,14 +117,30 @@ public class MainActivity extends Activity {
         // Try to use more data here. ANDROID_ID is a single point of attack.
         String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
 
+        URL serviceUrl = null;
+		try {
+			serviceUrl = URI.create("http://www.google.com/").toURL();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         // Library calls this when it's done.
         mLicenseCheckerCallback = new MyLicenseCheckerCallback();
+        
+        // Custom AccountChooserDialog
+        ChooseAccountDialog dlg = new ChooseAccountDialog(this, "Wähle dein Account");
+        
         // Construct the LicenseChecker with a policy.
         mChecker = new LicenseChecker(
             this, new ServerManagedPolicy(this,
                 new AESObfuscator(SALT, getPackageName(), deviceId)),
             BASE64_PUBLIC_KEY, 
+            serviceUrl,
             new PlaystoreAccountType());
+        
+        mChecker.setChooseAccountDialog(dlg);
+        
         doCheck();
     }
 
