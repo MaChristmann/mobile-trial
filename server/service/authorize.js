@@ -1,49 +1,103 @@
 var db = require('../data/db');
+var sCustomer = require("./customer");
+
+var licensedCode = 0;
+var notLicensedCode = 1;
+var serverErrorCode = 4;
+
+var PARAM_NONCE = "n";
+var PARAM_TIMESTAMP = "ts";
+var PARAM_VERSIONCODE = "vc";
 
 exports.authorize = function(req, res, next){
 	console.log('customer.authorize');
-	db.App.findOne({'identifier': req.params.app}, function(appErr, app){
+
+	var packageName = req.params.app;
+	var customerId = req.params.customer;
+
+	db.App.findOne({'identifier': packageName}, function(appErr, app){
 		if(appErr) console.log(appErr);
 
 		//App exists?
 		if(app == null){
-			res.send(false);
+			res.send({rc: errorCode, reason: 'App does not exist'});
 			return;
 		}
 
+		//Check if neccessary parameters exist
+		var bodyParams = JSON.parse(req.body);
+
+		var nonce = bodyParams[PARAM_NONCE];
+		if(typeof nonce == 'undefined'){
+			res.send({rc: errorCode, reason: 'Missing nonce'});
+			return;
+		}
+
+		var timestamp = bodyParams[PARAM_TIMESTAMP];
+		if(typeof timestamp == 'undefined'){
+			res.send({rc: errorCode, reason: 'Missing timestamp'});
+			return;
+		}
+
+		var versionCode = bodyParams[PARAM_VERSIONCODE];
+		if(typeof versionCode == 'undefined'){
+			res.send({rc: errorCode, reason: 'Missing versionCode'});
+		}
+
 		//Customer exists?
-		var customerid = req.params.customer;
-		db.Customer.findOne({'customerid': customerid},  function(customerErr, customer){;
+		db.Customer.findOne({'customerid': customerId},  function(customerErr, customer){;
 			if(customerErr) console.log(customerErr);
 
-			if(customer == null)
-				createCustomer(customerid, app, function(isAuthorized){
+			var response = {ts: timestamp
+											, n: nonce
+											, vc: versionCode
+											, pn: packageName
+											, ui: customerId
+											, VT: (timestamp + 60000)
+											, GT: (timestamp + 60000)
+											, GR: 0};
+
+			if(customer == null){
+				sCustomer.create(customerId, app, function(isAuthorized){
 					console.log("customer.authorize: create customer: " + isAuthorized);
-					res.send(isAuthorized);
+
+					if(isAuthorized){
+						var licensed = response;
+						licensed["rc"] = licensedCode;
+						res.send(licensed);
+					}
+					else 
+						res.send({rc: errorCode, reason: 'Could not create Customer'});
 				});
-			else
-				authorizeCustomer(customer, app, function(isAuthorized){
+			}
+			else{
+					//Authorize Customer
+					authorizeCustomer(customer, app, timestamp, versionCode, function(isAuthorized){
+
 					console.log("customer.authorize: authorize customer: " + isAuthorized);
-					res.send(isAuthorized);
+
+					if(isAuthorized){
+						var licensed = response;
+						licensed["rc"] = licensedCode;
+						console.log(licensed);
+						res.send(licensed);
+					}
+					else {
+						var notLicensed = response;
+						notLicensed["rc"] = notLicensedCode;
+						res.send(notLicensed);
+					}
 				});
+			}
 		});
 	});
 }
 
 
-function createCustomer(customerid, app, next){
-	var customer = new db.Customer();
-	customer.customerid = customerid;
-	customer.app = app;
-	customer.createdAt = new Date();
-	customer.save(function(saveErr){
-		if(saveErr) console.log(saveErr);
-		next(true)
-	});
-}
 
 
-function authorizeCustomer(customer, app, next){
+
+function authorizeCustomer(customer, app, timestamp, versionCode, next){
 	var isAuthorized = true;
 
 	var constraints = app.constraints;
@@ -57,10 +111,9 @@ function authorizeCustomer(customer, app, next){
 		console.log(constraints[i]);
 		switch(constraintType){
 			case "days": {
-				var today = new Date();
 				var oneday=1000*60*60*24;
 
-				var timediff = today.getTime() - customer.createdAt.getTime();
+				var timediff = timestamp - customer.createdAt.getTime();
 
 				console.log(customer);
 				var daysdiff = timediff / oneday;

@@ -1,7 +1,10 @@
 package org.mobiletrial.license.connect;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -70,7 +73,8 @@ public class RestClient {
                     
         			/* Convert response to JSON */
                     InputStream in = response.getEntity().getContent(); //Get the data in the entity
-                    JSONObject responseJson = new JSONObject(in.toString());
+                    String responseStr = inputstreamToString(in);
+                    JSONObject responseJson = new JSONObject(responseStr);
                     listener.gotResponse(responseJson);
                     
                 } catch(ClientProtocolException e){
@@ -96,5 +100,15 @@ public class RestClient {
 	public static abstract class OnRequestFinishedListener{
 		public abstract void gotResponse(JSONObject response);
 		public abstract void gotError(int errorCode);
+	}
+	
+	private String inputstreamToString(InputStream in) throws IOException{
+        BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8")); 
+        StringBuilder responseStrBuilder = new StringBuilder();
+        
+        String inputStr;
+        while ((inputStr = streamReader.readLine()) != null)
+        	responseStrBuilder.append(inputStr);
+        return responseStrBuilder.toString();
 	}
 }

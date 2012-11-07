@@ -24,6 +24,12 @@ server.use(function authorization(req, res, next){
 	next();
 });
 
+server.get('/', function(req, res){
+	res.json({});
+});
+server.post('/', function(req, res){
+	res.json({});
+});
 server.post('/register',	 		registerSv.create);
 server.get ('/register', 			registerSv.getAll);
 server.get ('/register/:app', registerSv.get);

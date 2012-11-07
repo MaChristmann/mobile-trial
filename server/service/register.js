@@ -2,13 +2,16 @@ var db = require('../data/db');
 
 exports.create = function (req, res, next){
 	console.log("register.create");
+		console.log(req.body);
 	var appObj = JSON.parse(req.body);
+
 
 	if(appObj){
 		var app = new db.App();
 		app.identifier = appObj.identifier;
 		app.constraints = appObj.constraints;
 		app.save(function(err){
+			console.log(err);
 			res.send(app);
 		});
 	}
