@@ -20,7 +20,7 @@ exports.authorize = function(req, res, next){
 
 		//App exists?
 		if(app == null){
-			res.send({rc: errorCode, reason: 'App does not exist'});
+			res.send({rc: serverErrorCode, reason: 'App does not exist'});
 			return;
 		}
 
@@ -29,33 +29,34 @@ exports.authorize = function(req, res, next){
 
 		var nonce = bodyParams[PARAM_NONCE];
 		if(typeof nonce == 'undefined'){
-			res.send({rc: errorCode, reason: 'Missing nonce'});
+			res.send({rc: serverErrorCode, reason: 'Missing nonce'});
 			return;
 		}
 
 		var timestamp = bodyParams[PARAM_TIMESTAMP];
 		if(typeof timestamp == 'undefined'){
-			res.send({rc: errorCode, reason: 'Missing timestamp'});
+			res.send({rc: serverErrorCode, reason: 'Missing timestamp'});
 			return;
 		}
 
 		var versionCode = bodyParams[PARAM_VERSIONCODE];
 		if(typeof versionCode == 'undefined'){
-			res.send({rc: errorCode, reason: 'Missing versionCode'});
+			res.send({rc: serverErrorCode, reason: 'Missing versionCode'});
 		}
 
 		//Customer exists?
 		db.Customer.findOne({'customerid': customerId},  function(customerErr, customer){;
 			if(customerErr) console.log(customerErr);
 
+			console.log(app);
 			var response = {ts: timestamp
 											, n: nonce
 											, vc: versionCode
 											, pn: packageName
 											, ui: customerId
-											, VT: (timestamp + 60000)
-											, GT: (timestamp + 60000)
-											, GR: 0};
+											, VT: getValidTime(app, timestamp)
+											, GT: getGraceTime(app, timestamp)
+											, GR: getGraceRetrys(app)};
 
 			if(customer == null){
 				sCustomer.create(customerId, app, function(isAuthorized){
@@ -67,7 +68,7 @@ exports.authorize = function(req, res, next){
 						res.send(licensed);
 					}
 					else 
-						res.send({rc: errorCode, reason: 'Could not create Customer'});
+						res.send({rc: serverErrorCode, reason: 'Could not create Customer'});
 				});
 			}
 			else{
@@ -92,10 +93,6 @@ exports.authorize = function(req, res, next){
 		});
 	});
 }
-
-
-
-
 
 function authorizeCustomer(customer, app, timestamp, versionCode, next){
 	var isAuthorized = true;
@@ -127,4 +124,17 @@ function authorizeCustomer(customer, app, timestamp, versionCode, next){
 	}
 
 	next(isAuthorized);
+}
+
+
+function getGraceTime (app, timestamp){
+	return timestamp + app.graceInterval;
+}
+
+function getGraceRetrys(app){
+	return  app.graceRetrys;
+}
+
+function getValidTime(app, timestamp){
+	return timestamp + app.validTime;
 }

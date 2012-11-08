@@ -72,6 +72,7 @@ import android.graphics.drawable.Drawable;
 					String userId = obfuscatedIdentifier(preferredUserId);
 					setUserId(userId);
 					onIdentifactionFinished(userId);
+					return;
 				}
 			}
 			

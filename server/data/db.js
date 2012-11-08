@@ -8,8 +8,11 @@ var ConstraintSchema = new Schema({
 });
 
 var AppSchema = new Schema({
-	identifier: {type: String, index: true, unique: true}
-	, maxVersionCode: {type: Number, default: 0}
+	identifier: 				{type: String, index: true, unique: true}
+	, maxVersionCode: 	{type: Number, default: 0}
+	, graceInterval: 		{type: Number, default: 0}
+	, graceRetrys: 			{type: Number, default: 3}
+	, validTime: 				{type: Number, default: 0}
 	, constraints: [ConstraintSchema]
 });
 
@@ -17,8 +20,8 @@ var CustomerSchema = new Schema({
 	customerid: {type:String, index:true, unique: true}
 	, createdAt : Date
 	, app: {type:ObjectId, ref:'AppSchema'}
-	, versionCode : Number
-});
+	, versionCode : {type: Number}
+ });
 
 var ConstraintModel = mongoose.model('Constraint', ConstraintSchema);
 exports.Constraint = ConstraintModel;
@@ -27,5 +30,5 @@ var AppModel = mongoose.model('App', AppSchema);
 exports.App = AppModel
 
 var CustomerModel = mongoose.model('Customer', CustomerSchema);
-exports.Customer = CustomerModel;
+exports.Customer = CustomerModel; 
 

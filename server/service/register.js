@@ -9,6 +9,10 @@ exports.create = function (req, res, next){
 	if(appObj){
 		var app = new db.App();
 		app.identifier = appObj.identifier;
+		app.maxVersionCode = appObj.maxVersionCode;
+		app.graceInterval = appObj.graceInterval;
+		app.graceRetrys = appObj.graceRetrys;
+		app.validTime = appObj.validTime;
 		app.constraints = appObj.constraints;
 		app.save(function(err){
 			console.log(err);
@@ -47,6 +51,10 @@ exports.update = function (req, res, next){
 		if(app){
 			var appObj = JSON.parse(req.body);
 			app.constraints = appObj.constraints;
+			app.maxVersionCode = appObj.maxVersionCode;
+			app.graceInterval = appObj.graceInterval;
+			app.graceRetrys = appObj.graceRetrys;
+			app.validTime = appObj.validTime;
 			app.save(function(err){
 				res.send(app);
 			});
