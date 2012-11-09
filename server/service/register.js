@@ -25,12 +25,7 @@ exports.create = function (req, res, next){
 
 exports.get = function (req, res, next){
 	console.log("register.get");
-
-	db.App.findOne({'identifier' : req.params.app}, function(err, app){
-		if(err) console.log(err);
-		if(app)
-			res.send(app);
-	});
+	res.send(res.locals.app);
 }
 
 exports.getAll = function (req, res, next){
@@ -46,19 +41,16 @@ exports.getAll = function (req, res, next){
 
 exports.update = function (req, res, next){
 	console.log("register.update");
-	db.App.findOne({'identifier' : req.params.app}, function(err, app){
-		if(err) console.log(err);
-		if(app){
-			var appObj = JSON.parse(req.body);
-			app.constraints = appObj.constraints;
-			app.maxVersionCode = appObj.maxVersionCode;
-			app.graceInterval = appObj.graceInterval;
-			app.graceRetrys = appObj.graceRetrys;
-			app.validTime = appObj.validTime;
-			app.save(function(err){
-				res.send(app);
-			});
-		}
+	var app = res.locals.app;
+			
+	var appObj = JSON.parse(req.body);
+	app.constraints = appObj.constraints;
+	app.maxVersionCode = appObj.maxVersionCode;
+	app.graceInterval = appObj.graceInterval;
+	app.graceRetrys = appObj.graceRetrys;
+	app.validTime = appObj.validTime;
+	app.save(function(err){
+		res.send(app);
 	});
 }
 

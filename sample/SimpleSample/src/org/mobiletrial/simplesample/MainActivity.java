@@ -119,7 +119,7 @@ public class MainActivity extends Activity {
 
         URL serviceUrl = null;
 		try {
-			serviceUrl = URI.create("http://192.168.1.3:3000/").toURL();
+			serviceUrl = URI.create("http://192.168.1.52:3000/").toURL();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -23,6 +23,21 @@ var CustomerSchema = new Schema({
 	, versionCode : {type: Number}
  });
 
+var UserSchema = new Schema ({
+	account: {type:String, index:true, unique:true}
+	,	password: String 
+});
+
+var DeveloperRoleSchema = new Schema({
+	user: {type:ObjectId, ref:'UserSchema'}
+	, testResult: {type: Number, default: 0}
+	, app: {type:ObjectId, ref:'AppSchema'}
+})
+
+var AdminRoleSchema = new Schema({
+	user: {type:ObjectId, ref:'UserSchema'}
+})
+
 var ConstraintModel = mongoose.model('Constraint', ConstraintSchema);
 exports.Constraint = ConstraintModel;
 
@@ -31,4 +46,13 @@ exports.App = AppModel
 
 var CustomerModel = mongoose.model('Customer', CustomerSchema);
 exports.Customer = CustomerModel; 
+
+var UserModel = mongoose.model('User', UserSchema);
+exports.User = UserModel;
+
+var DeveloperRoleModel = mongoose.model('DeveloperRole', DeveloperRoleSchema);
+exports.DeveloperRole = DeveloperRoleModel;
+
+var AdminRoleModel = mongoose.model('AdminRole', AdminRoleSchema);
+exports.AdminRole = AdminRoleModel;
 

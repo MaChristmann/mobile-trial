@@ -4,7 +4,9 @@ var restify 	= require('restify')
 
 // Mobile-Trail Services
 var	registerSv	= require('./service/register')
-, customerSv = require('./service/authorize');
+, licenseSv 		= require('./service/license')
+, appSv 				= require('./service/app')
+, authenticateSv= require('./service/authenticate'); 
 
 // Create Server
 var server = restify.createServer({
@@ -18,29 +20,27 @@ mongoose.connect('mongodb://localhost/mobile-trial-db');
 
 // Enable Bundles
 server.use(restify.bodyParser());
+server.use(restify.authorizationParser());
 
-// Authorize user
-server.use(function authorization(req, res, next){
-	next();
-});
+// Get :app url parameter
+server.use(appSv.get);
 
-server.get('/', function(req, res){
-	res.json({});
-});
-server.post('/', function(req, res){
-	res.json({});
-});
-server.post('/register',	 		registerSv.create);
-server.get ('/register', 			registerSv.getAll);
-server.get ('/register/:app', registerSv.get);
-server.put ('/register/:app', registerSv.update);
-server.del ('/register/:app', registerSv.delete);
+server.post('/register',	 		[authenticateSv.admin, registerSv.create]);
+server.get ('/register', 			[authenticateSv.admin, registerSv.getAll]);
+server.get ('/register/:app', [authenticateSv.admin, registerSv.get]);
+server.put ('/register/:app', [authenticateSv.admin, registerSv.update]);
+server.del ('/register/:app', [authenticateSv.admin, registerSv.delete]);
 
-server.post('/authorize/:app/customer/:customer', customerSv.authorize);
+server.post('/authorize/:app/customer/:customer', licenseSv.authorize);
+
+server.use(function(req, res, next){
+	res.send(404, new Error('404 '));
+});
 
 //Start listen
 server.listen(port, function(){
 	console.log("listen on port " + port);
 });
+
 
 
