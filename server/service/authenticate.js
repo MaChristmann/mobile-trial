@@ -17,15 +17,17 @@ exports.developer = function(req, res, next){
 }
 
 exports.admin = function(req, res, next){
+	console.log("test");
 	authenticateUser(req, res, function(userErr, user){
 		db.AdminRole.findOne({'user': user}, function(err, admin){
+
+
 			if(err) console.log(err)
 
 			if(admin == null){
 				res.send(401, new Error("401"));
 				return;
 			}
-
 			next();
 		});
 	});
@@ -34,7 +36,7 @@ exports.admin = function(req, res, next){
 /* User authentication */
 function authenticateUser(req, res, next) {
   db.User.findOne({ 'account': req.username}, function (err, user) {
-
+  			
     if (err){
       res.send(401, new Error("401"));
       return;
