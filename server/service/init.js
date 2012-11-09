@@ -17,7 +17,6 @@ exports.admin = function(account, password){
 
 				admin.save(function(err){
 					if(err) console.log(err);
-
 					return;
 				});
 			});

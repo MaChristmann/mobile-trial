@@ -9,7 +9,7 @@ exports.get = function(req, res, next, app){
 			//App exists?
 			if(app == null){
 				console.log("Could not find app " + app);
-				res.send({rc: 4, reason: 'App does not exist'});
+				res.send(404, {rc: 4, reason: 'App does not exist'});
 				return;
 			}
 			res.locals.app = app;

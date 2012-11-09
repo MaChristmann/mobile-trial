@@ -28,6 +28,7 @@ server.use(restify.authorizationParser());
 //Initialize express.js like locals object for url parameter results
 server.use(function(req, res, next){
 	res.locals = {};
+	next();
 })
 // :app
 server.use(appSv.get);
@@ -37,9 +38,9 @@ server.use(userSv.get);
 /* User Management */ 
 server.post('/user',					[authenticateSv.admin, userSv.create]);
 server.del('/user/:user', 		[authenticateSv.admin, userSv.delete]);
-server.post('/user/:user/developer/:app',	[authenticateSv.admin, userSv.assignToDeveloper]);
+server.put('/user/:user/developer/:app',	[authenticateSv.admin, userSv.assignToDeveloper]);
 server.del('/user/:user/developer/:app',		[authenticateSv.admin, userSv.revokeFromDeveloper]);
-server.post('/user/:user/admin', 			[authenticateSv.admin, userSv.assignToAdmin]);
+server.put('/user/:user/admin', 			[authenticateSv.admin, userSv.assignToAdmin]);
 server.del('/user/:user/admin', 			[authenticateSv.admin, userSv.revokeFromAdmin]); 
 
 /* App  Management */ 
@@ -54,13 +55,13 @@ server.post('/authorize/:app/customer/:customer', licenseSv.authorize);
 
 /* No route found */ 
 server.use(function(req, res, next){
-	res.send(404, new Error('404 '));
+	res.send(404, new Error('404'));
 });
 
 //Start listen
 server.listen(port, function(){
- 	//	var init = require('./service/init');
-	//	init.admin("martin.christmann@gmail.com", "tofuwurst");
+ 	var init = require('./service/init');
+	init.admin("martin.christmann@gmail.com", "tofuwurst");
 	console.log("Server is running on port " + port);
 });
 

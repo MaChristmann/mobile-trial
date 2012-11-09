@@ -2,12 +2,15 @@ var db = require('../data/db');
 
 exports.get = function(req, res, next){
 	if(typeof req.params.user != 'undefined' && req.params.user != null) {
+
+		console.log(req.params.user);
 		db.User.findOne({'account':req.params.user}, function(err, user){	
 			if(err) console.log(err);
 
 			if(user == null){
 				console.log("Couldn't find User");
-				res.send({rc: 4, reason: 'User does not exist'});
+				res.send(404, {rc: 4, reason: 'User does not exist'});
+				return;
 			}
 			res.locals.user = user;
 			next();
@@ -72,6 +75,7 @@ exports.revokeFromDeveloper = function(req, res, next){
 exports.assignToAdmin = function(req, res, next){
 	var user = res.locals.user;
 	var admin = new db.AdminRole();
+	admin.user = user;
 	admin.save(function(err){
 		if(err) console.log(err);
 		res.send(admin);
