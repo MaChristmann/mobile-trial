@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 , Schema =  mongoose.Schema
 , ObjectId = Schema.Types.ObjectId;
 
-var ConstraintSchema = new Schema({
+var LicenseSchema = new Schema({
 	trialtype: {type:String, enum: ['time']}
 	, value: Number
 });
@@ -13,7 +13,7 @@ var AppSchema = new Schema({
 	, graceInterval: 		{type: Number, default: 0}
 	, graceRetrys: 			{type: Number, default: 3}
 	, validTime: 				{type: Number, default: 0}
-	, constraints: [ConstraintSchema]
+	, licenses: [LicenseSchema]
 });
 
 var CustomerSchema = new Schema({
@@ -38,8 +38,8 @@ var AdminRoleSchema = new Schema({
 	user: {type:ObjectId, ref:'UserSchema'}
 })
 
-var ConstraintModel = mongoose.model('Constraint', ConstraintSchema);
-exports.Constraint = ConstraintModel;
+var LicenseModel = mongoose.model('License', LicenseSchema);
+exports.License = LicenseModel;
 
 var AppModel = mongoose.model('App', AppSchema);
 exports.App = AppModel

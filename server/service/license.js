@@ -88,16 +88,16 @@ exports.authorize = function(req, res, next){
 function authorizeCustomer(customer, app, timestamp, versionCode, next){
 	var isAuthorized = true;
 
-	var constraints = app.constraints;
+	var licenses = app.licenses;
 
 	console.log(app);
 
-	for (var i=0; i < constraints.length; i++){
-		var constraintType = constraints[i].trialtype;
-		var constraintValue = constraints[i].value;
+	for (var i=0; i < licenses.length; i++){
+		var licenseType = licenses[i].trialtype;
+		var licenseValue = licenses[i].value;
 
-		console.log(constraints[i]);
-		switch(constraintType){
+		console.log(licenses[i]);
+		switch(licenseType){
 			case "days": {
 				var oneday=1000*60*60*24;
 
@@ -108,7 +108,7 @@ function authorizeCustomer(customer, app, timestamp, versionCode, next){
 
 				console.log(daysdiff);
 
-				if(daysdiff > constraintValue)
+				if(daysdiff > licenseValue)
 					isAuthorized = false;
 			} break;
 		}

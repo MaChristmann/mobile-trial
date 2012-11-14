@@ -13,7 +13,7 @@ exports.create = function (req, res, next){
 		app.graceInterval = appObj.graceInterval;
 		app.graceRetrys = appObj.graceRetrys;
 		app.validTime = appObj.validTime;
-		app.constraints = appObj.constraints;
+		app.licenses = appObj.licenses;
 		app.save(function(err){
 			console.log(err);
 			res.send(app);
@@ -44,7 +44,7 @@ exports.update = function (req, res, next){
 	var app = res.locals.app;
 			
 	var appObj = JSON.parse(req.body);
-	app.constraints = appObj.constraints;
+	app.licenses = appObj.licenses;
 	app.maxVersionCode = appObj.maxVersionCode;
 	app.graceInterval = appObj.graceInterval;
 	app.graceRetrys = appObj.graceRetrys;
