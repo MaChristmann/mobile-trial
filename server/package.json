@@ -4,7 +4,7 @@
   "private": true,
   "author":  "Martin Christmann <martin.christmann@gmail.com>",
   "scripts": {
-    "start": "nodemon --watch app.js --watch service --watch data app.js"
+    "start": "nodemon --watch app.js --watch service --watch data app.js" 
   },
   "repository": {
     "type": "git",
@@ -14,7 +14,9 @@
     "android",
     "trial",
     "authorization",
-    "license"
+    "license",
+    "demo", 
+    "lite"
   ], 
   "dependencies": {
     "restify": "1.4.x",
