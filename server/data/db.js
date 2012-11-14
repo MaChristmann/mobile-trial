@@ -8,17 +8,19 @@ var LicenseSchema = new Schema({
 });
 
 var AppSchema = new Schema({
-	identifier: 				{type: String, index: true, unique: true}
-	, maxVersionCode: 	{type: Number, default: 0}
-	, graceInterval: 		{type: Number, default: 0}
-	, graceRetrys: 			{type: Number, default: 3}
-	, validTime: 				{type: Number, default: 0}
+	identifier: 					{type: String, index: true, unique: true}
+	, maxVersionCode: 		{type: Number, default: 0}
+	, updateVersionCode: 	{type: Number, default: 0}
+	, graceInterval: 			{type: Number, default: 0}
+	, graceRetrys: 				{type: Number, default: 3}
+	, validTime: 					{type: Number, default: 0}
 	, licenses: [LicenseSchema]
 });
 
 var CustomerSchema = new Schema({
 	customerid: {type:String, index:true, unique: true}
 	, createdAt : Date
+	, modifiedAt : Date
 	, app: {type:ObjectId, ref:'AppSchema'}
 	, versionCode : {type: Number}
  });

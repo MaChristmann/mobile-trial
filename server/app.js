@@ -23,7 +23,6 @@ mongoose.connect('mongodb://localhost/mobile-trial-db');
 server.use(restify.bodyParser());
 server.use(restify.authorizationParser());
 
-
 /* Url Parameter */
 //Initialize express.js like locals object for url parameter results
 server.use(function(req, res, next){
