@@ -60,8 +60,6 @@ server.use(function(req, res, next){
 
 //Start listen
 server.listen(port, function(){
- 	var init = require('./service/init');
-	init.admin("martin.christmann@gmail.com", "tofuwurst");
 	console.log("Server is running on port " + port);
 });
 

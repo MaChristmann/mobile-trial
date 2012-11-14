@@ -1,0 +1,27 @@
+{
+	"user": [
+		{"account": "martin.christmann@gmail.com", "password":"test"}
+		,	{"account": "mchristmann@gmail.com", "password":"test"}
+	],
+	"admin": [
+		{"account": "martin.christmann@gmail.com"}
+	],
+	"developer": [
+		{"account": "mchristmann@gmail.com", "app": "org.mobiletrial.simplesample"}
+	],
+	"app": [
+		{
+			"identifier": "org.mobiletrial.simplesample", 
+			"maxVersionCode": 0,
+			"graceInterval": 0,
+			"graceRetrys": 3,
+			"validTime": 120000,
+			"licenses": [
+				{
+					"trialtype": "time",
+					"value": 30
+				}
+			]
+		}
+	]
+}
