@@ -4,7 +4,7 @@
   "private": true,
   "author":  "Martin Christmann <martin.christmann@gmail.com>",
   "scripts": {
-    "start": "nodemon --watch app.js --watch service --watch data app.js" 
+    "start": "nodemon --watch app.js --watch config.json --watch service --watch data app.js" 
   },
   "repository": {
     "type": "git",
@@ -27,5 +27,4 @@
     "winston": "0.6.x",
     "mocha": "1.7.x" 
   }
-
 }

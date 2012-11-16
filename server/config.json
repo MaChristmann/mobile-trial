@@ -1,0 +1,5 @@
+{
+	"name": "mobile-trial",
+	"mongodb": "mongodb://localhost/mobile-trial-db",
+	"port":	3000
+}
