@@ -1,8 +1,27 @@
 var db = require('../data/db');
 
-exports.create = function(customerid, app, versionCode, next){
+exports.get = function(req, res, next){
+	var account = req.params.account;
+
+	db.Customer.findOne({'account': account}, function(err, customer){
+		res.locals.customer = null;
+		if(err){
+			console.log(err);
+			res.send(500, {rc: 4, reason: 'Error on finding Customer'});
+			return;
+		}
+		if(customer == null){
+			next();
+			return;
+		}
+		res.locals.customer = customer;
+		next();
+	});
+}
+
+exports.create = function(account, app, versionCode, next){
 	var customer = new db.Customer();
-	customer.customerid = customerid;
+	customer.account = account;
 	customer.app = app;
 	customer.createdAt = new Date();
 	customer.modifiedAt = customer.createdAt;
@@ -13,7 +32,7 @@ exports.create = function(customerid, app, versionCode, next){
 		} else
 			next(true)
 	});
-}
+} 
 
 
 exports.update = function(customer, versionCode, next){

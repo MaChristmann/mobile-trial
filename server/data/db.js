@@ -18,7 +18,7 @@ var AppSchema = new Schema({
 });
 
 var CustomerSchema = new Schema({
-	customerid: {type:String, index:true, unique: true}
+	account: {type:String, index:true, unique: true}
 	, createdAt : Date
 	, modifiedAt : Date
 	, app: {type:ObjectId, ref:'AppSchema'}
