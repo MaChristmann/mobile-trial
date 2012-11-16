@@ -3,7 +3,7 @@ Mobile-Trial
 
 # ToDo: 
 ## Server
-* Features
+* Features 
 	* ValidTime set to 0 should return a validtime till the end of trial period
 *	Security
 	* Use HTTPS instead of HTTP
