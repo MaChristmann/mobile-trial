@@ -20,7 +20,7 @@
   ], 
   "dependencies": {
     "restify": "1.4.x",
-    "mongoose": "3.3.x",
+    "mongoose": "3.4.x",
     "async": "0.1.x"
   }, 
   "devDependencies": {
