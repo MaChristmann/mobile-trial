@@ -5,7 +5,11 @@ exports.get = function(req, res, next){
 
 		console.log(req.params.user);
 		db.User.findOne({'account':req.params.user}, function(err, user){	
-			if(err) console.log(err);
+			if(err) {
+				console.log(err);
+				res.send(500, {rc: 4, reason: 'Error on finding User'});
+				return;
+			}
 
 			if(user == null){
 				console.log("Couldn't find User");
