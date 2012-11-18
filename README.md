@@ -4,12 +4,14 @@ Mobile-Trial
 # ToDo: 
 
 ## Server
+* Setup
+	* Remove setup.json file after setup
 * Features
 	* ValidTime set to 0 should return a validtime till the end of trial period
 *	Security
 	* Use HTTPS instead of HTTP
 	* Encrypt response with private key
-	* _DONE 11-18-2012_ Use salted and hashed passwords for user accounts 
+	* _DONE 11-18-2012_ Use hashed passwords for user accounts 
 	* Allow access of admins and developers based on ip addresses/range
 * Tests
 	* Test License service
