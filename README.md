@@ -19,6 +19,7 @@ Mobile-Trial
 	* Test Customer service
 	* Test App service
 	* Test User service
+	* Test Authenticate service
 * Refactoring
 	* Merge Register service and App service to App service
 	* Branch services into routing layer and service layer (Make's testing easier)
@@ -33,7 +34,21 @@ Mobile-Trial
 	* Add test project
 
 ## Sample
-* Add more sample projects
+* Add sample: time based, close app after trial expired
+* Add sample: time based, restrict features after trial expired
 
 ## Configurator
-* Start project 
+* Features
+	* App configuration
+		* Admin should be able to set License Type/Value
+		* Admin should be able to set Valid Time
+		* Admin should be able to set Grace Time
+		* Admin should be able to set Grace Retrycount  
+		* Admin should be able to set max. versionCode number
+		* Admin should be able to set update versionCode number
+	* User configuration
+		* Admin should be able to create/delete user
+		* Admin should be able to set/unset user as developer
+		* Admin should be able to set/unset user as admin
+	* License Test
+		* Developer should be able to set testResponse
