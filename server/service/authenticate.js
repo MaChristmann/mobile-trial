@@ -1,4 +1,6 @@
-var restify = require("restify");
+var restify = require('restify'),
+		bcrypt = require('bcrypt');
+
 var db = require('../data/db');
 
 exports.developer = function(req, res, next){
@@ -42,12 +44,19 @@ function authenticateUser(req, res, next) {
       return;
     }
 
-    if (!user || user.password !== req.authorization.basic.password){
-      res.send(401, new restify.NotAuthorizedError());
-      return;
+    if(user == null){
+    	res.send(404, new Error("404"));
+    	return;
     }
 
-    next(null, user);
+   	var hash = user.password;
+		bcrypt.compare(req.authorization.basic.password, hash, function(err, res) {
+		  if(res == false){
+	      res.send(401, new restify.NotAuthorizedError());
+	      return;
+		  } 
+		  next(null, user);
+		}); 
   });
 
 }

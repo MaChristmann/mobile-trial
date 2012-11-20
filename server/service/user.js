@@ -1,3 +1,5 @@
+var bcrypt = require('bcrypt');
+
 var db = require('../data/db');
 
 exports.get = function(req, res, next){
@@ -30,13 +32,18 @@ exports.create = function(req, res, next){
 	if(userObj){
 		var user = new db.User();
 		user.account = userObj.account;
-		user.password = userObj.password;
 
-		user.save(function(err){
-			if(err) console.log(err);
-			res.send(user);
-		})
+		//Hash password with bcrypt
+		bcrypt.genSalt(10, function(err, salt) {
+		  bcrypt.hash(userObj.password, salt, function(err, hash) {
+	     	user.password = hash;
 
+	     	user.save(function(err){
+					if(err) console.log(err);
+					res.send(user);
+				});
+		  });
+		});
 	}
 };
 

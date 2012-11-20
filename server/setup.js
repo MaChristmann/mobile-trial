@@ -1,5 +1,6 @@
 var fs = require('fs'),
 	async = require('async'),
+	bcrypt = require('bcrypt');
 	mongoose 		= require('mongoose');
 
 var db = require('./data/db');
@@ -60,12 +61,17 @@ function setupUser(users, callback){
 			fnArray.push(function(cb){
 				var newUser = new db.User();
 				newUser.account =  user.account;
-				newUser.password = user.password;	
-				newUser.save(function(err){ 
-					if(err) console.log(err);
-					console.log("+ Add Account:" + user.account);
-					cb(null, 0);
-				});	
+
+				//Hash password with bcrypt
+				bcrypt.genSalt(10, function(err, salt) {
+				  bcrypt.hash(user.password, salt, function(err, hash) {
+			     	newUser.password = hash;
+			     	newUser.save(function(err){
+							if(err) console.log(err);
+							cb(null, 0);
+						});
+				  });
+				});
 			});
 		})(users[i]);
 	}
