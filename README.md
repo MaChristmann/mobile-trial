@@ -5,12 +5,13 @@ Mobile-Trial
 
 ## Server
 * Setup
-	* Remove setup.json file after setup
+	* _DONE 11-20-2012_ Remove setup.json file after setup
+	* Make Setup use the service methods (requires refactoring of services)
 * Features
 	* ValidTime set to 0 should return a validtime till the end of trial period
 *	Security
 	* Use HTTPS instead of HTTP
-	* Encrypt response with private key
+	* Create digital signature with openssl and sign response data with RSA privatekey
 	* _DONE 11-18-2012_ Use hashed passwords for user accounts 
 	* Allow access of admins and developers based on ip addresses/range
 * Tests
@@ -29,13 +30,18 @@ Mobile-Trial
 	* Create Ui Components
 * Security
 	* Use HTTPS instead of HTTP
-	* Decrypt response with public key
+	* Verify signed response with RSA public key
 * Test
 	* Add test project
 
 ## Sample
 * Add sample: time based, close app after trial expired
 * Add sample: time based, restrict features after trial expired
+
+## GitHub Documentation
+* Add HowTo documentation
+* Add Feature documentation
+* Add some explanation and diagrams about how the system works
 
 ## Configurator
 * Features
@@ -52,3 +58,4 @@ Mobile-Trial
 		* Admin should be able to set/unset user as admin
 	* License Test
 		* Developer should be able to set testResponse
+

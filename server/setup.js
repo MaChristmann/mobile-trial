@@ -45,8 +45,11 @@ function setupFromJSON(filename){
 		],  
 		function(err, result){
 			//Remove setup.file
-			console.log("Setup finished!");
+			console.log("Setup successfully!");
 			mongoose.disconnect();
+			fs.unlink(filepath, function(err){
+				if(err) console.log("Warning: Could't not remove setup file '" + filepath + "'. Please remove it manually!");
+			});
 		});
 	});
 }
@@ -202,3 +205,4 @@ function fileExists(dir, filename, next){
 		next(new Error("File at " + filepath + " not found"));
 	});
 }
+
