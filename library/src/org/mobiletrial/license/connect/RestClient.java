@@ -74,8 +74,7 @@ public class RestClient {
         			/* Convert response to JSON */
                     InputStream in = response.getEntity().getContent(); //Get the data in the entity
                     String responseStr = inputstreamToString(in);
-                    JSONObject responseJson = new JSONObject(responseStr);
-                    listener.gotResponse(responseJson);
+                    listener.gotResponse(responseStr);
                     
                 } catch(ClientProtocolException e){
                 	Log.w(TAG, "ClientProtocolExeption:  " + e.getLocalizedMessage());
@@ -87,9 +86,6 @@ public class RestClient {
                 	//This shouldn't happen	
                 	Log.w(TAG, "Could not build URI.. Your service Url is propably not a valid Url:  " + e.getLocalizedMessage());
                 	e.printStackTrace();
-				} catch (JSONException e) {
-					Log.w(TAG, "Something went wrong by parsing response json:  " + e.getLocalizedMessage());
-					listener.gotError(ERROR_SERVER_FAILURE);
 				}
                 Looper.loop(); //Loop in the message queue
             }
@@ -98,7 +94,7 @@ public class RestClient {
     }
 	
 	public static abstract class OnRequestFinishedListener{
-		public abstract void gotResponse(JSONObject response);
+		public abstract void gotResponse(String response);
 		public abstract void gotError(int errorCode);
 	}
 	

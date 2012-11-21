@@ -95,12 +95,7 @@ public class LicenseValidator {
         ResponseData data = null;
         if (responseCode == LICENSED || responseCode == NOT_LICENSED ||
                 responseCode == LICENSED_OLD_KEY) {
-            // Verify signature.
-        	
-        	/** 
-        	 * @TODO:  Lets skip this for the moment
-        	 */
-        	/*
+            // Verify signature. 	
             try {
                 Signature sig = Signature.getInstance(SIGNATURE_ALGORITHM);
                 sig.initVerify(publicKey);
@@ -123,7 +118,7 @@ public class LicenseValidator {
                 Log.e(TAG, "Could not Base64-decode signature.");
                 handleInvalidResponse();
                 return;
-            } */
+            } 
 
             // Parse and validate response.
             try {

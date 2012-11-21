@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2010 The Android Open Source Project+
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,181 +65,183 @@ import android.widget.TextView;
  * licensing documentation.</a>
  */
 public class MainActivity extends Activity {
-    private static final String BASE64_PUBLIC_KEY = "REPLACE THIS WITH YOUR PUBLIC KEY";
+	private static final String BASE64_PUBLIC_KEY = 
+		"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDAdB2CvskvAnAYnu2qehAfOGwgnKK+AGfG1hGmeq3Y+jtDx+LdY5qHAMx5u/hrKGZ7lgMO7UZ2pdXj4u6/5JBngxzLh1kwTPCQlHVdHJIMJi0mfazZW+mHnTFeNRpUaY1h11WIspIlOGjghoK2Neo/FgGdtnF3UnqHrHmNOWvGfQIDAQAB";
+		
+		
+	// Generate your own 20 random bytes, and put them here.
+	private static final byte[] SALT = new byte[] {
+		-46, 65, 30, -128, -103, -57, 74, -64, 51, 88, -95, -45, 77, -117, -36, -113, -11, 32, -64,
+		89
+	};
 
-    // Generate your own 20 random bytes, and put them here.
-    private static final byte[] SALT = new byte[] {
-        -46, 65, 30, -128, -103, -57, 74, -64, 51, 88, -95, -45, 77, -117, -36, -113, -11, 32, -64,
-        89
-    };
+	private TextView mStatusText;
+	private Button mCheckLicenseButton;
 
-    private TextView mStatusText;
-    private Button mCheckLicenseButton;
+	private LicenseCheckerCallback mLicenseCheckerCallback;
+	private LicenseChecker mChecker;
+	// A handler on the UI thread.
+	private Handler mHandler;
 
-    private LicenseCheckerCallback mLicenseCheckerCallback;
-    private LicenseChecker mChecker;
-    // A handler on the UI thread.
-    private Handler mHandler;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setContentView(R.layout.activity_main);
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.activity_main);
+		mStatusText = (TextView) findViewById(R.id.status_text);
+		mCheckLicenseButton = (Button) findViewById(R.id.check_license_button);
+		mCheckLicenseButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				doCheck();
+			}
+		});
 
-        mStatusText = (TextView) findViewById(R.id.status_text);
-        mCheckLicenseButton = (Button) findViewById(R.id.check_license_button);
-        mCheckLicenseButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                doCheck();
-            }
-        });
 
-        
-        //Test Accountmanagement
-        AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
-        Account[] list = manager.getAccounts();
-        String gmail = null;
+		//Test Accountmanagement
+		AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+		Account[] list = manager.getAccounts();
+		String gmail = null;
 
-        for(Account account: list)
-        {
-            if(account.type.equalsIgnoreCase("com.google"))
-            {
-                gmail = account.name;
-            }
-        }
-        
-        String android_id = Secure.getString(getContentResolver(),
-                Secure.ANDROID_ID); 
-        
-        mHandler = new Handler();
+		for(Account account: list)
+		{
+			if(account.type.equalsIgnoreCase("com.google"))
+			{
+				gmail = account.name;
+			}
+		}
 
-        // Try to use more data here. ANDROID_ID is a single point of attack.
-        String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+		String android_id = Secure.getString(getContentResolver(),
+				Secure.ANDROID_ID); 
 
-        URL serviceUrl = null;
+		mHandler = new Handler();
+
+		// Try to use more data here. ANDROID_ID is a single point of attack.
+		String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+
+		URL serviceUrl = null;
 		try {
 			serviceUrl = URI.create("http://192.168.1.52:3000/").toURL();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        // Library calls this when it's done.
-        mLicenseCheckerCallback = new MyLicenseCheckerCallback();
-        
-        // Custom AccountChooserDialog
-        ChooseAccountDialog dlg = new ChooseAccountDialog(this, "Wähle dein Account");
-        
-        // Construct the LicenseChecker with a policy.
-        mChecker = new LicenseChecker(
-            this, new ServerManagedPolicy(this,
-                new AESObfuscator(SALT, getPackageName(), deviceId)),
-            BASE64_PUBLIC_KEY, 
-            serviceUrl,
-            new PlaystoreAccountType());
-        
-        mChecker.setChooseAccountDialog(dlg);
-        
-        doCheck();
-    }
 
-    protected Dialog onCreateDialog(int id) {
-        final boolean bRetry = id == 1;
-        return new AlertDialog.Builder(this)
-            .setTitle(R.string.unlicensed_dialog_title)
-            .setMessage(bRetry ? R.string.unlicensed_dialog_retry_body : R.string.unlicensed_dialog_body)
-            .setPositiveButton(bRetry ? R.string.retry_button : R.string.buy_button, new DialogInterface.OnClickListener() {
-                boolean mRetry = bRetry;
-                public void onClick(DialogInterface dialog, int which) {
-                    if ( mRetry ) {
-                        doCheck();
-                    } else {
-                        Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                                "http://market.android.com/details?id=" + getPackageName()));
-                            startActivity(marketIntent);                        
-                    }
-                }
-            })
-            .setNegativeButton(R.string.quit_button, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            }).create();
-    }
+		// Library calls this when it's done.
+		mLicenseCheckerCallback = new MyLicenseCheckerCallback();
 
-    private void doCheck() {
-        mCheckLicenseButton.setEnabled(false);
-        setProgressBarIndeterminateVisibility(true);
-        mStatusText.setText(R.string.checking_license);
-        mChecker.checkAccess(mLicenseCheckerCallback);
-    }
+		// Custom AccountChooserDialog
+		ChooseAccountDialog dlg = new ChooseAccountDialog(this, "Wähle dein Account");
 
-    private void displayResult(final String result) {
-        mHandler.post(new Runnable() {
-            public void run() {
-                mStatusText.setText(result);
-                setProgressBarIndeterminateVisibility(false);
-                mCheckLicenseButton.setEnabled(true);
-            }
-        });
-    }
-    
-    private void displayDialog(final boolean showRetry) {
-        mHandler.post(new Runnable() {
-            public void run() {
-                setProgressBarIndeterminateVisibility(false);
-                showDialog(showRetry ? 1 : 0);
-                mCheckLicenseButton.setEnabled(true);
-            }
-        });
-    }    
+		// Construct the LicenseChecker with a policy.
+		mChecker = new LicenseChecker(
+				this, new ServerManagedPolicy(this,
+						new AESObfuscator(SALT, getPackageName(), deviceId)),
+						BASE64_PUBLIC_KEY, 
+						serviceUrl,
+						new PlaystoreAccountType());
 
-    private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
-        public void allow(int policyReason) {
-            if (isFinishing()) {
-                // Don't update UI if Activity is finishing.
-                return;
-            }
-            // Should allow user access.
-            displayResult(getString(R.string.allow));
-        }
+		mChecker.setChooseAccountDialog(dlg);
 
-        public void dontAllow(int policyReason) {
-            if (isFinishing()) {
-                // Don't update UI if Activity is finishing.
-                return;
-            }
-            displayResult(getString(R.string.dont_allow));
-            // Should not allow access. In most cases, the app should assume
-            // the user has access unless it encounters this. If it does,
-            // the app should inform the user of their unlicensed ways
-            // and then either shut down the app or limit the user to a
-            // restricted set of features.
-            // In this example, we show a dialog that takes the user to Market.
-            // If the reason for the lack of license is that the service is
-            // unavailable or there is another problem, we display a
-            // retry button on the dialog and a different message.
-            displayDialog(policyReason == Policy.RETRY);
-        }
+		doCheck();
+	}
 
-        public void applicationError(int errorCode) {
-            if (isFinishing()) {
-                // Don't update UI if Activity is finishing.
-                return;
-            }
-            // This is a polite way of saying the developer made a mistake
-            // while setting up or calling the license checker library.
-            // Please examine the error code and fix the error.
-            String result = String.format(getString(R.string.application_error), errorCode);
-            displayResult(result);
-        }
-    }
+	protected Dialog onCreateDialog(int id) {
+		final boolean bRetry = id == 1;
+		return new AlertDialog.Builder(this)
+		.setTitle(R.string.unlicensed_dialog_title)
+		.setMessage(bRetry ? R.string.unlicensed_dialog_retry_body : R.string.unlicensed_dialog_body)
+		.setPositiveButton(bRetry ? R.string.retry_button : R.string.buy_button, new DialogInterface.OnClickListener() {
+			boolean mRetry = bRetry;
+			public void onClick(DialogInterface dialog, int which) {
+				if ( mRetry ) {
+					doCheck();
+				} else {
+					Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+							"http://market.android.com/details?id=" + getPackageName()));
+					startActivity(marketIntent);                        
+				}
+			}
+		})
+		.setNegativeButton(R.string.quit_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				finish();
+			}
+		}).create();
+	}
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mChecker.onDestroy();
-    }
+	private void doCheck() {
+		mCheckLicenseButton.setEnabled(false);
+		setProgressBarIndeterminateVisibility(true);
+		mStatusText.setText(R.string.checking_license);
+		mChecker.checkAccess(mLicenseCheckerCallback);
+	}
+
+	private void displayResult(final String result) {
+		mHandler.post(new Runnable() {
+			public void run() {
+				mStatusText.setText(result);
+				setProgressBarIndeterminateVisibility(false);
+				mCheckLicenseButton.setEnabled(true);
+			}
+		});
+	}
+
+	private void displayDialog(final boolean showRetry) {
+		mHandler.post(new Runnable() {
+			public void run() {
+				setProgressBarIndeterminateVisibility(false);
+				showDialog(showRetry ? 1 : 0);
+				mCheckLicenseButton.setEnabled(true);
+			}
+		});
+	}    
+
+	private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
+		public void allow(int policyReason) {
+			if (isFinishing()) {
+				// Don't update UI if Activity is finishing.
+				return;
+			}
+			// Should allow user access.
+			displayResult(getString(R.string.allow));
+		}
+
+		public void dontAllow(int policyReason) {
+			if (isFinishing()) {
+				// Don't update UI if Activity is finishing.
+				return;
+			}
+			displayResult(getString(R.string.dont_allow));
+			// Should not allow access. In most cases, the app should assume
+			// the user has access unless it encounters this. If it does,
+			// the app should inform the user of their unlicensed ways
+			// and then either shut down the app or limit the user to a
+			// restricted set of features.
+			// In this example, we show a dialog that takes the user to Market.
+			// If the reason for the lack of license is that the service is
+			// unavailable or there is another problem, we display a
+			// retry button on the dialog and a different message.
+			displayDialog(policyReason == Policy.RETRY);
+		}
+
+		public void applicationError(int errorCode) {
+			if (isFinishing()) {
+				// Don't update UI if Activity is finishing.
+				return;
+			}
+			// This is a polite way of saying the developer made a mistake
+			// while setting up or calling the license checker library.
+			// Please examine the error code and fix the error.
+			String result = String.format(getString(R.string.application_error), errorCode);
+			displayResult(result);
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mChecker.onDestroy();
+	}
 
 }

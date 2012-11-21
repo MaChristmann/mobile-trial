@@ -1,10 +1,12 @@
-var db = require('../data/db');
+
+
+var db = require('../data/db'),
+	certificateSv = require('./certificate');
 
 exports.create = function (req, res, next){
 	console.log("register.create");
 		console.log(req.body);
 	var appObj = JSON.parse(req.body);
-
 
 	if(appObj){
 		var app = new db.App();
@@ -14,13 +16,31 @@ exports.create = function (req, res, next){
 		app.graceRetrys = appObj.graceRetrys;
 		app.validTime = appObj.validTime;
 		app.licenses = appObj.licenses;
-		app.save(function(err){
-			console.log(err);
-			res.send(app);
-		});
+
+		//Create the public private key for signin
+		certificateSv.create(appObj.identifier, function(err, pub, priv, cert){
+			if(err){
+				console.log(err);
+				res.send(500, {rc:4, reason:'Could create certificate'});
+				return;
+			}
+
+			app.publicKey = pub;
+			app.privateKey = priv;
+			app.save(function(err){
+				if(err){
+					res.send(500, {rc:4, reason:'Could not save app to database'});
+					return;
+				}
+				res.send(app);
+			});
+
+	});
+
+
 	}
 	else 
-		res.send(true);
+		res.send(500, {rc:4, reason:'No body data'});
 }
 
 exports.get = function (req, res, next){

@@ -15,6 +15,8 @@ var AppSchema = new Schema({
 	, graceRetrys: 				{type: Number, default: 3}
 	, validTime: 					{type: Number, default: 0}
 	, licenses: [LicenseSchema]
+	, publicKey: 					{type: String}
+	, privateKey: 				{type: String}
 });
 
 var CustomerSchema = new Schema({

@@ -15,17 +15,10 @@ public class ServerLicensingService implements ILicensingService {
 	
 	private static final String TAG = "ServerLicensingService";
 
-	private static final String PARAM_RESPONECODE = "rc";
 	private static final String PARAM_TIMESTAMP = "ts";
 	private static final String PARAM_VERSIONCODE = "vc";
 	private static final String PARAM_NONCE = "n";
-	private static final String PARAM_PACKAGENAME = "pn";
-	private static final String PARAM_USERID = "ui";
-	
-	private static final String EXTRA_VALIDTIME = "VT";
-	private static final String EXTRA_GRACERETRYS = "GR";
-	private static final String EXTRA_GRACETIME = "GT";
-	
+
 	private static final int ERROR_SERVER_FAILURE = 0x4;
 	
 	private URL webserivceUrl;
@@ -54,39 +47,37 @@ public class ServerLicensingService implements ILicensingService {
 		
 		client.post(path, body, new RestClient.OnRequestFinishedListener() {
 			@Override
-			public void gotResponse(JSONObject response) {
+			public void gotResponse(String response) {
 				try {
-					//Essential Parameters
-					int responseCode = response.getInt(PARAM_RESPONECODE);
-					int responseNonce = response.getInt(PARAM_NONCE);
-					String responsePackageName = response.getString(PARAM_PACKAGENAME) ;
-					String responseUserId = response.getString(PARAM_USERID);
-					String responseVersionCode = response.getString(PARAM_VERSIONCODE);
-					long responseTimestamp = response.getLong(PARAM_TIMESTAMP);
-					//Extras
-					String extraGraceRetrys = EXTRA_GRACERETRYS + "=" +response.getString(EXTRA_GRACERETRYS);
-					String extraGraceTime = EXTRA_GRACETIME + "=" + response.getString(EXTRA_GRACETIME);
-					String extraValidTime = EXTRA_VALIDTIME + "=" + response.getString(EXTRA_VALIDTIME);
+					if(response == null){
+						// Incorrect response
+						listener.verifyLicense(ERROR_SERVER_FAILURE, null, null);
+						return;
+					}
 					
-			        //final String sampleResponse =  responseCode +  "|" +nonce+  "|" + packageName + "|" + rVersionCode + "|" +
-			        //"ADf8I4ajjgc1P5ZI1S1DN/YIPIUNPECLrg==|1279578835423:VT="+ validts + "&GT=" + gracets + "&GR=" + retrys;
-			   
-					String responseString;
-					
-			        responseString = TextUtils.join("|", new Object [] { responseCode, responseNonce, responsePackageName, responseVersionCode,
-			        		responseUserId, responseTimestamp });
-			        responseString += ":" + extraValidTime+"&"+extraGraceTime+"&"+extraGraceRetrys;
-			         
-			        listener.verifyLicense(responseCode, responseString, "");
-					
-				} catch (JSONException e) {
-					//Error json valid but missing keys
-					Log.w(TAG, "Missing parameter in server response");
+					response = response.replace("\"", "");
+					String data[] = TextUtils.split(response, "--");
+					if(data.length != 3){
+						// Incorrect response
+						listener.verifyLicense(ERROR_SERVER_FAILURE, null, null);
+						return;
+					}
+
+					int responseCode = Integer.parseInt(data[0]);
+					String signedData = data[1];
+					String signature = data[2];
+       
+			        listener.verifyLicense(responseCode, signedData, signature);
+				} catch (NumberFormatException e){
+					// Incorrect response
+					listener.verifyLicense(ERROR_SERVER_FAILURE, null, null);
+				} catch (Exception e){
+					// Unknown error
+					e.printStackTrace();
 					listener.verifyLicense(ERROR_SERVER_FAILURE, null, null);
 				}
-
 			}
-			
+		 
 			@Override
 			public void gotError(int errorCode) {
 				// Error on contacting server .. no connection or server error (404, 500) 

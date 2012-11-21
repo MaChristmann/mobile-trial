@@ -112,9 +112,8 @@ public class LicenseChecker {
 							URL serviceUrl,
 							IAccountType accountType) {
 		mPolicy = policy;
-		//TODO: Uncomment Security Feature when ready
 		mPublicKey = null;
-		//mPublicKey = generatePublicKey(encodedPublicKey);
+		mPublicKey = generatePublicKey(encodedPublicKey);
 		mContext = context;
 		mPackageName = mContext.getPackageName();
 		mVersionCode = getVersionCode(context, mPackageName);
@@ -137,8 +136,8 @@ public class LicenseChecker {
 		try {
 			byte[] decodedKey = Base64.decode(encodedPublicKey);
 			KeyFactory keyFactory = KeyFactory.getInstance(KEY_FACTORY_ALGORITHM);
-
-			return keyFactory.generatePublic(new X509EncodedKeySpec(decodedKey));
+			X509EncodedKeySpec spec = new X509EncodedKeySpec(decodedKey);
+			return keyFactory.generatePublic(spec);
 		} catch (NoSuchAlgorithmException e) {
 			// This won't happen in an Android-compatible environment.
 			throw new RuntimeException(e);
