@@ -14,6 +14,10 @@ var	registerSv	= require('./service/register')
 , developerSv 	= require('./service/developer')
 , customerSv 		= require('./service/customer');
 
+// Mobile-Trial Routes 
+var licenseRoute = require('./route/license'), 
+		appRoute 		 = require('./route/app');
+
 // Create Server
 var server = restify.createServer({
   name: config.name
@@ -37,12 +41,12 @@ server.use(function(req, res, next){
 })
 
 // :app
-server.use(appSv.get);
+server.use(appRoute.middleware);
 // :user
 server.use(userSv.get);
 
 /* License Management */
-server.post('/authorize/:app/customer/:account', developerSv.get, customerSv.get, licenseSv.authorize);
+server.post('/authorize/:app/customer/:account', developerSv.get, customerSv.get, licenseRoute.authorize);
 
 /* User Management */ 
 server.post('/user',					[authenticateSv.admin, userSv.create]);
@@ -56,7 +60,7 @@ server.del('/user/:user/admin', 			[authenticateSv.admin, userSv.revokeFromAdmin
 server.put('/app/:app/developer/:account', [authenticateSv.developer, developerSv.update]);
 
 /* App  Management */ 
-server.post('/register',	 		[authenticateSv.admin, registerSv.create]);
+server.post('/register',	 		[authenticateSv.admin, appRoute.create]);
 server.get ('/register', 			[authenticateSv.admin, registerSv.getAll]);
 server.get ('/register/:app', [authenticateSv.admin, registerSv.get]);
 server.put ('/register/:app', [authenticateSv.admin, registerSv.update]);

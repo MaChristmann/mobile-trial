@@ -1,21 +1,48 @@
-var db = require('../data/db');
+var db = require('../data/db'),
+		certificateSv = require('./certificate');
 
-exports.get = function(req, res, next, app){
-	if(typeof req.params.app != 'undefined' && req.params.app != null) {
-
-		db.App.findOne({'identifier':  req.params.app}, function(appErr, app){
-			if(appErr) console.log(appErr);
-
-			//App exists?
-			if(app == null){
-				console.log("Could not find app " + app);
-				res.send(404, {rc: 4, reason: 'App does not exist'});
-				return;
-			}
-			res.locals.app = app;
-			next();
+exports.get = function(identifier, next){
+	if(identifier){
+		db.App.findOne({'identifier':  identifier}, function(appErr, app){
+			if(appErr)
+				 next(appErr);
+			else 
+				next(next, app);
 		});
 	} else {
-		next();
+		next(null,null);
+	}
+}
+
+
+exports.create = function(appObj, next){
+	if(appObj){
+		var app = new db.App();
+		app.identifier = appObj.identifier;
+		app.maxVersionCode = appObj.maxVersionCode;
+		app.graceInterval = appObj.graceInterval;
+		app.graceRetrys = appObj.graceRetrys;
+		app.validTime = appObj.validTime;
+		app.licenses = appObj.licenses;
+
+		//Create the public private key for signin
+		certificateSv.create(appObj.identifier, function(err, pub, priv, cert){
+			if(err){
+				next(err);
+				return;
+			}
+
+			app.publicKey = pub;
+			app.privateKey = priv;
+			app.save(function(err){
+				if(err){
+					next(err);
+					return;
+				}
+				next(null, app);
+			});
+		}); 
+	} else {
+		next(null, null);
 	}
 }

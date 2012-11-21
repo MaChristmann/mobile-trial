@@ -3,48 +3,43 @@ var customerSv = require("./customer"),
 		certificateSv = require("./certificate");
 
 // licResponse Codes
-var CODE_LICENSED = 0,
-		CODE_NOTLICENSED = 1,
-		CODE_SERVERERROR = 4;
+var CODE_LICENSED = 0;
+exports.CODE_LICENSED = CODE_LICENSED;
+var CODE_NOTLICENSED = 1;
+exports.CODE_NOTLICENSED = CODE_NOTLICENSED;
+var CODE_SERVERERROR = 4;
+exports.CODE_SERVERERROR = CODE_SERVERERROR;
 
 // Parameters
-var PARAM_NONCE = "n",
-		PARAM_TIMESTAMP = "ts",
-		PARAM_VERSIONCODE = "vc",
-		PARAM_USERID = "ui",
-		PARAM_PACKAGENAME = "pn",
-		PARAM_RESULTCODE = "rc",
-		PARAM_REASON = "reason",
-		EXTRA_VALIDTIME = "VT",
-		EXTRA_GRACETIME = "GT",
-		EXTRA_GRACERETRYS = "GR";
+var PARAM_NONCE = "n";
+exports.PARAM_NONCE = PARAM_NONCE;
+var PARAM_TIMESTAMP = "ts";
+exports.PARAM_TIMESTAMP = PARAM_TIMESTAMP;
+var PARAM_VERSIONCODE = "vc";
+exports.PARAM_VERSIONCODE = PARAM_VERSIONCODE;
+var PARAM_USERID = "ui";
+exports.PARAM_USERID = PARAM_USERID;
+var PARAM_PACKAGENAME = "pn";
+exports.PARAM_PACKAGENAME = PARAM_PACKAGENAME;
+var PARAM_RESULTCODE = "rc"; 
+exports.PARAM_RESULTCODE = PARAM_RESULTCODE;
+var PARAM_REASON = "reason";
+exports.PARAM_REASON = PARAM_REASON;
+var EXTRA_VALIDTIME = "VT";
+exports.EXTRA_VALIDTIME = EXTRA_VALIDTIME;
+var EXTRA_GRACETIME = "GT";
+exports.EXTRA_GRACETIME = EXTRA_GRACETIME;
+var EXTRA_GRACERETRYS = "GR";
+exports.EXTRA_GRACERETRYS = EXTRA_GRACERETRYS;
 
-exports.authorize = function(req, res, next){
 
-	var app = res.locals.app;
-	var developer = res.locals.developer;
-	var customer = res.locals.customer;
-
-	var account = req.params.account;
-	
-	//Check if neccessary parameters exist
-	var bodyParams = JSON.parse(req.body);
-
-	authorizeCustomer(app, customer, account, developer, bodyParams, function(err, licResponse){	
-		if(err){
-			var errorResponse = CODE_SERVERERROR + "--" + err + "--" + "null";
-			res.send(500, errorResponse);
-			return;
-		}
-		var stringifiedResponse = stringifyResponse(licResponse);
-		var signature = certificateSv.sign(stringifiedResponse, app.privateKey);
-		var successResponse = licResponse[PARAM_RESULTCODE] + "--" + stringifiedResponse + "--" + signature;
-		res.send(successResponse);
-	});
+exports.testResponse = function(developer, next){
+	console.log("License: Customer is a developer - testResult: " + developer.testResult);
+	licResponse[PARAM_RESULTCODE] = developer.testResult;
+	next(null, licResponse);
 }
 
-
-function authorizeCustomer(app, customer, account, developer, bodyParams, next){
+exports.authorize = function(app, customer, account, bodyParams, next){
 	//Response object
 	var licResponse = {};
 
@@ -82,13 +77,7 @@ function authorizeCustomer(app, customer, account, developer, bodyParams, next){
 	licResponse[EXTRA_GRACETIME] 	= getGraceTime(app, serverTimestamp);
 	licResponse[EXTRA_GRACERETRYS] = getGraceRetrys(app);
 
-	if(developer != null){
-		console.log("License: Customer is a developer - testResult: " + developer.testResult);
-		licResponse[PARAM_RESULTCODE] = developer.testResult;
-		next(null, licResponse);
-		return;
-	}
-	else if(customer == null){
+	if(customer == null){
 		//Create new customer
 		customerSv.create(account, app, versionCode, function(isAuthorized){
 			if(isAuthorized){
@@ -146,7 +135,6 @@ function checkLicenses(customer, app, timestamp, versionCode, next){
 		var licenseType = licenses[i].trialtype;
 		var licenseValue = licenses[i].value;
 
-		console.log(licenses[i]);
 		switch(licenseType){
 			case "days": {
 			
@@ -161,21 +149,6 @@ function checkLicenses(customer, app, timestamp, versionCode, next){
 		}
 	}
 	next(isAuthorized);
-}
-
-
-function stringifyResponse(lic){
-	var result = lic[PARAM_RESULTCODE]
-						 + "|" + lic[PARAM_NONCE]
-						 + "|" + lic[PARAM_PACKAGENAME]
-						 + "|" + lic[PARAM_VERSIONCODE]
-						 + "|" + lic[PARAM_USERID]
-						 + "|" + lic[PARAM_TIMESTAMP]; 
-			result += ":";
-			result += EXTRA_VALIDTIME + "=" + lic[EXTRA_VALIDTIME];
-			result += "&" + EXTRA_GRACETIME + "=" + lic[EXTRA_GRACETIME];
-			result += "&" + EXTRA_GRACERETRYS + "=" + lic[EXTRA_GRACERETRYS];
-			return result;
 }
 
 function getGraceTime (app, timestamp){
