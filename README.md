@@ -11,7 +11,7 @@ Mobile-Trial
 	* ValidTime set to 0 should return a validtime till the end of trial period
 *	Security
 	* Use HTTPS instead of HTTP
-	* Create digital signature with openssl and sign response data with RSA privatekey
+	* _DONE 11-20-2012_ Create digital signature with openssl and sign response data with RSA privatekey
 	* _DONE 11-18-2012_ Use hashed passwords for user accounts 
 	* Allow access of admins and developers based on ip addresses/range
 * Tests
@@ -30,9 +30,11 @@ Mobile-Trial
 	* Create Ui Components
 * Security
 	* Use HTTPS instead of HTTP
-	* Verify signed response with RSA public key
+	* _DONE 11-21-2012_  Verify signed response with RSA public key
+	* Hash Account email for request
 * Test
 	* Add test project
+* JavaDoc
 
 ## Sample
 * Add sample: time based, close app after trial expired
