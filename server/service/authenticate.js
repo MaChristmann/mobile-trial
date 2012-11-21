@@ -50,8 +50,8 @@ function authenticateUser(req, res, next) {
     }
 
    	var hash = user.password;
-		bcrypt.compare(req.authorization.basic.password, hash, function(err, res) {
-		  if(res == false){
+		bcrypt.compare(req.authorization.basic.password, hash, function(err, isAuthorized) {
+		  if(isAuthorized == false){
 	      res.send(401, new restify.NotAuthorizedError());
 	      return;
 		  } 
