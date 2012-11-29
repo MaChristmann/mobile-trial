@@ -15,8 +15,9 @@ var	registerSv	= require('./service/register')
 , customerSv 		= require('./service/customer');
 
 // Mobile-Trial Routes 
-var licenseRoute = require('./route/license'), 
-		appRoute 		 = require('./route/app');
+var licenseRoute 		= require('./route/license'), 
+		appRoute 		 		= require('./route/app'),
+		developerRoute	= require('./route/developer');
 
 // Create Server
 var server = restify.createServer({
@@ -42,29 +43,33 @@ server.use(function(req, res, next){
 
 // :app
 server.use(appRoute.middleware);
+
 // :user
 server.use(userSv.get);
 
+// :developer
+server.use(developerRoute.middleware);
+
 /* License Management */
-server.post('/authorize/:app/customer/:account', developerSv.get, customerSv.get, licenseRoute.authorize);
+server.post('/authorize/:app/customer/:account', [developerSv.get, customerSv.get, licenseRoute.authorize]);
 
 /* User Management */ 
 server.post('/user',					[authenticateSv.admin, userSv.create]);
 server.del('/user/:user', 		[authenticateSv.admin, userSv.delete]);
-server.put('/user/:user/developer/:app',	[authenticateSv.admin, userSv.assignToDeveloper]);
-server.del('/user/:user/developer/:app',		[authenticateSv.admin, userSv.revokeFromDeveloper]);
 server.put('/user/:user/admin', 			[authenticateSv.admin, userSv.assignToAdmin]);
 server.del('/user/:user/admin', 			[authenticateSv.admin, userSv.revokeFromAdmin]); 
 
 /* Developer Management */ 
-server.put('/app/:app/developer/:account', [authenticateSv.developer, developerSv.update]);
+server.post	('/app/:app/developer',						 [authenticateSv.admin, 		developerRoute.create]);
+server.put	('/app/:app/developer/:developer', [authenticateSv.developer, developerRoute.update]);
+server.del 	('/app/:app/developer/:developer', [authenticateSv.admin, 		developerRoute.delete]);
 
 /* App  Management */ 
-server.post('/register',	 		[authenticateSv.admin, appRoute.create]);
-server.get ('/register', 			[authenticateSv.admin, registerSv.getAll]);
-server.get ('/register/:app', [authenticateSv.admin, registerSv.get]);
-server.put ('/register/:app', [authenticateSv.admin, registerSv.update]);
-server.del ('/register/:app', [authenticateSv.admin, registerSv.delete]);
+server.post('/app',	 		 [authenticateSv.admin, appRoute.create]);
+server.get ('/app', 		 [authenticateSv.admin, appRoute.getAll]);
+server.get ('/app/:app', [authenticateSv.admin, appRoute.get]);
+server.put ('/app/:app', [authenticateSv.admin, appRoute.update]);
+server.del ('/app/:app', [authenticateSv.admin, appRoute.delete]);
 
 /* No route found */ 
 server.use(function(req, res, next){
