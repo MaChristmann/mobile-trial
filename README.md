@@ -9,7 +9,7 @@ Mobile-Trial
 	* Make Setup use the service methods (requires refactoring of services)
 * Features
 	* ValidTime set to 0 should return a validtime till the end of trial period
-	* Activate/Deactive the whole license check (return licensed with infinite valid time)
+	* _DONE 11-30-2012_ Activate/Deactive the license check 
 *	Security
 	* Use HTTPS instead of HTTP
 	* _DONE 11-20-2012_ Create digital signature with openssl and sign response data with RSA privatekey

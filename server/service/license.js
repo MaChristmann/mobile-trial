@@ -77,7 +77,12 @@ exports.authorize = function(app, customer, account, bodyParams, next){
 	licResponse[EXTRA_GRACETIME] 	= getGraceTime(app, serverTimestamp);
 	licResponse[EXTRA_GRACERETRYS] = getGraceRetrys(app);
 
-	if(customer == null){
+	if(app.enabled == false){
+		console.log("License: Check is deactivated. No customer tracking");
+		licResponse[PARAM_RESULTCODE] = CODE_LICENSED;
+		next(null, licResponse);
+	}
+	else if(customer == null){
 		//Create new customer
 		customerSv.create(account, app, versionCode, function(isAuthorized){
 			if(isAuthorized){

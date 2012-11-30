@@ -9,6 +9,7 @@ var LicenseSchema = new Schema({
 
 var AppSchema = new Schema({
 	identifier: 					{type: String, index: true, unique: true}
+	, enabled: {type: Boolean, default: true}
 	, maxVersionCode: 		{type: Number, default: 0}
 	, updateVersionCode: 	{type: Number, default: 0}
 	, graceInterval: 			{type: Number, default: 0}
