@@ -1,62 +1,86 @@
-var restify = require('restify'),
-		bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt');
 
 var db = require('../data/db');
 
-exports.developer = function(req, res, next){
-	authenticateUser(req, res, function(userErr, user){
-		db.DeveloperRole.findOne({'user': user}, function(err, developer){
-			if(err) console.log(err)
+exports.developer = function(username, password, next){
+	authenticateUser(username, password, function(authErr, user){
+		if(authErr){
+			next(authErr);
+			return;
+		}
+		if(user == null){
+			next(null, false);
+			return;
+		}
 
-			if(developer == null){
-				res.send(401, new Error("401"));
+		db.DeveloperRole.findOne({'user': user}, function(err, developer){
+			if(err){
+				next(err);
 				return;
 			}
 
-			next();
+			if(developer == null){
+				next(null, false);
+				return;
+			}
+
+			next(null, true);
 		});
 	});
 }
 
-exports.admin = function(req, res, next){
-	console.log("test");
-	authenticateUser(req, res, function(userErr, user){
+exports.admin = function(username, password, next){
+	authenticateUser(username, password, function(authErr, user){
+		if(authErr){
+			next(authErr);
+			return;
+		}
+
+		if(user == null){
+			next(null, false);
+			return;
+		}
+
 		db.AdminRole.findOne({'user': user}, function(err, admin){
-
-
-			if(err) console.log(err)
+			if(err){
+				next(err);
+				return;
+			} 
 
 			if(admin == null){
-				res.send(401, new Error("401"));
+				next(null, false);
 				return;
 			}
-			next();
+			next(null, true);
 		});
 	});
 }
 
 /* User authentication */
-function authenticateUser(req, res, next) {
-  db.User.findOne({ 'account': req.username}, function (err, user) {
-  			
+function authenticateUser(username, password, next) {
+  db.User.findOne({ 'account': username}, function (err, user) {			
     if (err){
-      res.send(401, new Error("401"));
+      next(err)
       return;
     }
 
     if(user == null){
-    	res.send(404, new Error("404"));
+    	next(null, null);
     	return;
     }
 
    	var hash = user.password;
-		bcrypt.compare(req.authorization.basic.password, hash, function(err, isAuthorized) {
+		bcrypt.compare(password, hash, function(err, isAuthorized) {
+			if(err){
+				next(err);
+				return;
+			}
+
 		  if(isAuthorized == false){
-	      res.send(401, new restify.NotAuthorizedError());
+	      next(null, null);
 	      return;
 		  } 
 		  next(null, user);
 		}); 
   });
-
 }

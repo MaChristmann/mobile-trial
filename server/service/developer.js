@@ -77,27 +77,68 @@ exports.create = function(app, developerObj, next){
 
 }
 
-exports.setTestResult = function(req, res, next){
-	var developer = res.locals.developer;
-
-	if(developer == null){
-		res.send(false);
+exports.setTestResult = function(developer, testResult, next){
+	if(!developer){
+		next(new Error('Missing parameter developer'));
+		return;
 	}
 
-	var developerObj = JSON.parse(req.body);
-	developer.testResult = developerObj.testResult;
+	if(!testResult){
+		next(new Error('Missing parameter testResult'));
+		return;
+	}
+
+	developer.testResult = testResult;
+
 	developer.save(function(err){
-		res.send(developer);
+		if(err){
+			next(err);
+			return;
+		}
+		next(null, developer);
 	});
 }
 
-
-
-exports.revokeFromDeveloper = function(req, res, next){
-	var user = res.locals.user;
-	var app = res.locals.app;
-
-	revokeDeveloperFromApp(user, app, function(){
-		res.send(true);
+exports.delete = function(developer, next){
+	if(!developer){
+		next(new Error('Missing parameter developer'));
+		return;
+	}
+	db.DeveloperRole.remove({'user': developer.user, 'app': developer.app}, function(err){
+		if(err){
+			next(err);
+			return;
+		}
+		next(null, developer);
 	});
-};
+}
+
+exports.deleteByApp = function(app, next){
+	if(!app){
+		next(new Error('Missing parameter app'));
+		return;
+	}
+
+	db.DeveloperRole.remove({'app': app}, function(err){
+		if(err){
+			next(err);
+			return;
+		}
+		next(null, app);
+	});
+}
+
+exports.deleteByUser = function(user, next){
+	if(!user){
+		next(new Error('Missing parameter user'));
+		return;
+	}
+
+	db.DeveloperRole.remove({'user': user}, function(err){
+		if(err){
+			next(err);
+			return;
+		}
+		next(null, user);
+	})
+}

@@ -2,124 +2,120 @@ var bcrypt = require('bcrypt');
 
 var db = require('../data/db');
 
-exports.get = function(req, res, next){
-	if(typeof req.params.user != 'undefined' && req.params.user != null) {
-
-		console.log(req.params.user);
-		db.User.findOne({'account':req.params.user}, function(err, user){	
-			if(err) {
-				console.log(err);
-				res.send(500, {rc: 4, reason: 'Error on finding User'});
-				return;
-			}
-
-			if(user == null){
-				console.log("Couldn't find User");
-				res.send(404, {rc: 4, reason: 'User does not exist'});
-				return;
-			}
-			res.locals.user = user;
-			next();
-		});
-	} else {
-		next();
+exports.get = function(account, next){
+	if(!account){
+		next(new Error('Missing parameter account'));
 	}
+
+	db.User.findOne({'account': account}, function(err, user){	
+		if(err) {
+			next(err);
+			return;
+		}
+
+		if(user == null){
+			next(null,null);
+			return;
+		}	
+		next(null, user);
+	});
 };
 
-exports.create = function(req, res, next){
-	var userObj = JSON.parse(req.body);
 
-	if(userObj){
-		var user = new db.User();
-		user.account = userObj.account;
+exports.getAll = function(next){
+	db.User.find({}, function(err, users){
+		if(err){
+			next(err);
+			return;
+		}
+		next(null, users);
+	});
+}
 
-		//Hash password with bcrypt
-		bcrypt.genSalt(10, function(err, salt) {
-		  bcrypt.hash(userObj.password, salt, function(err, hash) {
-	     	user.password = hash;
 
-	     	user.save(function(err){
-					if(err) console.log(err);
-					res.send(user);
-				});
-		  });
-		});
+exports.create = function(userObj, next){
+	if(!userObj){
+		next(new Error('Missing parameter userObj'));
+		return;
 	}
-};
 
-exports.delete = function(req, res, next){
-	var user = res.locals.user;
+	var user = new db.User();
+	user.account = userObj.account;
 
-	revokeAdmin(user, function(){
-		revokeDeveloper(user, function(){ 
-			db.User.remove({'account': user.account}, function(err){
-				if(err) console.log(err);
-				res.send(user);
+	//Hash password with bcrypt
+	bcrypt.genSalt(10, function(err, salt) {
+		if(err){
+			next(err);
+			return;
+		}
+
+	  bcrypt.hash(userObj.password, salt, function(err, hash) {
+	  	if(err){
+	  		next(err);
+	  		return;
+	  	}
+
+     	user.password = hash;
+     	user.save(function(err){
+				if(err){
+					next(err);
+					return;
+				}
+				next(null, user);
 			});
-		});
+	  });
 	});
-};
+}
 
-exports.assignToDeveloper	= function(req, res, next){
-	var user = res.locals.user;
-	var app = res.locals.app;
 
-	var developer = new db.DeveloperRole();
-	developer.user = user;
-	developer.app = app;
+exports.delete = function(user, next){
+	if(!user){
+		next(new Error('Missing parameter user'));
+		return;
+	}
 
-	developer.save(function(err){
-		if(err) console.log(err);
-		res.send(developer);
+	db.User.remove({'account': user.account}, function(err){
+		if(err){
+			next(err);
+			return;
+		}
+
+		next(null, user);
 	});
-};
+}
 
-exports.revokeFromDeveloper = function(req, res, next){
-	var user = res.locals.user;
-	var app = res.locals.app;
 
-	revokeDeveloperFromApp(user, app, function(){
-		res.send(true);
-	});
-};
+exports.assignToAdmin = function(user, next){
+	if(!user){
+		next(new Error('Missing parameter user'));
+		return;
+	}
 
-exports.assignToAdmin = function(req, res, next){
-	var user = res.locals.user;
 	var admin = new db.AdminRole();
 	admin.user = user;
 	admin.save(function(err){
-		if(err) console.log(err);
-		res.send(admin);
+		if(err){
+			next(err);
+			return;
+		} 
+
+		next(null, user);
 	});
 };
+
 
 exports.revokeFromAdmin = function(req, res, next){
-	var user = res.locals.user;
+	if(!user){
+		next(new Error('Missing parameter user'));
+		return;
+	}
 
-	revokeAdmin(user, function(){
-		res.send(true);
-	})
-};
-
-
-function revokeDeveloperFromApp(user, app, next){
-	db.DeveloperRole.remove({'user': user, 'app': app}, function(err){
-		if(err) console.log(err);
-		next();
-	});
-}
-
-
-function revokeDeveloper(user, next){
-	db.DeveloperRole.remove({'user': user}, function(err){
-		if(err) console.log(err);
-		next();
-	});
-}
-
-function revokeAdmin(user, next){
 	db.AdminRole.remove({'user': user}, function(err){
-		if(err) console.log(err);
-		next();
+		if(err){
+			next(err);
+			return;
+		}
+
+		next(null, user);
 	});
 }

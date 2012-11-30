@@ -1,6 +1,7 @@
 var userSv = require('./../service/user'),
 		developerSv = require('./../service/developer');
 
+/* Get developer as middleware */
 exports.middleware = function(req, res, next){
 	console.log('developer.middleware');
 	var app = res.locals.app;
@@ -22,7 +23,7 @@ exports.middleware = function(req, res, next){
 		}
 
 		if(developer == null){
-			res.send(404, new Error("developer not found"));
+			res.send(404, 'Developer not found');
 			return;
 		}
 
@@ -33,7 +34,7 @@ exports.middleware = function(req, res, next){
 
 exports.create = function(req, res, next){
 	var app = res.locals.app;
-	var developerObj = req.body;
+	var developerObj = JSON.parse(req.body);
 
 	developerSv.create(app, developerObj, function(err, developer){
 		if(err){
@@ -41,41 +42,34 @@ exports.create = function(req, res, next){
 			return;
 		}
 		res.send(developer);
-
 	});
-
 }
 
 exports.update = function(req, res, next){
+	var developer = res.locals.developer;
+	var developerObj = JSON.parse(req.body);
 
+	if(typeof developerObj.testResult == 'undefined'){
+		res.send(500, 'Missing body param testResult');
+		return;
+	}
+
+	developerSv.setTestResult(developer, developerObj.testResult, function(err, developer){
+		if(err){
+			res.send(500, err);
+			return;
+		}
+		res.send(developer);
+	});
 }
 
 exports.delete = function(req, res, next){
-
-
-}
-
-
-
-exports.assignToDeveloper	= function(req, res, next){
-	var user = res.locals.user;
-
-
-	var developer = new db.DeveloperRole();
-	developer.user = user;
-	developer.app = app;
-
-	developer.save(function(err){
-		if(err) console.log(err);
+	var developer = res.locals.developer;
+	developerSv.delete(developer, function(err, developer){
+		if(err){
+			res.send(500, err);
+			return;
+		}
 		res.send(developer);
 	});
-};
-
-exports.revokeFromDeveloper = function(req, res, next){
-	var user = res.locals.user;
-	var app = res.locals.app;
-
-	revokeDeveloperFromApp(user, app, function(){
-		res.send(true);
-	});
-};
+}

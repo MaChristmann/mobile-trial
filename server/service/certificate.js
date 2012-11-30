@@ -8,8 +8,6 @@ exports.create = function(packageName, next){
 	var command = "openssl req -x509 -nodes -days 365 -subj /C=DE/ST=Baden-Wuerttemberg/L=Mannheim/CN=www.mobiletrial.org -newkey rsa:1024 -keyout "
 								+ certificateFile + " -out " +  certificateFile + " -pubkey -noout";
 
-	console.log(command);
-
 	cp.exec(command, function(err, stdout, stderr) {
 		if(err){
 			next(err);
@@ -20,8 +18,6 @@ exports.create = function(packageName, next){
 				next(err);
 				return;
 			}
-			console.log("DATA:");
-			console.log(data)
 		
 			//Get Private Key	
 			var indexPrivateEnd = data.indexOf("-----END PRIVATE KEY-----") + "-----END PRIVATE KEY-----".length;

@@ -1,31 +1,50 @@
 var licenseSv = require('./../service/license'),
-		certificateSv = require('./../service/certificate');
+		certificateSv = require('./../service/certificate'),
+		userSv = require('./../service/user'),
+		developerSv = require('./../service/developer'),
+		customerSv = require('./../service/customer');
 
 
 exports.authorize = function(req, res, next){
 
 	var app = res.locals.app;
-	var developer = res.locals.developer;
-	var customer = res.locals.customer;
-
 	var account = req.params.account;
 	
 	//Check if neccessary parameters exist
 	var bodyParams = JSON.parse(req.body);
 
-	if(developer == null) {
-		licenseSv.authorize(app, customer, account, bodyParams, function(err, licResponse){	
-			if(err){
-				res.send(500, handleError(err));
-				return;
-			}
-			res.send(getSignedResponse(licResponse, app.privateKey));
-		});
-	} else {
-		licenseSv.testResponse(developer, function(err, responseCode, licResponse){
-			res.send(getSignedResponse(licResponse, app.privateKey));
-		});
-	}
+	developerSv.get(app, account, function(err, developer){
+		if(err){
+			res.send(500, handleError(err));
+			return;
+		}
+
+		if(developer == null){
+			customerSv.get(account, function(err, customer){
+				if(err){
+					res.send(500, handleError(err));
+					return;
+				}
+
+				licenseSv.authorize(app, customer, account, bodyParams, function(err, licResponse){	
+					if(err){
+						res.send(500, handleError(err));
+						return;
+					}
+					res.send(getSignedResponse(licResponse, app.privateKey));
+				});
+			});
+		} else{
+			licenseSv.testResponse(developer, function(err, responseCode, licResponse){
+				if(err){
+					res.send(500, handleError(err));
+					return;
+				}
+
+				res.send(getSignedResponse(licResponse, app.privateKey));
+			});
+		}
+	});
 }
 
 
@@ -46,7 +65,7 @@ function stringifyResponse(lic){
 function getSignedResponse(licResponse, privateKey){
 		var stringifiedResponse = stringifyResponse(licResponse);
 		var signature = certificateSv.sign(stringifiedResponse, privateKey);
-		var successResponse = licResponse[licenseSv.PARAM_RESPONSECODE] + "--" + stringifiedResponse + "--" + signature;
+		var successResponse = licResponse[licenseSv.PARAM_RESULTCODE] + "--" + stringifiedResponse + "--" + signature;
 		return successResponse;
 }
 

@@ -1,5 +1,6 @@
 var db = require('../data/db'),
-		certificateSv = require('./certificate');
+		certificateSv = require('./certificate'),
+		developerSv = require('./developer');
 
 /* Returns the app with @identifier from database */ 
 exports.get = function(identifier, next){
@@ -95,11 +96,19 @@ exports.delete = function(app, next){
 		return;
 	}
 
-	db.App.remove({identifier: app.identifier}, function(err){
+	//Remove all Developers from the app
+	developerSv.deleteByApp(app, function(err, app){
 		if(err){
 			next(err);
 			return;
 		}
-		next(null, app);
+		
+		db.App.remove({identifier: app.identifier}, function(err){
+			if(err){
+				next(err);
+				return;
+			}
+			next(null, app);
+		});
 	});
 }

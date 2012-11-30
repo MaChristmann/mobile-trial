@@ -14,7 +14,7 @@ var AppSchema = new Schema({
 	, graceInterval: 			{type: Number, default: 0}
 	, graceRetrys: 				{type: Number, default: 3}
 	, validTime: 					{type: Number, default: 0}
-	, licenses: [LicenseSchema]
+	, licenses: 					[LicenseSchema]
 	, publicKey: 					{type: String}
 	, privateKey: 				{type: String}
 });

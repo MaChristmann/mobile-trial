@@ -5,19 +5,12 @@ var restify 	= require('restify')
 // Config file
 var config = require('./config.json'); 
 
-// Mobile-Trail Services
-var	registerSv	= require('./service/register')
-, licenseSv 		= require('./service/license')
-, appSv 				= require('./service/app')
-, authenticateSv= require('./service/authenticate')
-, userSv				= require('./service/user')
-, developerSv 	= require('./service/developer')
-, customerSv 		= require('./service/customer');
-
 // Mobile-Trial Routes 
 var licenseRoute 		= require('./route/license'), 
 		appRoute 		 		= require('./route/app'),
-		developerRoute	= require('./route/developer');
+		developerRoute	= require('./route/developer'),
+		userRoute 			= require('./route/user'),
+		authenticateRoute = require('./route/authenticate');
 
 // Create Server
 var server = restify.createServer({
@@ -45,31 +38,31 @@ server.use(function(req, res, next){
 server.use(appRoute.middleware);
 
 // :user
-server.use(userSv.get);
+server.use(userRoute.middleware);
 
 // :developer
 server.use(developerRoute.middleware);
 
 /* License Management */
-server.post('/authorize/:app/customer/:account', [developerSv.get, customerSv.get, licenseRoute.authorize]);
+server.post('/authorize/:app/customer/:account', [licenseRoute.authorize]);
 
 /* User Management */ 
-server.post('/user',					[authenticateSv.admin, userSv.create]);
-server.del('/user/:user', 		[authenticateSv.admin, userSv.delete]);
-server.put('/user/:user/admin', 			[authenticateSv.admin, userSv.assignToAdmin]);
-server.del('/user/:user/admin', 			[authenticateSv.admin, userSv.revokeFromAdmin]); 
+server.post('/user',									[authenticateRoute.admin, userRoute.create]);
+server.del('/user/:user', 						[authenticateRoute.admin, userRoute.delete]);
+server.put('/user/:user/admin', 			[authenticateRoute.admin, userRoute.assignToAdmin]);
+server.del('/user/:user/admin', 			[authenticateRoute.admin, userRoute.revokeFromAdmin]); 
 
 /* Developer Management */ 
-server.post	('/app/:app/developer',						 [authenticateSv.admin, 		developerRoute.create]);
-server.put	('/app/:app/developer/:developer', [authenticateSv.developer, developerRoute.update]);
-server.del 	('/app/:app/developer/:developer', [authenticateSv.admin, 		developerRoute.delete]);
+server.post	('/app/:app/developer',						 [authenticateRoute.admin, 		developerRoute.create]);
+server.put	('/app/:app/developer/:developer', [authenticateRoute.developer, developerRoute.update]);
+server.del 	('/app/:app/developer/:developer', [authenticateRoute.admin, 		developerRoute.delete]);
 
 /* App  Management */ 
-server.post('/app',	 		 [authenticateSv.admin, appRoute.create]);
-server.get ('/app', 		 [authenticateSv.admin, appRoute.getAll]);
-server.get ('/app/:app', [authenticateSv.admin, appRoute.get]);
-server.put ('/app/:app', [authenticateSv.admin, appRoute.update]);
-server.del ('/app/:app', [authenticateSv.admin, appRoute.delete]);
+server.post('/app',	 		 [authenticateRoute.admin, appRoute.create]);
+server.get ('/app', 		 [authenticateRoute.admin, appRoute.getAll]);
+server.get ('/app/:app', [authenticateRoute.admin, appRoute.get]);
+server.put ('/app/:app', [authenticateRoute.admin, appRoute.update]);
+server.del ('/app/:app', [authenticateRoute.admin, appRoute.delete]);
 
 /* No route found */ 
 server.use(function(req, res, next){

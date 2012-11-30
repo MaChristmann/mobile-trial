@@ -1,21 +1,17 @@
 var db = require('../data/db');
 
-exports.get = function(req, res, next){
-	var account = req.params.account;
+exports.get = function(account, next){
+	if(!account){
+		next(err);
+		return;
+	}
 
 	db.Customer.findOne({'account': account}, function(err, customer){
-		res.locals.customer = null;
 		if(err){
-			console.log(err);
-			res.send(500, {rc: 4, reason: 'Error on finding Customer'});
+			next(err);
 			return;
 		}
-		if(customer == null){
-			next();
-			return;
-		}
-		res.locals.customer = customer;
-		next();
+		next(null, customer);
 	});
 }
 
