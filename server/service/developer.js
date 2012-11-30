@@ -69,7 +69,7 @@ exports.create = function(app, developerObj, next){
 				next(err);
 				return;
 			}
-			res.send(null, developer);
+			next(null, developer);
 		});
 
 
