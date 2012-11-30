@@ -24,7 +24,7 @@ Mobile-Trial
 	* Test Authenticate service
 * Refactoring
 	* _DONE 11-29-2012_ Merge Register service and App service to App service
-	* Branch services into routing layer and service layer (Make's testing easier)
+	* _DONE 11-30-2012_ Branch services into routing layer and service layer (Make's testing easier)
 
 ## Client
 * Ui components 
