@@ -3,10 +3,11 @@ var fs = require('fs'),
 	bcrypt = require('bcrypt');
 	mongoose 		= require('mongoose');
 
-var db = require('./data/db');
+//Config file
+var config = require('./config.json');
 
 // Connect to Mongo DB
-mongoose.connect('mongodb://localhost/mobile-trial-db'); 
+mongoose.connect(config.mongodb); 
 
 //Start setup from json
 setupFromJSON("setup.json");
@@ -58,28 +59,27 @@ function setupFromJSON(filename){
 function setupUser(users, callback){
 	console.log("Setup Users ...");
 
+	//Use services
+	var userSv = require('./service/user');
+
 	var fnArray = [];
 	for(var i=0; i < users.length; i++){
 		(function(user){
 			fnArray.push(function(cb){
-				var newUser = new db.User();
-				newUser.account =  user.account;
-
-				//Hash password with bcrypt
-				bcrypt.genSalt(10, function(err, salt) {
-				  bcrypt.hash(user.password, salt, function(err, hash) {
-			     	newUser.password = hash;
-			     	newUser.save(function(err){
-							if(err) console.log(err);
-							cb(null, 0);
-						});
-				  });
+				userSv.create(user, function(err, user){
+					if(err) {
+						cb(err);
+						return;
+					}
+					cb(null, user);
 				});
 			});
 		})(users[i]);
 	}
 
  	async.parallel(fnArray, function(err, result){
+ 		if(err) throw err;
+
 		callback(null, 0);
  	});
 }
@@ -87,31 +87,35 @@ function setupUser(users, callback){
 function setupAdmin(admins, callback){
 	console.log("Setup Admins ...");
 
+	//Use services
+	var userSv = require('./service/user');
+
 	var fnArray = [];
 	for(var i=0; i < admins.length; i++){
 		(function(admin){
 			fnArray.push(function(cb){
-				db.User.findOne({'account': admin.account}, function(err, user){
-					if(err) console.log( err);
-
-					if(user == null){
-						console.log("Setup Admin: You have to add " + admin.account + "to user! I cannot find him ...");
-						cb(new Error(), 0);
+				userSv.get(admin.account, function(err, user){
+					if(err){
+						cb(err);
 						return;
 					}
-					var newAdmin = new db.AdminRole();
-					newAdmin.user = user;
-
-					newAdmin.save(function(err){
-						if(err) console.log(err);
-						console.log("+ Add Account: " + user.account);
-						cb(null, 0);
-					});		
+					if(user == null){
+						cb(new Error('No such user: ' + admin.account));
+					}
+					userSv.assignToAdmin(user, function(err, user){
+						if(err){
+							cb(err);
+							return;
+						}
+						cb(null, user);
+					});
 				});
 			});
 		})(admins[i]);
 	}
 	async.parallel(fnArray, function(err, result){
+		if(err) throw err;
+
 		callback(null, 0);
  	});
 }
@@ -119,28 +123,28 @@ function setupAdmin(admins, callback){
 function setupApp(apps, callback){
 	console.log("Setup App ... ")
 
+
+	//Use services
+	var appSv = require('./service/app');
+
 	var fnArray = [];
 	for(var i=0; i < apps.length; i++){
 
 		(function(app){
 			fnArray.push(function(cb){
-				var newApp = new db.App();
-				newApp.identifier = app.identifier;
-				newApp.maxVersionCode = app.maxVersionCode;
-				newApp.graceInterval = app.graceInterval;
-				newApp.graceRetrys = app.graceRetrys;
-				newApp.validTime = app.validTime;
-				newApp.licenses = app.licenses;
-
-				newApp.save(function(err){
-					if(err) console.log(err);
-					console.log("+ Add App: " + app.identifier);
-					cb(null, 0);
+				appSv.create(app, function(err, app){
+					if(err){
+						cb(err);
+						return;
+					}
+					cb(null, app);
 				});
 			});
 		})(apps[i]);
 	}
 	async.parallel(fnArray, function(err, result){
+		if(err) throw err;
+
 		callback(null, 0);
  	});
 }
@@ -152,39 +156,38 @@ function setupDeveloper(developers, callback){
 	for(var i=0; i < developers.length; i++){
 		(function(developer){
 			fnArray.push(function(cb){
-				db.User.findOne({'account': developer.account}, function(err, user){
-				if(err) console.log(err);
 
-				if(user == null){
-					console.log("Setup Developers: You have to add " + developer.account + "to user! I cannot find him ...");
-					cb(new Error(), 0);
-					return;
-				}
+				//Use services
+				var appSv = require('./service/app');
+				var developerSv = require('./service/developer');
 
-				db.App.findOne({'identifier': developer.app}, function(err, app){
-					if(err) console.log(err);
-
-					if(app == null){
-						console.log("Setup Developers: You have to add " + developer.app + "to app! I cannot find it ...");
-						cb(new Error(), 0);
+				appSv.get(developer.app, function(err, app){
+					if(err){
+						cb(err);
 						return;
 					}
 
-					var newDeveloper =  new db.DeveloperRole();
-					newDeveloper.user = user;
-					newDeveloper.app 	= app;
-					newDeveloper.save(function(err){
-						if(err) console.log(err);
-						console.log("+ Add Account: " + user.account + " and App: " + app.identifier);
-						cb(null, 0);
-					});
-				});
-			});
+					if(app == null){
+						cb(new Error('No such app: '+ developer.app));
+						return;
+					}
 
+					var developerObj = {user: developer.account};
+					developerSv.create(app, developerObj, function(err, user){
+						if(err){
+							cb(err);
+							return;
+						}
+						cb(null, user);
+					});
+
+				});
 			});
 		})(developers[i]);
 	}
 	async.parallel(fnArray, function(err, result){
+		if(err) throw err;
+
 		callback(null, 0);
  	});
 }

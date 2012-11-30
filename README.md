@@ -6,7 +6,7 @@ Mobile-Trial
 ## Server
 * Setup
 	* _DONE 11-20-2012_ Remove setup.json file after setup
-	* Make Setup use the service methods (requires refactoring of services)
+	* _DONE 11-30-2012_ Make Setup use the service methods (requires refactoring of services)
 * Features
 	* ValidTime set to 0 should return a validtime till the end of trial period
 	* _DONE 11-30-2012_ Activate/Deactive the license check 
