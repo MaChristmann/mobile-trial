@@ -18,3 +18,4 @@ library/bin
 library/gen
 sample/SimpleSample/bin
 sample/SimpleSample/gen
+/server/.rnd
