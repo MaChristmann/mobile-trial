@@ -84,3 +84,9 @@ function authenticateUser(username, password, next) {
 		}); 
   });
 }
+
+
+/* Check ip-range */
+exports.ipInRange = function (ip, range){
+	
+}

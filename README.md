@@ -15,6 +15,8 @@ Mobile-Trial
 	* _DONE 11-20-2012_ Create digital signature with openssl and sign response data with RSA privatekey
 	* _DONE 11-18-2012_ Use hashed passwords for user accounts 
 	* Allow access of admins and developers based on ip addresses/range
+* Privacy
+	* _DONE 12-04-2012_ Hash account emails from customers using sha1.. They don't need to be readable
 * Tests
 	* Test License service
 	* Test Developer service
@@ -32,7 +34,6 @@ Mobile-Trial
 * Security
 	* Use HTTPS instead of HTTP
 	* _DONE 11-21-2012_  Verify signed response with RSA public key
-	* Hash Account email for request
 * Test
 	* Add test project
 * JavaDoc

@@ -1,3 +1,4 @@
+var crypto = require('crypto');
 var db = require('../data/db');
 
 exports.get = function(account, next){
@@ -5,8 +6,7 @@ exports.get = function(account, next){
 		next(err);
 		return;
 	}
-
-	db.Customer.findOne({'account': account}, function(err, customer){
+	db.Customer.findOne({'account': getHashedAccount(account)}, function(err, customer){
 		if(err){
 			next(err);
 			return;
@@ -17,7 +17,9 @@ exports.get = function(account, next){
 
 exports.create = function(account, app, versionCode, next){
 	var customer = new db.Customer();
-	customer.account = account;
+	
+	//Hash mail with sha1 for privacy reasons
+	customer.account = getHashedAccount(account);
 	customer.app = app;
 	customer.createdAt = new Date();
 	customer.modifiedAt = customer.createdAt;
@@ -41,4 +43,11 @@ exports.update = function(customer, versionCode, next){
 		} else 
 			next(true);
 	});
+}
+
+
+function getHashedAccount(account){
+	var shasum = crypto.createHash('sha1');
+	shasum.update(account, 'utf8');
+	return shasum.digest('hex');
 }
