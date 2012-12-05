@@ -85,6 +85,29 @@ exports.delete = function(user, next){
 }
 
 
+exports.clean = function(next){
+	db.AdminRole.remove({}, function(err){
+		if(err){
+			next(err);
+			return;
+		}
+		db.DeveloperRole.remove({}, function(err){
+			if(err){
+				next(err);
+				return;
+			}
+			db.User.remove({}, function(err){
+				if(err){
+					next(err);
+					return;
+				}
+				next();
+			});
+		});
+	});
+}
+
+
 exports.assignToAdmin = function(user, next){
 	if(!user){
 		next(new Error('Missing parameter user'));

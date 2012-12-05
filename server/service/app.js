@@ -112,3 +112,20 @@ exports.delete = function(app, next){
 		});
 	});
 }
+
+exports.clean = function(next){
+	db.DeveloperRole.remove({}, function(err){
+		if(err){
+			next(err);
+			return;
+		}
+
+		db.App.remove({}, function(err){
+			if(err){
+				next(err);
+				return;
+			}
+			next();
+		});
+	});
+}

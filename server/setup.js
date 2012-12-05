@@ -20,6 +20,10 @@ function setupFromJSON(filename){
 
 		async.series([
 			function(callback){
+				//Clean database
+				cleanDatabase(callback);
+			},
+			function(callback){
 				if(typeof setupFile.user != 'undefined')
 					setupUser(setupFile.user, callback);
 				else
@@ -45,9 +49,10 @@ function setupFromJSON(filename){
 			}
 		],  
 		function(err, result){
-			//Remove setup.file
 			console.log("Setup successfully!");
+			//Disconnect from database
 			mongoose.disconnect();
+			//Remove setup.file
 			fs.unlink(filepath, function(err){
 				if(err) console.log("Warning: Could't not remove setup file '" + filepath + "'. Please remove it manually!");
 			});
@@ -55,6 +60,26 @@ function setupFromJSON(filename){
 	});
 }
 
+
+function cleanDatabase(callback){
+	var userSv = require('./service/user');
+	var appSv = require('./service/app');
+
+	appSv.clean(function(err){
+		if(err){
+			callback(err);
+			return;
+		}
+
+		userSv.clean(function(err){
+			if(err){
+				callback(err);
+				return;
+			}
+			callback(null, 0);
+		});
+	});
+}
 
 function setupUser(users, callback){
 	console.log("Setup Users ...");
