@@ -2,7 +2,6 @@ var appSv = require('./../service/app');
 
 /* Get app as middleware */
 exports.middleware = function(req, res, next){
-	console.log('app.middleware');
 	if(typeof req.params.app != 'undefined' && req.params.app != null) {
 		appSv.get(req.params.app, function(err, app){
 

@@ -3,7 +3,6 @@ var userSv = require('./../service/user'),
 
 /* Get developer as middleware */
 exports.middleware = function(req, res, next){
-	console.log('developer.middleware');
 	var app = res.locals.app;
 
 	if(typeof app == 'undefined' || app == null){

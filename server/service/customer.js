@@ -23,12 +23,11 @@ exports.create = function(account, app, versionCode, next){
 	customer.app = app;
 	customer.createdAt = new Date();
 	customer.modifiedAt = customer.createdAt;
-	customer.save(function(saveErr){
-		if(saveErr) {
-			console.log(saveErr);
-			next(false);
+	customer.save(function(err){
+		if(err) {
+			next(err);
 		} else
-			next(true)
+			next(null, customer);
 	});
 } 
 
@@ -37,11 +36,10 @@ exports.update = function(customer, versionCode, next){
 	customer.versionCode = versionCode;
 	customer.modifiedAt = new Date();
 	customer.save(function(saveErr){
-		if(saveErr) {
-			console.log(saveErr)
-			next(false);
+		if(err) {
+			next(err);
 		} else 
-			next(true);
+			next(null, customer);
 	});
 }
 

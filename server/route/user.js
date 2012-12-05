@@ -2,7 +2,6 @@ var userSv = require('./../service/user');
 
 /* Get user as middleware */
 exports.middleware = function(req, res, next){
-	console.log('user.middleware');
 
 	var user = req.params.user;
 

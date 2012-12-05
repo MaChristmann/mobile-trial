@@ -13,37 +13,55 @@ exports.authorize = function(req, res, next){
 	//Check if neccessary parameters exist
 	var bodyParams = JSON.parse(req.body);
 
-	developerSv.get(app, account, function(err, developer){
+	licenseSv.processLicenseRequest(app, account, bodyParams, function(err, licResponse){
 		if(err){
 			res.send(500, handleError(err));
 			return;
 		}
 
-		if(developer == null){
-			customerSv.get(account, function(err, customer){
-				if(err){
-					res.send(500, handleError(err));
+		developerSv.get(app, account, function(err, developer){
+			if(err){
+				res.send(500, handleError(err));
+				return;
+			}
+
+			if(developer == null){
+				if(app.enabled == false){
+					licenseSv.grantAccess(licResponse, function(err, licResponse){
+						if(err){
+							res.send(500, handleError(err));
+							return;
+						}
+						res.send(getSignedResponse(licResponse, app.privateKey));
+					});
 					return;
 				}
 
-				licenseSv.authorize(app, customer, account, bodyParams, function(err, licResponse){	
+				customerSv.get(account, function(err, customer){
 					if(err){
 						res.send(500, handleError(err));
 						return;
 					}
+
+					licenseSv.authorize(app, customer, account, licResponse, function(err, licResponse){	
+						if(err){
+							res.send(500, handleError(err));
+							return;
+						}
+						res.send(getSignedResponse(licResponse, app.privateKey));
+					});
+				});
+			} else{
+				licenseSv.testResponse(developer, licResponse, function(err, licResponse){
+					if(err){
+						res.send(500, handleError(err));
+						return;
+					}
+				
 					res.send(getSignedResponse(licResponse, app.privateKey));
 				});
-			});
-		} else{
-			licenseSv.testResponse(developer, function(err, responseCode, licResponse){
-				if(err){
-					res.send(500, handleError(err));
-					return;
-				}
-
-				res.send(getSignedResponse(licResponse, app.privateKey));
-			});
-		}
+			}
+		});
 	});
 }
 

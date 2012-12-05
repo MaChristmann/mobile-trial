@@ -7,14 +7,16 @@ Mobile-Trial
 * Setup
 	* _DONE 11-20-2012_ Remove setup.json file after setup
 	* _DONE 11-30-2012_ Make Setup use the service methods (requires refactoring of services)
+	* Clean database before running setup
 * Features
-	* ValidTime set to 0 should return a validtime till the end of trial period
+	* _DONE 12-05-2012_ ValidTime set to 0 should return a validtime till the end of trial period
 	* _DONE 11-30-2012_ Activate/Deactive the license check 
 *	Security
 	* Use HTTPS instead of HTTP
 	* _DONE 11-20-2012_ Create digital signature with openssl and sign response data with RSA privatekey
 	* _DONE 11-18-2012_ Use hashed passwords for user accounts 
-	* Allow access of admins and developers based on ip addresses/range
+	* _DONE 12-05-2012_ Allow access of admins and developers based on ip v4 addresses/range
+	* Allow access of admins and developers based on ip v6 addresses/range
 * Privacy
 	* _DONE 12-04-2012_ Hash account emails from customers using sha1.. They don't need to be readable
 * Tests

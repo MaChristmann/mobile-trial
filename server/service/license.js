@@ -1,4 +1,7 @@
+var async = require('async');
+
 var db = require('../data/db');
+
 var customerSv = require("./customer"),
 		certificateSv = require("./certificate");
 
@@ -33,13 +36,7 @@ var EXTRA_GRACERETRYS = "GR";
 exports.EXTRA_GRACERETRYS = EXTRA_GRACERETRYS;
 
 
-exports.testResponse = function(developer, next){
-	console.log("License: Customer is a developer - testResult: " + developer.testResult);
-	licResponse[PARAM_RESULTCODE] = developer.testResult;
-	next(null, licResponse);
-}
-
-exports.authorize = function(app, customer, account, bodyParams, next){
+exports.processLicenseRequest = function(app, account, bodyParams, next){
 	//Response object
 	var licResponse = {};
 
@@ -47,77 +44,97 @@ exports.authorize = function(app, customer, account, bodyParams, next){
 	var nonce = bodyParams[PARAM_NONCE];
 	if(typeof nonce == 'undefined'){
 		console.log("License: Missing nonce");
-		next('Missing nonce');
+		next(new Error('Missing nonce'));
 		return;
 	}
 
 	var clientTimestamp = bodyParams[PARAM_TIMESTAMP];
 	if(typeof clientTimestamp == 'undefined'){
 		console.log("License: Missing timestamp");
-	 	next('Missing timestamp');
+	 	next(new Error('Missing timestamp'));
 		return;
 	}
 
 	var versionCode = bodyParams[PARAM_VERSIONCODE];
 	if(typeof versionCode == 'undefined'){
 		console.log("License: Missing versionCode");
-		next('Missing versionCode');
+		next(new Error('Missing versionCode'));
 		return;
 	}
 
 	//User ServerTimestamp for Validation and Extras
 	var serverTimestamp = new Date().getTime();
 	//Initialize licResponse object
-	licResponse[PARAM_TIMESTAMP] 	= clientTimestamp;
-	licResponse[PARAM_NONCE] 			= nonce;
-	licResponse[PARAM_VERSIONCODE] = versionCode;
+	licResponse[PARAM_TIMESTAMP] 		= clientTimestamp;
+	licResponse[PARAM_NONCE] 				= nonce;
+	licResponse[PARAM_VERSIONCODE	] = versionCode;
 	licResponse[PARAM_PACKAGENAME]	= app.identifier;
 	licResponse[PARAM_USERID] 			= account;
-	licResponse[EXTRA_VALIDTIME] 	= getValidTime(app, serverTimestamp);
-	licResponse[EXTRA_GRACETIME] 	= getGraceTime(app, serverTimestamp);
-	licResponse[EXTRA_GRACERETRYS] = getGraceRetrys(app);
+	licResponse[EXTRA_VALIDTIME] 		= getValidTime(app, serverTimestamp);
+	licResponse[EXTRA_GRACETIME] 		= getGraceTime(app, serverTimestamp);
+	licResponse[EXTRA_GRACERETRYS] 	= getGraceRetrys(app);
 
-	if(app.enabled == false){
-		console.log("License: Check is deactivated. No customer tracking");
-		licResponse[PARAM_RESULTCODE] = CODE_LICENSED;
-		next(null, licResponse);
-	}
-	else if(customer == null){
-		//Create new customer
-		customerSv.create(account, app, versionCode, function(isAuthorized){
-			if(isAuthorized){
-				console.log("License: Create new customer");
-				licResponse[PARAM_RESULTCODE] = CODE_LICENSED;
-				next(null, licResponse);
+	next(null, licResponse);
+}
+
+exports.testResponse = function(developer, licResponse, next){
+	console.log("License: Customer is a developer - testResult: " + developer.testResult);
+	licResponse[PARAM_RESULTCODE] = developer.testResult;
+	next(null, licResponse);
+}
+
+exports.grantAccess = function(licResponse, next){
+	console.log("License: Check is deactivated. No customer tracking");
+	licResponse[PARAM_RESULTCODE] = CODE_LICENSED;
+	next(null, licResponse);
+}
+
+exports.authorize = function(app, customer, account, licResponse, next){
+	async.series([
+		function(callback){
+			if(customer == null){
+				//Create new customer
+				customerSv.create(account, app, licResponse[PARAM_VERSIONCODE], function(err, customer){
+					if(err){
+						console.log("License: Could not create Customer");
+						callback(err);
+						return;
+					}
+					console.log("License: Create new customer");
+					callback(null, {license: licResponse, customer: customer, app: app});
+				});
 			}
-			else{
-				console.log("License: Could not create Customer");
-				next('Could not create Customer');
+			else if(app.updateVersionCode != 0 && 
+							(customer.versionCode < app.updateVersionCode && licResponse[PARAM_VERSIONCODE] >= app.updateVersionCode) ){
+				//Renew Trial period
+				customerSv.update(customer, licResponse[PARAM_VERSIONCODE], function(err, customer){	
+					if(err){
+						console.log("License: Could not update Customer");
+						callback(err);
+						return;
+					}
+					console.log("License: Update customer");
+					callback(null, {license: licResponse, customer: customer, app: app});
+				});
 			}
-		});
-	}
-	else if(app.updateVersionCode != 0 && 
-					(customer.versionCode < app.updateVersionCode && versionCode >= app.updateVersionCode) ){
-		//Renew Trial period
-		customerSv.update(customer, versionCode, function(isAuthorized){	
-			if(isAuthorized){
-				console.log("License: Update customer");
-				licResponse[PARAM_RESULTCODE] = CODE_LICENSED;
-				next(null, licResponse);
+			else if(app.maxVersionCode != 0 && customer.versionCode > app.maxVersionCode){
+				console.log('Customers versionCode is bigger than accepted versionCode');
+				callback(new Error('Customers versionCode is bigger than accepted versionCode'));
+			} 
+			else {
+				callback(null, {license: licResponse, customer: customer, app: app});
 			}
-			else{
-				console.log("License: Could not update Customer");
-				next('Could not update Customer');
-			}
-		});
-	}
-	else if(app.maxVersionCode != 0 && customer.versionCode > app.maxVersionCode){
-		console.log('Customers versionCode is bigger than accepted versionCode');
-		next('Customers versionCode is bigger than accepted versionCode');
-	}
-	else{
+		}
+	],
+	function(err, results){
+		if(err){
+			next(err);
+			return;
+		}
+
 		//Authorize Customer
-		checkLicenses(customer, app, serverTimestamp, versionCode, function(isAuthorized){
+		checkLicenses(results[0].customer, results[0].app, results[0].license, function(isAuthorized){
+			console.log(licResponse);
 			if(isAuthorized){
 				console.log("License: Customer authorized");
 				licResponse[PARAM_RESULTCODE] = CODE_LICENSED;
@@ -129,10 +146,11 @@ exports.authorize = function(app, customer, account, bodyParams, next){
 				next(null, licResponse);
 			}
 		});
-	}
+	});
 }
 
-function checkLicenses(customer, app, timestamp, versionCode, next){
+
+function checkLicenses(customer, app, licResponse, next){
 	var isAuthorized = true;
 	var licenses = app.licenses;
 
@@ -141,12 +159,17 @@ function checkLicenses(customer, app, timestamp, versionCode, next){
 		var licenseValue = licenses[i].value;
 
 		switch(licenseType){
-			case "days": {
-			
+			case "time": {
+				var timestamp = new Date().getTime();
 				var timediff = timestamp - customer.modifiedAt.getTime();
-				console.log(customer);
 				var daysdiff = timediff / oneDay();
-				console.log(daysdiff);
+
+				// Cache until license is expired, but do not grant any grace
+				if(app.validTime == 0){
+					licResponse[EXTRA_VALIDTIME] = customer.modifiedAt.getTime() + licenseValue * oneDay();
+					licResponse[EXTRA_GRACETIME] = licResponse[EXTRA_VALIDTIME];
+					licResponse[EXTRA_GRACERETRYS] = 0;
+				}
 
 				if(daysdiff > licenseValue)
 					isAuthorized = false;
@@ -156,7 +179,8 @@ function checkLicenses(customer, app, timestamp, versionCode, next){
 	next(isAuthorized);
 }
 
-function getGraceTime (app, timestamp){
+
+function getGraceTime(app, timestamp){
 	return timestamp + app.graceInterval;
 }
 
@@ -168,6 +192,7 @@ function getValidTime(app, timestamp){
 	//If valid time is not set, cache the license till end of trial period
 	return timestamp + app.validTime;
 }
+
 
 function oneDay(){
 	return 1000*60*60*24;
