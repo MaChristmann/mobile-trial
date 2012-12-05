@@ -27,9 +27,6 @@ server.use(restify.authorizationParser());
 /* Url Parameter */
 //Initialize express.js like locals object for url parameter results
 server.use(function(req, res, next){
- 	var ip = req.header('x-forwarded-for') || req.connection.remoteAddress || "notfound";
- 	console.log(ip);
-
 	res.locals = {};
 	next();
 })

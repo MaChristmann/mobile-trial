@@ -1,4 +1,6 @@
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt'),
+		net = require('net');
+
 
 var db = require('../data/db');
 
@@ -86,7 +88,72 @@ function authenticateUser(username, password, next) {
 }
 
 
-/* Check ip-range */
-exports.ipInRange = function (ip, range){
+exports.checkIpRange = function(ip, range, next){
+	//Check ip range
+	if(ip == null){
+		next(new Error('Cannot determine ip address'));
+		return;
+	}
+	var protocol = net.isIP(ip);
+	switch(protocol){
+		case 4: {
+			if(typeof range.v4 == 'undefined')
+				next(null, true);
+			else {
+				var inRange = exports.checkV4Range(ip, range.v4)
+				next(null, inRange);
+			}
+		}	break;
+
+		case 6:{
+			if(typeof range.v6 == 'undefined')
+				next(null, true)
+			else
+				next(new Error('IPv6 currently not supported')); 
+		}
+			break;
+	}
+}
+
+exports.checkV4Range = function(ip, range){
+	var ipSections = ip.split(".");
 	
+	if(ipSections.length != 4)
+		return false;
+
+	//Check if range is an array of ranges
+	if(Object.prototype.toString.call( range ) === '[object Array]'){
+		for(var y=0; y < range.length; y++){
+			var rangeSections = range[y].split(".");
+		
+			if( ipV4InRange(ipSections, rangeSections) == true){
+				return true;
+			}
+		}
+		return false;
+	} else{
+		var rangeSections = range.split(".");
+		return ipV4InRange(ipSections, rangeSections);
+	}
+}
+
+function ipV4InRange(ipSections, rangeSections){
+	for(var i=0; i < ipSections.length; i++){
+		//x accepts all 
+		if(rangeSections[i] == 'x')
+			continue;
+
+		if(rangeSections[i].indexOf('-') == -1){
+			if(parseInt(rangeSections[i]) != parseInt(ipSections[i])){
+				return false;
+			}
+		} 
+		else {
+			var fromTo = rangeSections[i].split('-');
+			var decimalSection = parseInt(ipSections[i]);
+			if(decimalSection < parseInt(fromTo[0]) || decimalSection > parseInt(fromTo[1]))
+				return false;
+		}
+	}
+	return true;
 }
