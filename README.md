@@ -7,7 +7,7 @@ Mobile-Trial
 * Setup
 	* _DONE 11-20-2012_ Remove setup.json file after setup
 	* _DONE 11-30-2012_ Make Setup use the service methods (requires refactoring of services)
-	* Clean database before running setup
+	* _DONE 12-05-2012_ Clean database before running setup
 * Features
 	* _DONE 12-05-2012_ ValidTime set to 0 should return a validtime till the end of trial period
 	* _DONE 11-30-2012_ Activate/Deactive the license check 
@@ -29,6 +29,8 @@ Mobile-Trial
 * Refactoring
 	* _DONE 11-29-2012_ Merge Register service and App service to App service
 	* _DONE 11-30-2012_ Branch services into routing layer and service layer (Make's testing easier)
+* Logging
+	* Add file based logging
 
 ## Client
 * Ui components 
