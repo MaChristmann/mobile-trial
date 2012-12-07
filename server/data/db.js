@@ -3,8 +3,8 @@ var mongoose = require('mongoose')
 , ObjectId = Schema.Types.ObjectId;
 
 var LicenseSchema = new Schema({
-	trialtype: {type:String, enum: ['time']}
-	, value: Number
+	trialtype: 	{type: String, enum: ['time']}
+	, value: 		{type: Number, default: 7}
 });
 
 var AppSchema = new Schema({
