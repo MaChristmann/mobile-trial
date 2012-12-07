@@ -7,7 +7,7 @@ var fs = require('fs'),
 var config = require('./config.json');
 
 // Connect to Mongo DB
-mongoose.connect(config.mongodb); 
+mongoose.connect(config.mongodb.production); 
 
 //Start setup from json
 setupFromJSON("setup.json");

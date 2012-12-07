@@ -1,5 +1,8 @@
-.PHONY: test
 test:
-	mocha --reporter dot --ui bdd ./test/register
-	mocha --reporter dot --ui bdd ./test/authorize
+	"./node_modules/.bin/mocha" \
+	--reporter dot \
+	--ui bdd \
+	--timeout 5000
 
+
+.PHONY: test

@@ -18,7 +18,7 @@ var server = restify.createServer({
 });
 
 // Connect to Mongo DB
-mongoose.connect(config.mongodb); 
+mongoose.connect(config.mongodb.production); 
 
 // Enable Bundles
 server.use(restify.bodyParser());
