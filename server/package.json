@@ -20,12 +20,11 @@
   ], 
   "dependencies": {
     "restify": "1.4.x",
-    "mongoose": "3.4.x",
+    "mongoose": "3.5.x",
     "async": "0.1.x",
     "bcrypt": "0.7.x"
    }, 
   "devDependencies": {
-    "winston": "0.6.x",
-    "mocha": "1.7.x" 
+    "mocha": "1.7.x"
   }
 }

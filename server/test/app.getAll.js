@@ -6,6 +6,7 @@ var config = require('./../config');
 var appSv	= require('./../service/app');
 
 var appObj = {}; 
+var err = null;
 describe('app.getAll', function(){
 	// Connect to Mongo DB
 	// Clean app database
@@ -29,6 +30,12 @@ describe('app.getAll', function(){
 			done();
 		});
 	});
+
+	// Disconnect
+	after(function(){
+		mongoose.disconnect();
+	});
+
 
 	it('should return array with one app', function(done){
 		console.log("TEST APP.GETALL");
