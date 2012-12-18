@@ -1,0 +1,53 @@
+var assert = require('assert'),
+		mongoose = require('mongoose');
+
+var config = require('./../config');
+
+var appSv	= require('./../service/app');
+
+var appObj = {}; 
+var appInstance;
+
+describe('app.update', function(){
+	// Connect to Mongo DB
+	// Clean app database
+	// Create a test app
+	before(function(){
+		console.log("START TEST APP.DELETE");
+		mongoose.connect(config.mongodb.test); 
+	});
+
+	// Disconnect
+	after(function(){
+		console.log("END TEST APP.DELETE");
+		mongoose.disconnect();
+	});
+
+
+	beforeEach(function(done){
+		appObj =
+			{
+				identifier: "de.unittest"			 	
+				, licenses: [{
+			 		trialtype: "time"
+			 		, value: 30
+			 	}]
+		 	};
+		appSv.clean(function(err){
+			if(err) throw err;
+			appSv.create(appObj, function(err, app){
+				if(err) throw err;
+				appInstance = app;
+				done();
+			});
+		});
+	});
+
+	it('should delete app and return deleted app', function(done){
+		appSv.delete(appInstance, function(err, app){
+			assert.ifError(err);
+			assert.equal(app.identifier, appObj.identifier);
+			done();
+		});
+	});
+});

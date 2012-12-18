@@ -33,6 +33,7 @@ describe('app.getAll', function(){
 
 	// Disconnect
 	after(function(){
+		console.log("END TEST APP.GETALL");
 		mongoose.disconnect();
 	});
 

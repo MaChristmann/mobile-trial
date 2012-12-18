@@ -16,6 +16,12 @@ describe('app.update', function(){
 		mongoose.connect(config.mongodb.test); 
 	});
 
+	// Disconnect
+	after(function(){
+		console.log("END TEST APP.UPDATE");
+		mongoose.disconnect();
+	});
+
 	beforeEach(function(done){
 		appObj =
 			{

@@ -23,14 +23,15 @@ Mobile-Trial
 	* Test License service
 	* Test Developer service
 	* Test Customer service
-	* Test App service
+	* _DONE 12-18-2012_ Test App service
 	* Test User service
 	* Test Authenticate service
 * Refactoring
 	* _DONE 11-29-2012_ Merge Register service and App service to App service
 	* _DONE 11-30-2012_ Branch services into routing layer and service layer (Make's testing easier)
 * Logging
-	* Add file based logging
+	* Add file based logging 
+	* Remove all console.log based logging messages
 
 ## Client
 * Ui components 

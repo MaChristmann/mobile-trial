@@ -36,6 +36,7 @@ describe('app.get', function(){
 
 	// Disconnect
 	after(function(){
+		console.log("END TEST APP.GET");
 		mongoose.disconnect();
 	});
 
