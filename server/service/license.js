@@ -36,31 +36,49 @@ var EXTRA_GRACERETRYS = "GR";
 exports.EXTRA_GRACERETRYS = EXTRA_GRACERETRYS;
 
 
-exports.processLicenseRequest = function(app, account, bodyParams, next){
+exports.processRequest = function(app, account, bodyParams, next){
 	//Response object
 	var licResponse = {};
 
+	//Check if neccessary app exists
+	if(!app){
+		next(new Error('Missing app'));
+		return;
+	}
+
+	//Check if neccessary accoutn exists
+	if(!account){
+		next(new Error('Missing account'));
+		return;
+	}
+
 	//Check if neccessary parameters exist
+	if(!bodyParams){
+		next(new Error('Missing bodyParams'));
+		return;
+	}
+
 	var nonce = bodyParams[PARAM_NONCE];
 	if(typeof nonce == 'undefined'){
 		console.log("License: Missing nonce");
-		next(new Error('Missing nonce'));
+		next(new Error('Missing nonce at bodyParams.n'));
 		return;
 	}
 
 	var clientTimestamp = bodyParams[PARAM_TIMESTAMP];
 	if(typeof clientTimestamp == 'undefined'){
 		console.log("License: Missing timestamp");
-	 	next(new Error('Missing timestamp'));
+	 	next(new Error('Missing timestamp at bodyParams.ts'));
 		return;
 	}
 
 	var versionCode = bodyParams[PARAM_VERSIONCODE];
 	if(typeof versionCode == 'undefined'){
 		console.log("License: Missing versionCode");
-		next(new Error('Missing versionCode'));
+		next(new Error('Missing versionCode at bodyParams.vc'));
 		return;
 	}
+
 
 	//User ServerTimestamp for Validation and Extras
 	var serverTimestamp = new Date().getTime();
@@ -78,12 +96,27 @@ exports.processLicenseRequest = function(app, account, bodyParams, next){
 }
 
 exports.testResponse = function(developer, licResponse, next){
+	if(!developer){
+		next(new Error('Missing developer'));
+		return;
+	}
+
+	if(!licResponse){
+		next(new Error('Missing licResponse'));
+		return;
+	}
+
 	console.log("License: Customer is a developer - testResult: " + developer.testResult);
 	licResponse[PARAM_RESULTCODE] = developer.testResult;
 	next(null, licResponse);
 }
 
 exports.grantAccess = function(licResponse, next){
+	if(!licResponse){
+		next(new Error('Missing licResponse'));
+		return;
+	}
+
 	console.log("License: Check is deactivated. No customer tracking");
 	licResponse[PARAM_RESULTCODE] = CODE_LICENSED;
 	next(null, licResponse);

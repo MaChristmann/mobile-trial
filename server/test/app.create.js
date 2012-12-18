@@ -6,10 +6,9 @@ var config = require('./../config');
 var appSv	= require('./../service/app');
 
 
-
-var appObj;
-
 describe('app.create', function(){
+	var appObj;
+
 	before(function(){
 		console.log("START TEST APP.CREATE");
 		mongoose.connect(config.mongodb.test); 

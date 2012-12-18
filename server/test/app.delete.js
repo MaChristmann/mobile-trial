@@ -5,10 +5,10 @@ var config = require('./../config');
 
 var appSv	= require('./../service/app');
 
-var appObj = {}; 
-var appInstance;
-
 describe('app.update', function(){
+	var appObj = {}; 
+	var appInstance;
+
 	// Connect to Mongo DB
 	// Clean app database
 	// Create a test app

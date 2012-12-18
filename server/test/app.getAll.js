@@ -5,9 +5,11 @@ var config = require('./../config');
 
 var appSv	= require('./../service/app');
 
-var appObj = {}; 
-var err = null;
+
 describe('app.getAll', function(){
+	var appObj = {}; 
+	var err = null;
+	
 	// Connect to Mongo DB
 	// Clean app database
 	// Create a test app

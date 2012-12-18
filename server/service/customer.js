@@ -35,7 +35,7 @@ exports.create = function(account, app, versionCode, next){
 exports.update = function(customer, versionCode, next){
 	customer.versionCode = versionCode;
 	customer.modifiedAt = new Date();
-	customer.save(function(saveErr){
+	customer.save(function(err){
 		if(err) {
 			next(err);
 		} else 

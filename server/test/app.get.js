@@ -5,8 +5,9 @@ var config = require('./../config');
 
 var appSv	= require('./../service/app');
 
-var appObj = {}; 
+
 describe('app.get', function(){
+	var appObj = {}; 
 	// Connect to Mongo DB
 	// Clean app database
 	// Create a test app

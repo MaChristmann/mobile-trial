@@ -13,7 +13,7 @@ exports.authorize = function(req, res, next){
 	//Check if neccessary parameters exist
 	var bodyParams = JSON.parse(req.body);
 
-	licenseSv.processLicenseRequest(app, account, bodyParams, function(err, licResponse){
+	licenseSv.processRequest(app, account, bodyParams, function(err, licResponse){
 		if(err){
 			res.send(500, handleError(err));
 			return;
