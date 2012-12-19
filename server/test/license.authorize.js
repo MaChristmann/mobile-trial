@@ -76,8 +76,79 @@ describe('license.authorize', function(){
 
 	// Disconnect
 	after(function(){
-		console.log("END TEST LICENSE.TESTRESPONSE");
+		console.log("END TEST LICENSE.AUTHORIZE");
 		mongoose.disconnect();
+	});
+
+	it('should return an error for undefined app parameter', function(done){
+		var undefinedParameter;
+		licenseSv.authorize(undefinedParameter, customerInstance, account, response, function(err, licResponse){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return an error for null app parameter', function(done){
+		licenseSv.authorize(null, customerInstance, account, response, function(err, licResponse){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return an error for undefined customer but existing customer.account parameter', function(done){
+		var undefinedParameter;
+		licenseSv.authorize(appInstance, undefinedParameter, account, response, function(err, licResponse){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return an error for null customer parameter but existing customer.account parameter', function(done){
+		licenseSv.authorize(appInstance, null, account, response, function(err, licResponse){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return an error for undefined account parameter', function(done){
+		var undefinedParameter;
+		licenseSv.authorize(appInstance, customerInstance, undefinedParameter, response, function(err, licResponse){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return an error for null account parameter', function(done){
+		var undefinedParameter;
+		licenseSv.authorize(appInstance, customerInstance, null, response, function(err, licResponse){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return an error for undefined license response obj parameter', function(done){
+		var undefinedParameter;
+		licenseSv.authorize(appInstance, customerInstance, account, undefinedParameter, function(err, licResponse){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+
+	it('should return an error for null license response obj parameter', function(done){
+		licenseSv.authorize(appInstance, customerInstance, account, null, function(err, licResponse){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+
+	it('should return an error for request versionCode is higher than the allowed maxVersionCode', function(done){
+		response[licenseSv.PARAM_VERSIONCODE] = 3; // Higher than maxVersionCode=2
+		licenseSv.authorize(appInstance, customerInstance, account, response, function(err, licResponse){
+			assert.notEqual(err, null);
+			done();
+		});
 	});
 
 	it('should return license response obj with resultCode=licensed for customer with versionCode < updateVersionCode', function(done){
