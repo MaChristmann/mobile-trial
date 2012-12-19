@@ -97,12 +97,12 @@ exports.processRequest = function(app, account, bodyParams, next){
 
 exports.testResponse = function(developer, licResponse, next){
 	if(!developer){
-		next(new Error('Missing developer'));
+		next(new Error('Missing parameter developer'));
 		return;
 	}
 
 	if(!licResponse){
-		next(new Error('Missing licResponse'));
+		next(new Error('Missing parameter licResponse'));
 		return;
 	}
 
@@ -113,7 +113,7 @@ exports.testResponse = function(developer, licResponse, next){
 
 exports.grantAccess = function(licResponse, next){
 	if(!licResponse){
-		next(new Error('Missing licResponse'));
+		next(new Error('Missing parameter licResponse'));
 		return;
 	}
 
@@ -123,6 +123,21 @@ exports.grantAccess = function(licResponse, next){
 }
 
 exports.authorize = function(app, customer, account, licResponse, next){
+	if(!app){
+		next(new Error('Missing parameter app'));
+		return;
+	}
+
+	if(!account){
+		next(new Error('Missing parameter account'));
+		return;
+	}
+
+	if(!licResponse){
+		next(new Error('Missing parameter licResponse'));
+		return;
+	}
+
 	async.series([
 		function(callback){
 			if(customer == null){
@@ -137,6 +152,10 @@ exports.authorize = function(app, customer, account, licResponse, next){
 					callback(null, {license: licResponse, customer: customer, app: app});
 				});
 			}
+			else if(app.maxVersionCode != 0 && licResponse[PARAM_VERSIONCODE] > app.maxVersionCode){
+				console.log('Customers versionCode is bigger than accepted versionCode');
+				callback(new Error('Customers versionCode is bigger than accepted versionCode'));
+			} 
 			else if(app.updateVersionCode != 0 && 
 							(customer.versionCode < app.updateVersionCode && licResponse[PARAM_VERSIONCODE] >= app.updateVersionCode) ){
 				//Renew Trial period
@@ -150,10 +169,6 @@ exports.authorize = function(app, customer, account, licResponse, next){
 					callback(null, {license: licResponse, customer: customer, app: app});
 				});
 			}
-			else if(app.maxVersionCode != 0 && customer.versionCode > app.maxVersionCode){
-				console.log('Customers versionCode is bigger than accepted versionCode');
-				callback(new Error('Customers versionCode is bigger than accepted versionCode'));
-			} 
 			else {
 				callback(null, {license: licResponse, customer: customer, app: app});
 			}
@@ -167,7 +182,6 @@ exports.authorize = function(app, customer, account, licResponse, next){
 
 		//Authorize Customer
 		checkLicenses(results[0].customer, results[0].app, results[0].license, function(isAuthorized){
-			console.log(licResponse);
 			if(isAuthorized){
 				console.log("License: Customer authorized");
 				licResponse[PARAM_RESULTCODE] = CODE_LICENSED;
