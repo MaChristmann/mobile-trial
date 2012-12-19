@@ -142,6 +142,14 @@ describe('license.authorize', function(){
 		});
 	});
 
+	it('should return licnese response obj with resultCode=notLicensed for customer with expired trial period', function(done){
+		customerInstance.modifiedAt -= 60*60*1000*48;  //1 day over license period
+		licenseSv.authorize(appInstance, customerInstance, account, response, function(err, licResponse){
+			assert.ifError(err);
+			assert.equal(licResponse[licenseSv.PARAM_RESULTCODE], licenseSv.CODE_NOTLICENSED);
+			done();
+		});	
+	});
 
 	it('should return an error for request versionCode is higher than the allowed maxVersionCode', function(done){
 		response[licenseSv.PARAM_VERSIONCODE] = 3; // Higher than maxVersionCode=2
