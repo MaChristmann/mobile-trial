@@ -4,12 +4,13 @@ var bcrypt = require('bcrypt'),
 
 var db = require('../data/db');
 
-exports.developer = function(username, password, next){
-	authenticateUser(username, password, function(authErr, user){
+exports.developer = function(account, password, next){
+	authenticateUser(account, password, function(authErr, user){
 		if(authErr){
 			next(authErr);
 			return;
 		}
+
 		if(user == null){
 			next(null, false);
 			return;
@@ -31,8 +32,8 @@ exports.developer = function(username, password, next){
 	});
 }
 
-exports.admin = function(username, password, next){
-	authenticateUser(username, password, function(authErr, user){
+exports.admin = function(account, password, next){
+	authenticateUser(account, password, function(authErr, user){
 		if(authErr){
 			next(authErr);
 			return;
@@ -42,6 +43,8 @@ exports.admin = function(username, password, next){
 			next(null, false);
 			return;
 		}
+
+	
 
 		db.AdminRole.findOne({'user': user}, function(err, admin){
 			if(err){
@@ -59,8 +62,18 @@ exports.admin = function(username, password, next){
 }
 
 /* User authentication */
-function authenticateUser(username, password, next) {
-  db.User.findOne({ 'account': username}, function (err, user) {			
+function authenticateUser(account, password, next) {
+	if(!account){
+		next(new Error('Missing parameter account'));
+		return;
+	}
+
+	if(!password){
+		next(new Error('Missing parameter password'));
+		return;
+	}
+
+  db.User.findOne({'account': account}, function (err, user) {			
     if (err){
       next(err)
       return;
@@ -100,7 +113,7 @@ exports.checkIpRange = function(ip, range, next){
 			if(typeof range.v4 == 'undefined')
 				next(null, true);
 			else {
-				var inRange = exports.checkV4Range(ip, range.v4)
+				var inRange = checkV4Range(ip, range.v4);
 				next(null, inRange);
 			}
 		}	break;
@@ -115,7 +128,7 @@ exports.checkIpRange = function(ip, range, next){
 	}
 }
 
-exports.checkV4Range = function(ip, range){
+function checkV4Range(ip, range){
 	var ipSections = ip.split(".");
 	
 	if(ipSections.length != 4)
