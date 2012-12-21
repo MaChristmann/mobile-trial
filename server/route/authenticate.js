@@ -59,7 +59,6 @@ exports.admin = function(req, res, next){
 			res.send(401, new Error('Unauthorized'));
 			return;
 		}
-
 		if(!req.username){
 			res.send(500, new Error('Missing username for basic auth'));
 			return;
@@ -78,6 +77,8 @@ exports.admin = function(req, res, next){
 				return;
 			}
 
+			console.log("test");
+
 			if(!authorized){
 				res.send(401, new Error('Unauthorized'));
 				return;
@@ -93,18 +94,18 @@ exports.admin = function(req, res, next){
 function checkDeveloperIpRange(req, res, next){
 	var ip = req.header('x-forwarded-for') || req.connection.remoteAddress || null;
 
-	console.log('1');
 	if(typeof config.iprange == 'undefined' || typeof config.iprange.developer == 'undefined'){
 		next(null, true);
 		return;
 	}
-	console.log('2');
+	console.log(ip);
+
 	authenticationSv.checkIpRange(ip, config.iprange.developer,  function(err, inRange){
 		if(err){
 			next(err);
 			return;
 		}
-		console.log('3');
+
 		next(null, inRange);
 	});
 }
@@ -113,20 +114,21 @@ function checkDeveloperIpRange(req, res, next){
 function checkAdminIpRange(req, res, next){
 	var ip = req.header('x-forwarded-for') || req.connection.remoteAddress || null;
 
-	console.log('1');
+
 	if(typeof config.iprange == 'undefined' || typeof config.iprange.admin == 'undefined'){
 		next(null, true);
 		return;
 	}
 
-	console.log('2');
+	console.log(ip);
+
 	authenticationSv.checkIpRange(ip, config.iprange.admin, function(err, inRange){
 		if(err){
 			next(err);
 			return;
 		}
 
-		console.log('3');
+	
 		next(null, inRange);
 	});
 }
