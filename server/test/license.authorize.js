@@ -59,7 +59,7 @@ describe('license.authorize', function(){
 			if(err) throw err;
 			response=licResponse;
 
-			customerSv.get(account, function(err, customer){
+			customerSv.get(account, appInstance, function(err, customer){
 				if(customer == null){
 					customerSv.create(account, appInstance, bodyParams[licenseSv.PARAM_VERSIONCODE], function(err, customer){
 						if(err) throw err;
