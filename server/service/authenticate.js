@@ -103,11 +103,19 @@ function authenticateUser(account, password, next) {
 
 exports.checkIpRange = function(ip, range, next){
 	//Check ip range
-	if(ip == null){
+	if(!ip){
 		next(new Error('Cannot determine ip address'));
 		return;
 	}
+
+	if(!range){
+		next(new Error('Missing parameter range'));
+		return;
+	}
+
+	//Determine if IPv4 or IPv6
 	var protocol = net.isIP(ip);
+
 	switch(protocol){
 		case 4: {
 			if(typeof range.v4 == 'undefined')
@@ -123,8 +131,11 @@ exports.checkIpRange = function(ip, range, next){
 				next(null, true)
 			else
 				next(new Error('IPv6 currently not supported')); 
+		} break;
+
+		default:{
+			next(new Error( ip + ' is not a valid ip'));
 		}
-			break;
 	}
 }
 
