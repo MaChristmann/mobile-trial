@@ -37,7 +37,7 @@ exports.authorize = function(req, res, next){
 					return;
 				}
 
-				customerSv.get(account, function(err, customer){
+				customerSv.get(account, app, function(err, customer){
 					if(err){
 						res.send(500, handleError(err));
 						return;

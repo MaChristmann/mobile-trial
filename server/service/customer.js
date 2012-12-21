@@ -1,12 +1,18 @@
 var crypto = require('crypto');
 var db = require('../data/db');
 
-exports.get = function(account, next){
+exports.get = function(account, app, next){
 	if(!account){
-		next(err);
+		next(new Error('Missing parameter account'));
 		return;
 	}
-	db.Customer.findOne({'account': getHashedAccount(account)}, function(err, customer){
+
+	if(!app){
+		next(new Error('Missing parameter app'));
+		return;
+	}
+
+	db.Customer.findOne({'account': getHashedAccount(account), 'app': app}, function(err, customer){
 		if(err){
 			next(err);
 			return;
