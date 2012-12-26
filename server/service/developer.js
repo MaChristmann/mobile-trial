@@ -2,18 +2,18 @@ var db = require('./../data/db');
 
 var userSv = require('./../service/user');
 
-exports.get = function(app, userAccount, next){
+exports.get = function(app, account, next){
 	if(!app){
 		next(new Error('Missing parameter app'));
 		return;
 	}
 
-	if(!userAccount){
-		next(new Error('Missing paramater userAccount'));
+	if(!account){
+		next(new Error('Missing paramater account'));
 		return;
 	}
 
-	userSv.get(userAccount, function(err, user){
+	userSv.get(account, function(err, user){
 		if(err){
 			next(err);
 			return;
@@ -45,7 +45,7 @@ exports.create = function(app, developerObj, next){
 		return;
 	}
 
-	if(!developerObj){
+	if(!developerObj || !developerObj.user){
 		next(new Error('Missing parameter developerObj'));
 		return;
 	}
@@ -71,8 +71,6 @@ exports.create = function(app, developerObj, next){
 			}
 			next(null, developer);
 		});
-
-
 	});
 
 }
@@ -83,7 +81,7 @@ exports.setTestResult = function(developer, testResult, next){
 		return;
 	}
 
-	if(!testResult){
+	if(typeof testResult == 'undefined' || testResult == null){
 		next(new Error('Missing parameter testResult'));
 		return;
 	}
