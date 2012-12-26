@@ -27,6 +27,7 @@ exports.create = function(account, app, versionCode, next){
 	//Hash mail with sha1 for privacy reasons
 	customer.account = getHashedAccount(account);
 	customer.app = app;
+	customer.versionCode = versionCode;
 	customer.createdAt = new Date();
 	customer.modifiedAt = customer.createdAt;
 	customer.save(function(err){
