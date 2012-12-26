@@ -6,8 +6,7 @@ var config = require('./../config');
 var appSv = require('./../service/app'),
 		customerSv	= require('./../service/customer');
 
-describe('customer.get', function(){
-
+describe('customer.update', function(){
 	var appObj =
 		{
 			identifier: "de.unittest"			 	
@@ -35,7 +34,7 @@ describe('customer.get', function(){
 	// Clean apps and create two apps
 	// Create new customer for app if not exist
 	before(function(done){
-		console.log("START TEST CUSTOMER.GET");
+		console.log("START TEST CUSTOMER.UPDATE");
 		mongoose.connect(config.mongodb.test); 
 
 		appSv.clean(function(err){
@@ -64,7 +63,7 @@ describe('customer.get', function(){
 
 	// Disconnect
 	after(function(){
-		console.log("END TEST CUSTOMER.GET");
+		console.log("END TEST CUSTOMER.UPDATE");
 		mongoose.disconnect();
 	});
 

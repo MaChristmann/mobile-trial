@@ -6,7 +6,7 @@ var config = require('./../config');
 var appSv = require('./../service/app'),
 		customerSv	= require('./../service/customer');
 
-describe('customer.get', function(){
+describe('customer.create', function(){
 
 	var appObj =
 		{
