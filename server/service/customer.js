@@ -22,8 +22,22 @@ exports.get = function(account, app, next){
 }
 
 exports.create = function(account, app, versionCode, next){
+	if(!account){
+		next(new Error('Missing parameter account'));
+		return;
+	}
+
+	if(!app){
+		next(new Error('Missing parameter app'));
+		return;
+	}
+
+	if(typeof versionCode == 'undefined' || versionCode == null){
+		next(new Error('Missing parameter versionCode'));
+		return;
+	}
+
 	var customer = new db.Customer();
-	
 	//Hash mail with sha1 for privacy reasons
 	customer.account = getHashedAccount(account);
 	customer.app = app;
@@ -40,13 +54,23 @@ exports.create = function(account, app, versionCode, next){
 
 
 exports.update = function(customer, versionCode, next){
+	if(!customer){
+		next(new Error('Missing parameter customer'));
+		return;
+	}
+
+	if(typeof versionCode == 'undefined' || versionCode == null){
+		next(new Error('Missing parameter versionCode'));
+		return;
+	}
+
 	customer.versionCode = versionCode;
-	customer.modifiedAt = new Date();
 	customer.save(function(err){
 		if(err) {
 			next(err);
-		} else 
-			next(null, customer);
+			return;
+		} 
+		next(null, customer);
 	});
 }
 

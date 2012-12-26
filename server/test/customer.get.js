@@ -63,6 +63,44 @@ describe('customer.get', function(){
 		mongoose.disconnect();
 	});
 
+	it('should return an error for undefined account parameter', function(done){
+		var undefinedParameter;
+		customerSv.get(undefinedParameter, appInstance, function(err, customer){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return an error for null account parameter', function(done){
+		customerSv.get(null, appInstance, function(err, customer){
+			assert.notEqual(err, null);
+			done();
+		});
+	})
+
+	it('should return an error for undefined app parameter', function(done){
+		var undefinedParameter;
+		customerSv.get(account, undefinedParameter, function(err, customer){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return an error for null app parameter', function(done){
+		customerSv.get(account, null, function(err, customer){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return null for an account that does not exist for this app', function(done){
+		customerSv.get(account, appInstance2, function(err, customer){
+			assert.ifError(err);
+			assert.equal(customer, null);
+			done();
+		});
+	});
+
 	it('should return customer obj for existing customer for app', function(done){
 		customerSv.get(account, appInstance, function(err, customer){
 			assert.ifError(err);
