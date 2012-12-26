@@ -19,10 +19,10 @@ Mobile-Trial
 	* Allow access of admins and developers based on ip v6 addresses/range
 * Privacy
 	* _DONE 12-04-2012_ Hash account emails from customers using sha1.. They don't need to be readable
-* Tests (Currently 85 test cases)
+* Tests (Currently 107 test cases)
 	* _DONE 12-19-2012_ Test License service
 	* Test Developer service
-	* _IN PROGRESS_ Test Customer service
+	* _DONE 12-26-2012_ Test Customer service
 	* _DONE 12-18-2012_ Test App service
 	* Test User service
 	* _DONE 12-21-2012 Test Authenticate service
