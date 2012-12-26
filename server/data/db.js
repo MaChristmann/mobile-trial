@@ -21,11 +21,16 @@ var AppSchema = new Schema({
 });
 
 var CustomerSchema = new Schema({
-	account: {type:String}
-	, createdAt : Date
-	, modifiedAt : Date
-	, app: {type:ObjectId, ref:'AppSchema'}
-	, versionCode : {type: Number}
+	account: {type:String, required: true}
+	, createdAt : {type: Date, required: true}
+	, modifiedAt : {type: Date, required: true}
+	, app: {type:ObjectId, ref:'AppSchema', required: true}
+	, versionCode : {
+			type: Number,
+			min: 1,
+			set: function(v){return Math.floor(v);},
+			required: true
+		}
  });
 CustomerSchema.index({account:1, app:1}, {unique: true});
 
