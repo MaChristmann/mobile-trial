@@ -28,11 +28,21 @@ var CustomerSchema = new Schema({
 	, versionCode : {
 			type: Number,
 			min: 1,
-			set: function(v){return Math.floor(v);},
 			required: true
 		}
  });
 CustomerSchema.index({account:1, app:1}, {unique: true});
+CustomerSchema.pre('save', function (next) {
+	this.modifiedAt = new Date();
+  next();
+});
+CustomerSchema.path('versionCode').set(function(v){
+	this._prevVersionCode = this.versionCode ? this.versionCode : 1;
+	return Math.floor(v);
+});
+CustomerSchema.path('versionCode').validate(function(val){
+	return this._prevVersionCode <= Math.floor(val); 
+}, "versionCode must be higher or equal than its prior value");
 
 
 var UserSchema = new Schema ({
