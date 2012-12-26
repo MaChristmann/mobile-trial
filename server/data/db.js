@@ -52,7 +52,7 @@ var UserSchema = new Schema ({
 
 var DeveloperRoleSchema = new Schema({
 	user: {type:ObjectId, ref:'UserSchema'}
-	, testResult: {type: Number, default: 0}
+	, testResult: {type: String, default: '0', enum:['0', '1', '2']}
 	, app: {type:ObjectId, ref:'AppSchema'}
 })
 
