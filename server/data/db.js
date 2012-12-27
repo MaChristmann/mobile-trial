@@ -8,16 +8,16 @@ var LicenseSchema = new Schema({
 });
 
 var AppSchema = new Schema({
-	identifier: 					{type: String, index: true, unique: true}
-	, enabled: {type: Boolean, default: true}
+	identifier: 					{type: String, index: true, unique: true, required:true}
+	, enabled: 						{type: Boolean, default: true}
 	, maxVersionCode: 		{type: Number, default: 0}
 	, updateVersionCode: 	{type: Number, default: 0}
 	, graceInterval: 			{type: Number, default: 0}
 	, graceRetrys: 				{type: Number, default: 3}
 	, validTime: 					{type: Number, default: 0}
 	, licenses: 					[LicenseSchema]
-	, publicKey: 					{type: String}
-	, privateKey: 				{type: String}
+	, publicKey: 					{type: String, required:true}
+	, privateKey: 				{type: String, required:true}
 });
 
 var CustomerSchema = new Schema({
@@ -46,18 +46,18 @@ CustomerSchema.path('versionCode').validate(function(val){
 
 
 var UserSchema = new Schema ({
-	account: {type:String, index:true, unique:true}
-	,	password: String 
+	account: {type:String, index:true, unique:true, required:true}
+	,	password: {type: String, required:true}
 });
 
 var DeveloperRoleSchema = new Schema({
-	user: {type:ObjectId, ref:'UserSchema'}
+	user: {type:ObjectId, ref:'UserSchema', required:true}
 	, testResult: {type: String, default: '0', enum:['0', '1', '2']}
-	, app: {type:ObjectId, ref:'AppSchema'}
+	, app: {type:ObjectId, ref:'AppSchema', required:true}
 })
 
 var AdminRoleSchema = new Schema({
-	user: {type:ObjectId, ref:'UserSchema'}
+	user: {type:ObjectId, ref:'UserSchema', required:true}
 })
 
 var LicenseModel = mongoose.model('License', LicenseSchema);
