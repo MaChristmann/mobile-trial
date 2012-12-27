@@ -43,6 +43,21 @@ describe('app.update', function(){
 		});
 	});
 
+	it('should return an error for undefined app parameter', function(done){
+		var undefinedParameter;
+		appSv.delete(undefinedParameter, function(err, app){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return an error for null app parameter', function(done){
+		appSv.delete(null, function(err, app){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
 	it('should delete app and return deleted app', function(done){
 		appSv.delete(appInstance, function(err, app){
 			assert.ifError(err);
