@@ -38,6 +38,11 @@ exports.create = function(userObj, next){
 	if(!userObj){
 		next(new Error('Missing parameter userObj'));
 		return;
+	} 
+
+	if(!userObj.password || !userObj.account){
+		next(new Error('Missing account or password'));
+		return;
 	}
 
 	var user = new db.User();
@@ -128,7 +133,7 @@ exports.assignToAdmin = function(user, next){
 };
 
 
-exports.revokeFromAdmin = function(req, res, next){
+exports.revokeFromAdmin = function(user, next){
 	if(!user){
 		next(new Error('Missing parameter user'));
 		return;
