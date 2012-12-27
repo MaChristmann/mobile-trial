@@ -6,7 +6,7 @@ var config = require('./../config');
 var appSv	= require('./../service/app');
 
 
-describe('app.getAll', function(){
+describe('app.list', function(){
 	var appObj = {}; 
 	var err = null;
 	
@@ -14,7 +14,7 @@ describe('app.getAll', function(){
 	// Clean app database
 	// Create a test app
 	before(function(){
-		console.log("START TEST APP.GETALL");
+		console.log("START TEST APP.LIST");
 		mongoose.connect(config.mongodb.test); 
 	});
 
@@ -35,16 +35,16 @@ describe('app.getAll', function(){
 
 	// Disconnect
 	after(function(){
-		console.log("END TEST APP.GETALL");
+		console.log("END TEST APP.LIST");
 		mongoose.disconnect();
 	});
 
 
 	it('should return array with one app', function(done){
-		console.log("TEST APP.GETALL");
+		console.log("TEST APP.LIST");
 		appSv.create(appObj, function(err, app){
 			assert.ifError(err);
-			appSv.getAll(function(err, apps){
+			appSv.list(function(err, apps){
 				assert.ifError(err)
 				assert.equal(Object.prototype.toString.call(apps), '[object Array]');
 				assert.equal(apps.length, 1);
@@ -54,8 +54,8 @@ describe('app.getAll', function(){
 	});
 
 	it('should return array empty array', function(done){
-		console.log("TEST APP.GETALL");
-		appSv.getAll(function(err, apps){
+		console.log("TEST APP.LIST");
+		appSv.list(function(err, apps){
 			assert.ifError(err)
 			assert.equal(Object.prototype.toString.call(apps), '[object Array]');
 			assert.equal(apps.length, 0);

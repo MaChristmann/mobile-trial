@@ -44,6 +44,7 @@ server.use(developerRoute.middleware);
 server.post('/authorize/:app/customer/:account', [licenseRoute.authorize]);
 
 /* User Management */ 
+server.get('/user', 									[authenticateRoute.admin, userRoute.list]);
 server.post('/user',									[authenticateRoute.admin, userRoute.create]);
 server.del('/user/:user', 						[authenticateRoute.admin, userRoute.delete]);
 server.put('/user/:user/admin', 			[authenticateRoute.admin, userRoute.assignToAdmin]);
@@ -56,7 +57,7 @@ server.del 	('/app/:app/developer/:developer', [authenticateRoute.admin, 		devel
 
 /* App  Management */ 
 server.post('/app',	 		 [authenticateRoute.admin, appRoute.create]);
-server.get ('/app', 		 [authenticateRoute.admin, appRoute.getAll]);
+server.get ('/app', 		 [authenticateRoute.admin, appRoute.list]);
 server.get ('/app/:app', [authenticateRoute.admin, appRoute.get]);
 server.put ('/app/:app', [authenticateRoute.admin, appRoute.update]);
 server.del ('/app/:app', [authenticateRoute.admin, appRoute.delete]);

@@ -5,6 +5,7 @@ var db = require('../data/db');
 exports.get = function(account, next){
 	if(!account){
 		next(new Error('Missing parameter account'));
+		return;
 	}
 
 	db.User.findOne({'account': account}, function(err, user){	
@@ -22,7 +23,7 @@ exports.get = function(account, next){
 };
 
 
-exports.getAll = function(next){
+exports.list = function(next){
 	db.User.find({}, function(err, users){
 		if(err){
 			next(err);

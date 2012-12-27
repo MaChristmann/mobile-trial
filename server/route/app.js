@@ -36,9 +36,9 @@ exports.get = function(req, res, next){
 }
 
 /* Send all apps  */ 
-exports.getAll = function(req, res, next){
-	console.log('app.getAll');
-	appSv.getAll(function(err, apps){
+exports.list = function(req, res, next){
+	console.log('app.list');
+	appSv.list(function(err, apps){
 		if(err){
 			res.send(500, err);
 			return;

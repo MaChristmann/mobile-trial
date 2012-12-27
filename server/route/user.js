@@ -37,10 +37,10 @@ exports.get = function(req, res, next){
 }
 
 /* Send all the users */
-exports.getAll = function(req, res, next){
-	console.log('user.getAll');
+exports.list = function(req, res, next){
+	console.log('user.list');
 
-	userSv.getAll(function(err, users){
+	userSv.list(function(err, users){
 		if(err){
 			res.send(500, err);
 			return;

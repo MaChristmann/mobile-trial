@@ -19,7 +19,7 @@ exports.get = function(identifier, next){
 }
 
 /* Returns all apps from database */
-exports.getAll = function(next){
+exports.list = function(next){
 	db.App.find({}, function(appErr, apps){
 		if(appErr){
 			next(appErr);
