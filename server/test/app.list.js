@@ -41,7 +41,6 @@ describe('app.list', function(){
 
 
 	it('should return array with one app', function(done){
-		console.log("TEST APP.LIST");
 		appSv.create(appObj, function(err, app){
 			assert.ifError(err);
 			appSv.list(function(err, apps){
@@ -54,7 +53,6 @@ describe('app.list', function(){
 	});
 
 	it('should return array empty array', function(done){
-		console.log("TEST APP.LIST");
 		appSv.list(function(err, apps){
 			assert.ifError(err)
 			assert.equal(Object.prototype.toString.call(apps), '[object Array]');
