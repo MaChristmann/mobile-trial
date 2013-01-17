@@ -52,13 +52,15 @@ describe('customer.update', function(){
 
 	//Create unique customer account across tests
 	beforeEach(function(done){
-		account = "user" + new Date().getTime() + "@mobiletrial.org";
-		versionCode = 3;
-		customerSv.create(account, appInstance, versionCode, function(err, customer){
-			if(err) throw err;
-			customerInstance = customer;
-			done();
-		});
+		setTimeout(function() {
+			account = "user" + new Date().getTime() + "@mobiletrial.org";
+			versionCode = 3;
+			customerSv.create(account, appInstance, versionCode, function(err, customer){
+				if(err) throw err;
+				customerInstance = customer;
+				done();
+			});
+		}, 200 );
 	});
 
 	// Disconnect

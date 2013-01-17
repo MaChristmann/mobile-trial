@@ -53,8 +53,11 @@ describe('customer.create', function(){
 	});
 
 	// Create unique user accounts that works for serveral test iterations
-	beforeEach(function(){
-		account = "user" + new Date().getTime() + "@mobiletrial.org";
+	beforeEach(function(done){
+		setTimeout(function() {
+      account = "user" + new Date().getTime() + "@mobiletrial.org";
+      done();
+  		}, 200 );
 	});
 
 	// Disconnect
