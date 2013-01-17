@@ -5,6 +5,10 @@
 		"test": "mongodb://localhost/mobile-trial-test"
 	},
 	"port":	3000,
+	"https": {
+		"key": "./server.key",
+		"certificate": "./server.crt" 
+	},
 	"iprange": {
 		"admin": {
 			"v4":	[
@@ -18,11 +22,5 @@
 				"192.168.6.x"
 			]
 		}
-	},
-	"log": {
-		"exceptions": {
-			"type": "file",
-			"path": "log/exceptions.log"
-		} 
 	}
 }

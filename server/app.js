@@ -1,8 +1,7 @@
 // NPM Modules
 var restify 	= require('restify')
-, mongoose 		= require('mongoose');
-
-var logger = require('./service/logger').logger;
+	, mongoose 	= require('mongoose')
+	,	fs 				= require('fs');
 
 // Config file
 var config = require('./config.json'); 
@@ -14,10 +13,19 @@ var licenseRoute 		= require('./route/license'),
 		userRoute 			= require('./route/user'),
 		authenticateRoute = require('./route/authenticate');
 
+//Server Options
+var serverOptions = {
+	name: config.name
+};
+
+//Add https options if exist
+if(config.https.key && config.https.certificate){
+	serverOptions['key'] = fs.readFileSync(config.https.key);
+  serverOptions['certificate'] = fs.readFileSync(config.https.certificate);
+}
+
 // Create Server
-var server = restify.createServer({
-  name: config.name
-});
+var server = restify.createServer(serverOptions);
 
 // Connect to Mongo DB
 mongoose.connect(config.mongodb.production); 
