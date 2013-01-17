@@ -32,8 +32,8 @@ Mobile-Trial
 	* _DONE 11-29-2012_ Merge Register service and App service to App service
 	* _DONE 11-30-2012_ Branch services into routing layer and service layer (Make's testing easier)
 * Logging
-	* Add file based logging 
-	* Remove all console.log based logging messages
+	* _DONE 01-17-2013_ Add file based logging 
+	* _DONE 01-17-2013_ Remove all console.log based logging messages
 
 ## Client
 * Ui components 
