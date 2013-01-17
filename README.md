@@ -14,7 +14,7 @@ Mobile-Trial
 	* List all developers for an app
 	* List all admins
 *	Security
-	* Use HTTPS instead of HTTP
+	* _DONE 01-17-2013_ Use HTTPS instead of HTTP
 	* _DONE 11-20-2012_ Create digital signature with openssl and sign response data with RSA privatekey
 	* _DONE 11-18-2012_ Use hashed passwords for user accounts 
 	* _DONE 12-05-2012_ Allow access of admins and developers based on ip v4 addresses/range
