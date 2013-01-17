@@ -35,7 +35,6 @@ describe('user.assignToAdmin', function(){
 		});
 	});
 
-
 	// Disconnect
 	after(function(){
 		console.log("END TEST USER.ASSIGNTOADMIN");

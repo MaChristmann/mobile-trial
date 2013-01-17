@@ -6,7 +6,7 @@ var licenseSv = require('./../service/license'),
 
 
 exports.authorize = function(req, res, next){
-
+	var logger = res.locals.logger;
 	var app = res.locals.app;
 	var account = req.params.account;
 	
@@ -15,12 +15,14 @@ exports.authorize = function(req, res, next){
 
 	licenseSv.processRequest(app, account, bodyParams, function(err, licResponse){
 		if(err){
+			logger.error('On process license request: ' + err);
 			res.send(500, handleError(err));
 			return;
 		}
 
 		developerSv.get(app, account, function(err, developer){
 			if(err){
+				logger.error('On get developer: ' + err);
 				res.send(500, handleError(err));
 				return;
 			}
@@ -29,6 +31,7 @@ exports.authorize = function(req, res, next){
 				if(app.enabled == false){
 					licenseSv.grantAccess(licResponse, function(err, licResponse){
 						if(err){
+							logger.error('On grant access: ' + err);
 							res.send(500, handleError(err));
 							return;
 						}
@@ -39,12 +42,14 @@ exports.authorize = function(req, res, next){
 
 				customerSv.get(account, app, function(err, customer){
 					if(err){
+						logger.error('On get customer: ' + err);
 						res.send(500, handleError(err));
 						return;
 					}
 
 					licenseSv.authorize(app, customer, account, licResponse, function(err, licResponse){	
 						if(err){
+							logger.error('On authorize license: ' + err);
 							res.send(500, handleError(err));
 							return;
 						}
@@ -54,10 +59,10 @@ exports.authorize = function(req, res, next){
 			} else{
 				licenseSv.testResponse(developer, licResponse, function(err, licResponse){
 					if(err){
+						logger.error('On testResponse: ' + err);
 						res.send(500, handleError(err));
 						return;
-					}
-				
+					}	
 					res.send(getSignedResponse(licResponse, app.privateKey));
 				});
 			}

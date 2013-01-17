@@ -2,18 +2,22 @@ var appSv = require('./../service/app');
 
 /* Get app as middleware */
 exports.middleware = function(req, res, next){
+	var logger = res.locals.logger;
+
 	if(typeof req.params.app != 'undefined' && req.params.app != null) {
 		appSv.get(req.params.app, function(err, app){
 
 			//Error occured?
 			if(err){
-				res.send(500, 'Server Error: ' + err);
+				logger.error('On getting app: ' + err);
+				res.send(500, err);
 				return;
 			}
 
 			//App exists?
 			if(app == null){
-				res.send(404, 'App does not exist');
+				logger.info('App does not exist ' + req.params.app);
+				res.send(404, 'Not found ');
 				return;
 			}
 			
@@ -27,9 +31,7 @@ exports.middleware = function(req, res, next){
 
 /* Send the app */
 exports.get = function(req, res, next){
-	console.log('app.get');
 	var app = res.locals.app;
-
 	// Do not show private Key
 	app.privateKey = null;
 	res.send(app);
@@ -37,9 +39,10 @@ exports.get = function(req, res, next){
 
 /* Send all apps  */ 
 exports.list = function(req, res, next){
-	console.log('app.list');
+	var logger = res.locals.logger;
 	appSv.list(function(err, apps){
 		if(err){
+			logger.error('On list apps: ' + err);
 			res.send(500, err);
 			return;
 		}
@@ -53,10 +56,11 @@ exports.list = function(req, res, next){
 
 /* Create an app and send it */
 exports.create = function(req, res, next){
-	console.log('app.create');
+	var logger = res.locals.logger;
 	var appObj = JSON.parse(req.body);
 	appSv.create(appObj, function(err, app){
 		if(err){
+			logger.error('On create app: '+ err);
 			res.send(500, err);
 			return;
 		}
@@ -67,12 +71,13 @@ exports.create = function(req, res, next){
 
 /* Update an app and send it */
 exports.update = function(req, res, next){
-	console.log('app.update');
+	var logger = res.locals.logger;
 	var newApp = JSON.parse(req.body);
 	var app = res.locals.app; 
 
 	appSv.update(app, newApp, function(err, app){
 		if(err){
+			logger.error('On update app: '+ err);
 			res.send(500, err);
 			return;
 		}
@@ -84,11 +89,12 @@ exports.update = function(req, res, next){
 
 /* Delete an app and send it */
 exports.delete = function(req, res, next){
-	console.log('app.delete');
+	var logger = res.locals.logger;
 	var app = res.locals.app;
 	appSv.delete(app, function(err, app){
 
 		if(err){
+			logger.error('On delete app: ' + err);
 			res.send(500, err);
 			return;
 		}

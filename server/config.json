@@ -18,5 +18,11 @@
 				"192.168.6.x"
 			]
 		}
+	},
+	"log": {
+		"exceptions": {
+			"type": "file",
+			"path": "log/exceptions.log"
+		} 
 	}
 }

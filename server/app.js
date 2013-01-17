@@ -2,6 +2,8 @@
 var restify 	= require('restify')
 , mongoose 		= require('mongoose');
 
+var logger = require('./service/logger').logger;
+
 // Config file
 var config = require('./config.json'); 
 
@@ -30,6 +32,13 @@ server.use(function(req, res, next){
 	res.locals = {};
 	next();
 })
+
+// Logging
+server.use(function(req, res, next){
+	var logger = require('./service/logger').logger;
+	res.locals.logger = logger;
+	next();
+});
 
 // :app
 server.use(appRoute.middleware);
@@ -63,11 +72,13 @@ server.put ('/app/:app', [authenticateRoute.admin, appRoute.update]);
 server.del ('/app/:app', [authenticateRoute.admin, appRoute.delete]);
 
 /* No route found */ 
-server.use(function(req, res, next){
-	res.send(404, new Error('404'));
+server.on('uncaughtException', function(request, response, route, error){
+	response.send(error);
+	throw error;
 });
+
 
 //Start listen
 server.listen(config.port, function(){
 	console.log("Server is running on port " + config.port);
-});
+}); 

@@ -3,6 +3,7 @@ var userSv = require('./../service/user'),
 
 /* Get developer as middleware */
 exports.middleware = function(req, res, next){
+	var logger = res.locals.logger;
 	var app = res.locals.app;
 
 	if(typeof app == 'undefined' || app == null){
@@ -17,12 +18,14 @@ exports.middleware = function(req, res, next){
 
 	developerSv.get(app, req.params.developer, function(err, developer){
 		if(err){
+			logger.error('On get developer :' + err);
 			res.send(500, err);
 			return;
 		}
 
 		if(developer == null){
-			res.send(404, 'Developer not found');
+			logger.info('Developer not found');
+			res.send(404, 'Not found');
 			return;
 		}
 
@@ -32,11 +35,13 @@ exports.middleware = function(req, res, next){
 }
 
 exports.create = function(req, res, next){
+	var logger = res.locals.logger;
 	var app = res.locals.app;
 	var developerObj = JSON.parse(req.body);
 
 	developerSv.create(app, developerObj, function(err, developer){
 		if(err){
+			logger.error('On create developer: ' + err);
 			res.send(500, err);
 			return;
 		}
@@ -45,16 +50,19 @@ exports.create = function(req, res, next){
 }
 
 exports.update = function(req, res, next){
+	var logger = res.locals.logger;
 	var developer = res.locals.developer;
 	var developerObj = JSON.parse(req.body);
 
 	if(typeof developerObj.testResult == 'undefined'){
+		logger.error('Missing body param testResult');
 		res.send(500, 'Missing body param testResult');
 		return;
 	}
 
 	developerSv.setTestResult(developer, developerObj.testResult, function(err, developer){
 		if(err){
+			logger.error('On setTestResult: ' + err);
 			res.send(500, err);
 			return;
 		}
@@ -63,9 +71,12 @@ exports.update = function(req, res, next){
 }
 
 exports.delete = function(req, res, next){
+	var logger = res.locals.logger;
 	var developer = res.locals.developer;
+
 	developerSv.delete(developer, function(err, developer){
 		if(err){
+			logger.error('On delete developer: ' + err);
 			res.send(500, err);
 			return;
 		}

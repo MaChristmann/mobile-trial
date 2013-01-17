@@ -60,21 +60,18 @@ exports.processRequest = function(app, account, bodyParams, next){
 
 	var nonce = bodyParams[PARAM_NONCE];
 	if(typeof nonce == 'undefined'){
-		console.log("License: Missing nonce");
 		next(new Error('Missing nonce at bodyParams.n'));
 		return;
 	}
 
 	var clientTimestamp = bodyParams[PARAM_TIMESTAMP];
 	if(typeof clientTimestamp == 'undefined'){
-		console.log("License: Missing timestamp");
 	 	next(new Error('Missing timestamp at bodyParams.ts'));
 		return;
 	}
 
 	var versionCode = bodyParams[PARAM_VERSIONCODE];
 	if(typeof versionCode == 'undefined'){
-		console.log("License: Missing versionCode");
 		next(new Error('Missing versionCode at bodyParams.vc'));
 		return;
 	}
@@ -105,8 +102,6 @@ exports.testResponse = function(developer, licResponse, next){
 		next(new Error('Missing parameter licResponse'));
 		return;
 	}
-
-	console.log("License: Customer is a developer - testResult: " + developer.testResult);
 	licResponse[PARAM_RESULTCODE] = developer.testResult;
 	next(null, licResponse);
 }
@@ -116,8 +111,6 @@ exports.grantAccess = function(licResponse, next){
 		next(new Error('Missing parameter licResponse'));
 		return;
 	}
-
-	console.log("License: Check is deactivated. No customer tracking");
 	licResponse[PARAM_RESULTCODE] = CODE_LICENSED;
 	next(null, licResponse);
 }
@@ -144,16 +137,13 @@ exports.authorize = function(app, customer, account, licResponse, next){
 				//Create new customer
 				customerSv.create(account, app, licResponse[PARAM_VERSIONCODE], function(err, customer){
 					if(err){
-						console.log("License: Could not create Customer");
 						callback(err);
 						return;
 					}
-					console.log("License: Create new customer");
 					callback(null, {license: licResponse, customer: customer, app: app});
 				});
 			}
 			else if(app.maxVersionCode != 0 && licResponse[PARAM_VERSIONCODE] > app.maxVersionCode){
-				console.log('Customers versionCode is bigger than accepted versionCode');
 				callback(new Error('Customers versionCode is bigger than accepted versionCode'));
 			} 
 			else if(app.updateVersionCode != 0 && 
@@ -161,11 +151,9 @@ exports.authorize = function(app, customer, account, licResponse, next){
 				//Renew Trial period
 				customerSv.update(customer, licResponse[PARAM_VERSIONCODE], function(err, customer){	
 					if(err){
-						console.log("License: Could not update Customer");
 						callback(err);
 						return;
 					}
-					console.log("License: Update customer");
 					callback(null, {license: licResponse, customer: customer, app: app});
 				});
 			}
@@ -183,12 +171,10 @@ exports.authorize = function(app, customer, account, licResponse, next){
 		//Authorize Customer
 		checkLicenses(results[0].customer, results[0].app, results[0].license, function(isAuthorized){
 			if(isAuthorized){
-				console.log("License: Customer authorized");
 				licResponse[PARAM_RESULTCODE] = CODE_LICENSED;
 				next(null, licResponse);
 			}
 			else {
-				console.log("License: Customer not authorized");
 				licResponse[PARAM_RESULTCODE] = CODE_NOTLICENSED;
 				next(null, licResponse);
 			}

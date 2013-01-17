@@ -4,6 +4,7 @@ var bcrypt = require('bcrypt'),
 
 var db = require('../data/db');
 
+
 exports.developer = function(account, password, next){
 	authenticateUser(account, password, function(authErr, user){
 		if(authErr){
