@@ -4,24 +4,32 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.KeyStore;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.mobiletrial.license.R;
 
+import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
  
@@ -33,8 +41,10 @@ public class RestClient {
 	private String TAG = "RestClient";
 	
 	private URL mServiceUrl;
+	private Context mContext;
 	
-	public RestClient(URL serviceUrl){
+	public RestClient(Context context, URL serviceUrl){
+		mContext = context;
 		mServiceUrl = serviceUrl;
 	}
 	
@@ -42,8 +52,19 @@ public class RestClient {
         Thread t = new Thread(){
         public void run() {
                 Looper.prepare(); //For Preparing Message Pool for the child Thread
-                HttpClient client = new DefaultHttpClient();
+           
+                final SchemeRegistry schemeRegistry = new SchemeRegistry();
+                schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+                schemeRegistry.register(new Scheme("https", createAdditionalCertsSSLSocketFactory(), 443));
+
+                // and then however you create your connection manager, I use ThreadSafeClientConnManager
+                final HttpParams params = new BasicHttpParams();         
+                final ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params,schemeRegistry);
+                HttpClient client = new DefaultHttpClient(cm, params);
+                
                 HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000); //Timeout Limit
+                
+                
                 HttpResponse response;
                 try{
                 	String urlStr = mServiceUrl.toExternalForm();
@@ -92,6 +113,29 @@ public class RestClient {
         };
         t.start();      
     }
+	
+	
+	protected SSLSocketFactory createAdditionalCertsSSLSocketFactory() {
+	    try {
+	        final KeyStore ks = KeyStore.getInstance("BKS");
+
+	        // Load the BKS keystore file
+	        final InputStream in = mContext.getResources().openRawResource( R.raw.mystore);  
+	        try {
+	            // Password which you use at creating the keystore
+	            ks.load(in, mContext.getString( R.string.mobiletrial_keystore_passwd ).toCharArray());
+	        } finally {
+	            in.close();
+	        }
+	        return new AdditionalKeyStoresSSLSocketFactory(ks);
+
+	    } catch( Exception e ) {
+	    	//If this error happens, perhaps you are using an incompatible version of bouncycastle
+	    	//Tested Versions are: bcprov-jdk16-146.jar  (Works with Android 4.1, Android 4.0.3) 
+        	Log.w(TAG, "Couldn't load additional keystore: " + e.getLocalizedMessage());
+        	throw new RuntimeException();
+	    }
+	}
 	
 	public static abstract class OnRequestFinishedListener{
 		public abstract void gotResponse(String response);

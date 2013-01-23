@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mobiletrial.license.connect.RestClient;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -21,17 +22,20 @@ public class ServerLicensingService implements ILicensingService {
 
 	private static final int ERROR_SERVER_FAILURE = 0x4;
 	
-	private URL webserivceUrl;
+	private Context mContext;
+	private URL mWebserviceUrl;
+
 	
-	public ServerLicensingService(URL websericeUrl){
-		this.webserivceUrl = websericeUrl;
+	public ServerLicensingService(Context context, URL websericeUrl){
+		this.mContext = context;
+		this.mWebserviceUrl = websericeUrl;
 	}
 	
 	@Override
 	public void checkLicense(int nonce, String packageName, String versionCode,
 			String userId, final ILicenseResultListener listener){
 		
-		RestClient client = new RestClient(webserivceUrl);
+		RestClient client = new RestClient(mContext, mWebserviceUrl);
 		JSONObject body = new JSONObject();
 		try {
 			long timestamp = new Date().getTime();
