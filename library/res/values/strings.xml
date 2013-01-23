@@ -3,4 +3,7 @@
     
     <!--  Choose Account Dialog -->
     <string name="mobiletrial_chooseaccount_title">Choose your Account</string>
+    
+    <!-- Key Store Password -->
+    <string name="mobiletrial_keystore_passwd">mtrial</string>
 </resources>
