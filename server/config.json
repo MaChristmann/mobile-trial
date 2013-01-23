@@ -4,10 +4,10 @@
 		"production": "mongodb://localhost/mobile-trial-db",
 		"test": "mongodb://localhost/mobile-trial-test"
 	},
-	"port":	3000,
+	"port":	443,
 	"https": {
-		"key": "./server.key",
-		"certificate": "./server.crt" 
+		"key": "./serverkey.pem",
+		"certificate": "./certificate.pem" 
 	},
 	"iprange": {
 		"admin": {

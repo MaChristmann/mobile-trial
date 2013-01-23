@@ -66,8 +66,7 @@ import android.widget.TextView;
  */
 public class MainActivity extends Activity {
 	private static final String BASE64_PUBLIC_KEY = 
-		"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDAdB2CvskvAnAYnu2qehAfOGwgnKK+AGfG1hGmeq3Y+jtDx+LdY5qHAMx5u/hrKGZ7lgMO7UZ2pdXj4u6/5JBngxzLh1kwTPCQlHVdHJIMJi0mfazZW+mHnTFeNRpUaY1h11WIspIlOGjghoK2Neo/FgGdtnF3UnqHrHmNOWvGfQIDAQAB";
-		
+		"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCxl4mLYinjwV/L/xfD/n5yfuqY8UP3/SAAl80Ttn99ndzYSjHizJg9lnYcjY9Ob30vTglhMcg0OXsfrgBmJC4/xQPNlCj/KkCTBaMOWW3l4PLIK9LDGMel7eOsaJMfC3I0V8bb5sLmKDa3p5FkA9Xdsbx4mZcKC3je/ZGNwwtkwwIDAQAB";
 		
 	// Generate your own 20 random bytes, and put them here.
 	private static final byte[] SALT = new byte[] {
@@ -121,7 +120,7 @@ public class MainActivity extends Activity {
 
 		URL serviceUrl = null;
 		try {
-			serviceUrl = URI.create("http://192.168.1.52:3000/").toURL();
+			serviceUrl = URI.create("https://192.168.1.3:443/").toURL();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
