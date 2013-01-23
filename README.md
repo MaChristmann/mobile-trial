@@ -39,8 +39,8 @@ Mobile-Trial
 * Ui components 
 	* Create Ui Components
 * Security
-	* Use HTTPS instead of HTTP
-	* _DONE 11-21-2012_  Verify signed response with RSA public key
+	* _DONE 01-23-2012_ Use HTTPS instead of HTTP
+	* _DONE 11-21-2012_ Verify signed response with RSA public key
 * Test
 	* Add test project
 * JavaDoc
