@@ -1,20 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     >
+<ImageView 
+   android:id="@+id/mobiletrial_logo"
+    android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_alignParentLeft="true"
+	android:layout_alignParentTop="true"
+	android:layout_alignParentRight="true"
+	android:src="@drawable/logo"
+	android:contentDescription="@string/app_name"
+	android:layout_marginTop="10dp"
+   />
+<TextView 
+    android:id="@+id/status_label"
+    android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_below="@id/mobiletrial_logo"
+	android:text="@string/status_label"
+	android:layout_marginTop="10dp"
+	android:layout_marginLeft="10dp"
+    />
 <TextView
     android:id="@+id/status_text"
-    android:layout_width="fill_parent"
-    android:layout_height="0dip"
-    android:layout_weight="1"
+    android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_below="@id/status_label"	
+	android:layout_marginLeft="10dp"
     />
 <Button
     android:id="@+id/check_license_button"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Check License"
+    android:text="@string/check_license"
+    android:layout_alignParentLeft="true"
+	android:layout_alignParentBottom="true"
+	android:layout_alignParentRight="true"
     />
-</LinearLayout>
+</RelativeLayout>
 
