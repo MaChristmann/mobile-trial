@@ -37,7 +37,8 @@ Mobile-Trial
 
 ## Client
 * Ui components 
-	* Create Ui Components
+	* _DONE 01-24-2012_ Create dialog for license status 'Retry'
+	* _DONE 01-24-2012_ Create dialog for license status 'NotLicensed'
 * Security
 	* _DONE 01-23-2012_ Use HTTPS instead of HTTP
 	* _DONE 11-21-2012_ Verify signed response with RSA public key
@@ -56,6 +57,9 @@ Mobile-Trial
 
 ## Configurator
 * Features
+	* App management
+		* Admin should be able to create/read/configure/delete an app
+		* Developer should be able to see the list of apps he is asigned to and read their configurations
 	* App configuration
 		* Admin should be able to set License Type/Value
 		* Admin should be able to set Valid Time
