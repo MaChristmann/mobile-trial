@@ -53,11 +53,11 @@ public class RestClient {
         public void run() {
                 Looper.prepare(); //For Preparing Message Pool for the child Thread
            
+                // Register Schemes for http and https
                 final SchemeRegistry schemeRegistry = new SchemeRegistry();
                 schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
                 schemeRegistry.register(new Scheme("https", createAdditionalCertsSSLSocketFactory(), 443));
 
-                // and then however you create your connection manager, I use ThreadSafeClientConnManager
                 final HttpParams params = new BasicHttpParams();         
                 final ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params,schemeRegistry);
                 HttpClient client = new DefaultHttpClient(cm, params);

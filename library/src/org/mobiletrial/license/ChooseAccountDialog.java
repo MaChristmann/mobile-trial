@@ -8,25 +8,23 @@ import android.graphics.drawable.Drawable;
 
 public class ChooseAccountDialog{
 	private AlertDialog.Builder mDialogBuilder;
-	private Context mContext;
-	private Resources mResources;
 
-	public ChooseAccountDialog(Context context, String title) {
-		mContext = context;
-		mResources = mContext.getResources();
-		
-		mDialogBuilder = new AlertDialog.Builder(context);
-		mDialogBuilder.setCancelable(false);
-		
-		if(title == null)
-			title = mResources.getString(R.string.mobiletrial_chooseaccount_title);
-		mDialogBuilder.setTitle(title);
-	}
-	
-	public ChooseAccountDialog(Context context){
+	ChooseAccountDialog(Context context){
 		this(context, null);
 	}
 	
+	ChooseAccountDialog(Context context, String title) {	
+		mDialogBuilder = new AlertDialog.Builder(context);
+		mDialogBuilder.setCancelable(false);
+		
+		if(title == null){
+			Resources res = context.getResources();
+			title = res.getString(R.string.mobiletrial_chooseaccount_title);
+		}
+		mDialogBuilder.setTitle(title);
+	}
+	
+
 	ChooseAccountDialog initAccountIcon(Drawable icon){
 		mDialogBuilder.setIcon(icon);
 		return this;
@@ -37,7 +35,7 @@ public class ChooseAccountDialog{
 		return this;
 	}
 
-	public ChooseAccountDialog setTitle(CharSequence title){
+	ChooseAccountDialog setTitle(CharSequence title){
 		mDialogBuilder.setTitle(title);
 		return this;
 	}

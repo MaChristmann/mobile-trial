@@ -350,11 +350,11 @@ public class LicenseChecker {
 	}
 	
 	/**
-	 * Setter for Customized ChooseAccount Dialog
+	 * Setter for title of ChooseAccount Dialog
 	 * @param dlg the ChooseAccountDialog
 	 */
-	public void setChooseAccountDialog (ChooseAccountDialog dlg){
-		chooseAccountDlg = dlg;
+	public void setChooseAccountTitle (String title){
+		chooseAccountDlg = new ChooseAccountDialog(mContext, title);
 	}
 	
 }
