@@ -1,9 +1,22 @@
 <resources>
     <string name="app_name">MobileTrialLibrary</string>
+
+    <!-- Key Store Password -->
+    <string name="mobiletrial_keystore_passwd">mtrial</string>
     
     <!--  Choose Account Dialog -->
     <string name="mobiletrial_chooseaccount_title">Choose your Account</string>
     
-    <!-- Key Store Password -->
-    <string name="mobiletrial_keystore_passwd">mtrial</string>
+    <!-- NotLicensed Dialog -->
+    <string name="mobiletrial_notlicensed_title">Application not licensed</string>
+  	<string name="mobiletrial_notlicensed_body">This application is not licensed.\nPlease purchase it from Android PlayStore.</string>
+  	<string name="mobiletrial_notlicensed_positivebutton">Buy app</string>
+  	<string name="mobiletrial_notlicensed_negativebutton">Exit</string>
+    
+  	<!--  Retry Dialog -->
+  	<string name="mobiletrial_retry_title">Application not licensed</string>
+  	<string name="mobiletrial_retry_body">Unable to validate license.\nCheck to see if a network connection is available.</string>
+  	<string name="mobiletrial_retry_positivebutton">Retry</string>
+  	<string name="mobiletrial_retry_negativebutton">Exit</string>
+   
 </resources>

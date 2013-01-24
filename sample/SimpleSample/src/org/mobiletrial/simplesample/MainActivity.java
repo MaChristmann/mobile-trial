@@ -21,20 +21,20 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import org.mobiletrial.license.ChooseAccountDialog;
 import org.mobiletrial.license.LicenseChecker;
+
+import org.mobiletrial.license.NotLicensedDialog;
 import org.mobiletrial.license.PlaystoreAccountType;
+import org.mobiletrial.license.RetryDialog;
+
 import com.google.android.vending.licensing.AESObfuscator;
 import org.mobiletrial.license.LicenseCheckerCallback;
 import com.google.android.vending.licensing.Policy;
 import com.google.android.vending.licensing.ServerManagedPolicy;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -96,23 +96,6 @@ public class MainActivity extends Activity {
 			}
 		});
 
-
-		//Test Accountmanagement
-		AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
-		Account[] list = manager.getAccounts();
-		String gmail = null;
-
-		for(Account account: list)
-		{
-			if(account.type.equalsIgnoreCase("com.google"))
-			{
-				gmail = account.name;
-			}
-		}
-
-		String android_id = Secure.getString(getContentResolver(),
-				Secure.ANDROID_ID); 
-
 		mHandler = new Handler();
 
 		// Try to use more data here. ANDROID_ID is a single point of attack.
@@ -129,9 +112,6 @@ public class MainActivity extends Activity {
 		// Library calls this when it's done.
 		mLicenseCheckerCallback = new MyLicenseCheckerCallback();
 
-		// Custom AccountChooserDialog
-		ChooseAccountDialog dlg = new ChooseAccountDialog(this, "Wähle dein Account");
-
 		// Construct the LicenseChecker with a policy.
 		mChecker = new LicenseChecker(
 				this, new ServerManagedPolicy(this,
@@ -140,33 +120,12 @@ public class MainActivity extends Activity {
 						serviceUrl,
 						new PlaystoreAccountType());
 
-		mChecker.setChooseAccountDialog(dlg);
-
+		/*
+		 * 	 Set a title for the "choose your account" dialog
+		 *   or change R.string.mobiletrial_chooseaccount_title in library resources  
+		 */
+		mChecker.setChooseAccountTitle("Choose your Google Account");
 		doCheck();
-	}
-
-	protected Dialog onCreateDialog(int id) {
-		final boolean bRetry = id == 1;
-		return new AlertDialog.Builder(this)
-		.setTitle(R.string.unlicensed_dialog_title)
-		.setMessage(bRetry ? R.string.unlicensed_dialog_retry_body : R.string.unlicensed_dialog_body)
-		.setPositiveButton(bRetry ? R.string.retry_button : R.string.buy_button, new DialogInterface.OnClickListener() {
-			boolean mRetry = bRetry;
-			public void onClick(DialogInterface dialog, int which) {
-				if ( mRetry ) {
-					doCheck();
-				} else {
-					Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-							"http://market.android.com/details?id=" + getPackageName()));
-					startActivity(marketIntent);                        
-				}
-			}
-		})
-		.setNegativeButton(R.string.quit_button, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				finish();
-			}
-		}).create();
 	}
 
 	private void doCheck() {
@@ -185,16 +144,6 @@ public class MainActivity extends Activity {
 			}
 		});
 	}
-
-	private void displayDialog(final boolean showRetry) {
-		mHandler.post(new Runnable() {
-			public void run() {
-				setProgressBarIndeterminateVisibility(false);
-				showDialog(showRetry ? 1 : 0);
-				mCheckLicenseButton.setEnabled(true);
-			}
-		});
-	}    
 
 	private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
 		public void allow(int policyReason) {
@@ -221,7 +170,53 @@ public class MainActivity extends Activity {
 			// If the reason for the lack of license is that the service is
 			// unavailable or there is another problem, we display a
 			// retry button on the dialog and a different message.
-			displayDialog(policyReason == Policy.RETRY);
+			if(policyReason == Policy.RETRY){
+				mHandler.post(new Runnable() {
+					public void run() {
+						setProgressBarIndeterminateVisibility(false);
+						RetryDialog dlg = new RetryDialog(MainActivity.this);
+						dlg.setNegativeButton(new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								MainActivity.this.finish();
+							}
+						});
+						dlg.setPositiveButton(new OnClickListener(){
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {	
+								doCheck();
+							}	
+						});
+						dlg.show();
+						mCheckLicenseButton.setEnabled(true);
+					}
+				});
+			} else { 
+				mHandler.post(new Runnable() {
+					public void run() {
+						setProgressBarIndeterminateVisibility(false);
+						NotLicensedDialog dlg = new NotLicensedDialog(MainActivity.this);
+						dlg.setNegativeButton(new OnClickListener() {			
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								MainActivity.this.finish();
+							}
+						});
+						dlg.setPositiveButton(new OnClickListener(){
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {	
+								Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+										"http://market.android.com/details?id=" + getPackageName()));
+								startActivity(marketIntent);    
+							}	
+						});
+						dlg.show();
+						mCheckLicenseButton.setEnabled(true);
+					}
+				});	
+			}
 		}
 
 		public void applicationError(int errorCode) {
