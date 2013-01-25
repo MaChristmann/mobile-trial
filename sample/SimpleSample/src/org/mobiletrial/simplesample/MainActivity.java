@@ -65,6 +65,7 @@ import android.widget.TextView;
  * licensing documentation.</a>
  */
 public class MainActivity extends Activity {
+	// Enter your public key here you get from the MobileTrial server
 	private static final String BASE64_PUBLIC_KEY = 
 		"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLqTEeyXDh84pv5Kp2DQ2UoR7glauSGd4jFK6GxVA0WxUfTtIK2VMoXxvY9DZ0XBOJ2knanaIU9T/g8Rbs5RhpbTFeFpb5F2Crh/qjxiutHa1wj2lo8RwNds+/4ScG4w82P5vPsI7WAzWyNSDhemOGgp1abeSuBqZFK+IHYwtNpQIDAQAB";
 	
@@ -74,6 +75,9 @@ public class MainActivity extends Activity {
 		89
 	};
 
+	// Change server url to your MobileTrial server 
+	private static final String MOBILETRIAL_SERVER_URL = "https://192.168.1.52:443/";
+	
 	private static final int BUYAPP_REQUEST = 1337;
 	
 	private TextView mStatusText;
@@ -103,15 +107,16 @@ public class MainActivity extends Activity {
 		// Try to use more data here. ANDROID_ID is a single point of attack.
 		String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
 
-		URL serviceUrl = null;
+		//Create an url object to the MobileTrial server
+		URL mobileTrialServerUrl = null;
 		try {
-			serviceUrl = URI.create("https://192.168.1.52:443/").toURL();
+			mobileTrialServerUrl = URI.create(MOBILETRIAL_SERVER_URL).toURL();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+			//Shouldn't happen if your string is a valid url
 			e.printStackTrace();
 		}
 
-		// Library calls this when it's done.
+		// Construct the LicenseChecker with a ServerManaged Policy
 		mLicenseCheckerCallback = new MyLicenseCheckerCallback();
 
 		// Construct the LicenseChecker with a policy.
@@ -119,7 +124,7 @@ public class MainActivity extends Activity {
 				this, new ServerManagedPolicy(this,
 						new AESObfuscator(SALT, getPackageName(), deviceId)),
 						BASE64_PUBLIC_KEY, 
-						serviceUrl,
+						mobileTrialServerUrl,
 						new PlaystoreAccountType());
 
 		/*
