@@ -1,0 +1,19 @@
+<resources>
+
+    <string name="app_name">MT-RestrictAfterExpired</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">MT-RestrictAfterExpired</string>
+
+     <!-- License checking status messages -->
+    <string name="checking_license">Checking license&#8230;</string>
+    <string name="status_label">License status:</string>
+    <string name="dont_allow">Don\'t allow the user access</string>
+    <string name="allow">Allow the user access</string>
+    <string name="application_error">Application error: %1$s</string>
+    <string name="use_free_features">Use lite version</string>
+    
+    <!--Sample buttons -->
+    <string name="free_feature_btn">Free feature</string>
+    <string name="paid_feature_btn">Paid feature</string>
+    
+</resources>

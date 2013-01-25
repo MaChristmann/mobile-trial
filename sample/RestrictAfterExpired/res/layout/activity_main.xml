@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+<ImageView 
+   android:id="@+id/mobiletrial_logo"
+    android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_alignParentLeft="true"
+	android:layout_alignParentTop="true"
+	android:layout_alignParentRight="true"
+	android:src="@drawable/logo"
+	android:contentDescription="@string/app_name"
+	android:layout_marginTop="10dp"
+   />
+<TextView 
+    android:id="@+id/status_label"
+    android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_below="@id/mobiletrial_logo"
+	android:text="@string/status_label"
+	android:layout_marginTop="10dp"
+	android:layout_marginLeft="10dp"
+    />
+<TextView
+    android:id="@+id/status_text"
+    android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_below="@id/status_label"	
+	android:layout_marginLeft="10dp"
+    />
+
+<Button
+    android:id="@+id/free_feature_btn"
+    android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_below="@id/status_text"
+	android:text="@string/free_feature_btn"
+	android:layout_marginTop="20dp"
+	android:layout_marginLeft="10dp"
+   	android:layout_marginRight="10dp" /> 
+
+<Button
+    android:id="@+id/paid_feature_btn"
+    android:layout_width="match_parent"
+   	android:layout_height="wrap_content"
+   	android:layout_below="@id/free_feature_btn"
+   	android:text="@string/paid_feature_btn"
+   	android:layout_marginLeft="10dp"
+   	android:layout_marginRight="10dp" />
+
+</RelativeLayout>
