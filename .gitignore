@@ -24,5 +24,7 @@ sample/SimpleSample/bin
 sample/SimpleSample/gen
 sample/ExitAfterExpired/bin
 sample/ExitAfterExpired/gen
+sample/RestrictAfterExpired/bin
+sample/RestrictAfterExpired/gen
 test/bin
 test/gen
