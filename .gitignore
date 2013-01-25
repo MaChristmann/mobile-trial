@@ -22,6 +22,7 @@ library/bin
 library/gen
 sample/SimpleSample/bin
 sample/SimpleSample/gen
+sample/ExitAfterExpired/bin
+sample/ExitAfterExpired/gen
 test/bin
 test/gen
-/server/.rnd
