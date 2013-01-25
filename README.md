@@ -49,7 +49,7 @@ Mobile-Trial
 
 ## Sample
 * _DONE 01-25-2012_ Add sample: time based, close app after trial expired
-* _IN PROGRESS_ Add sample: time based, restrict features after trial expired
+* _DONE 01-25-2012_ Add sample: time based, restrict features after trial expired
 
 ## GitHub Documentation
 * Add HowTo documentation
