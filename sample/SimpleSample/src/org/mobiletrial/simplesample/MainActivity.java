@@ -66,14 +66,16 @@ import android.widget.TextView;
  */
 public class MainActivity extends Activity {
 	private static final String BASE64_PUBLIC_KEY = 
-		"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCxl4mLYinjwV/L/xfD/n5yfuqY8UP3/SAAl80Ttn99ndzYSjHizJg9lnYcjY9Ob30vTglhMcg0OXsfrgBmJC4/xQPNlCj/KkCTBaMOWW3l4PLIK9LDGMel7eOsaJMfC3I0V8bb5sLmKDa3p5FkA9Xdsbx4mZcKC3je/ZGNwwtkwwIDAQAB";
-		
+		"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLqTEeyXDh84pv5Kp2DQ2UoR7glauSGd4jFK6GxVA0WxUfTtIK2VMoXxvY9DZ0XBOJ2knanaIU9T/g8Rbs5RhpbTFeFpb5F2Crh/qjxiutHa1wj2lo8RwNds+/4ScG4w82P5vPsI7WAzWyNSDhemOGgp1abeSuBqZFK+IHYwtNpQIDAQAB";
+	
 	// Generate your own 20 random bytes, and put them here.
 	private static final byte[] SALT = new byte[] {
 		-46, 65, 30, -128, -103, -57, 74, -64, 51, 88, -95, -45, 77, -117, -36, -113, -11, 32, -64,
 		89
 	};
 
+	private static final int BUYAPP_REQUEST = 1337;
+	
 	private TextView mStatusText;
 	private Button mCheckLicenseButton;
 
@@ -103,7 +105,7 @@ public class MainActivity extends Activity {
 
 		URL serviceUrl = null;
 		try {
-			serviceUrl = URI.create("https://192.168.1.3:443/").toURL();
+			serviceUrl = URI.create("https://192.168.1.52:443/").toURL();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -144,7 +146,19 @@ public class MainActivity extends Activity {
 			}
 		});
 	}
-
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		// Repeat the licensing check.
+		// If you send the user to PlayStore to buy the app 
+		// or you let the user change the network connections settings
+		// you should repeat the licensing check as the dialog already disappeared
+		if(requestCode == BUYAPP_REQUEST){
+			doCheck();
+		}
+	}
+	
+	
 	private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
 		public void allow(int policyReason) {
 			if (isFinishing()) {
@@ -209,7 +223,7 @@ public class MainActivity extends Activity {
 									int which) {	
 								Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
 										"http://market.android.com/details?id=" + getPackageName()));
-								startActivity(marketIntent);    
+								startActivityForResult(marketIntent, BUYAPP_REQUEST);   
 							}	
 						});
 						dlg.show();
@@ -232,6 +246,8 @@ public class MainActivity extends Activity {
 		}
 	}
 
+
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
