@@ -43,12 +43,13 @@ Mobile-Trial
 	* _DONE 01-23-2012_ Use HTTPS instead of HTTP
 	* _DONE 11-21-2012_ Verify signed response with RSA public key
 * Test
-	* Add test project
+	* _DONE 01-25-2012_ Add test project
 * JavaDoc
+	* Add JavaDoc documentation 
 
 ## Sample
-* Add sample: time based, close app after trial expired
-* Add sample: time based, restrict features after trial expired
+* _DONE 01-25-2012_ Add sample: time based, close app after trial expired
+* _IN PROGRESS_ Add sample: time based, restrict features after trial expired
 
 ## GitHub Documentation
 * Add HowTo documentation
