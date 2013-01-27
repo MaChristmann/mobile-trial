@@ -34,6 +34,20 @@ exports.middleware = function(req, res, next){
 	});
 }
 
+exports.list = function(req, res, next){
+	var logger = res.locals.logger;
+	var app = res.locals.app;
+
+	developerSv.list(app, function(err, developers){
+		if(err){
+			logger.error('On list developers: ' + err);
+			res.send(500, err);
+			return;
+		}
+		res.send(developers);
+ 	});
+}
+
 exports.create = function(req, res, next){
 	var logger = res.locals.logger;
 	var app = res.locals.app;
