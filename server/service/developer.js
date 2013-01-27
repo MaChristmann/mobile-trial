@@ -24,19 +24,33 @@ exports.get = function(app, account, next){
 			return;
 		}
 
-		db.DeveloperRole.findOne({'user': user, 'app': app}, function(err, developer){
-			if(err) {
-				nextr(err);
-				return;
-			}
-
-			if(developer == null){
-				next(null, null);
-				return;
-			}
-			next(null, developer);
-		});
+		db.DeveloperRole
+			.findOne({'user': user, 'app': app})
+			.exec( function(err, developer){
+				if(err) {
+					next(err);
+					return;
+				}
+				next(null, developer);
+			});
 	});
+}
+
+exports.list = function(app, next){
+	if(!app){
+		next(new Error('Missing parameter app'));
+		return;
+	}
+
+	db.DeveloperRole.find({'app': app})
+		.populate('user')
+		.exec(function(err, developers){
+			if(err){
+				next(err);
+				return;
+			}
+			next(null, developers);
+		});
 }
 
 exports.create = function(app, developerObj, next){

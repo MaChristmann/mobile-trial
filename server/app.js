@@ -68,9 +68,10 @@ server.put('/user/:user/admin', 			[authenticateRoute.admin, userRoute.assignToA
 server.del('/user/:user/admin', 			[authenticateRoute.admin, userRoute.revokeFromAdmin]); 
 
 /* Developer Management */ 
-server.post	('/app/:app/developer',						 [authenticateRoute.admin, 		developerRoute.create]);
-server.put	('/app/:app/developer/:developer', [authenticateRoute.developer, developerRoute.update]);
-server.del 	('/app/:app/developer/:developer', [authenticateRoute.admin, 		developerRoute.delete]);
+server.get ('/app/:app/developer', 							[authenticateRoute.admin, 		developerRoute.list])
+server.post	('/app/:app/developer',						 	[authenticateRoute.admin, 		developerRoute.create]);
+server.put	('/app/:app/developer/:developer', 	[authenticateRoute.developer, developerRoute.update]);
+server.del 	('/app/:app/developer/:developer', 	[authenticateRoute.admin, 		developerRoute.delete]);
 
 /* App  Management */ 
 server.post('/app',	 		 [authenticateRoute.admin, appRoute.create]);
