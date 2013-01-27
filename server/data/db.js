@@ -24,7 +24,7 @@ var CustomerSchema = new Schema({
 	account: {type:String, required: true}
 	, createdAt : {type: Date, required: true}
 	, modifiedAt : {type: Date, required: true}
-	, app: {type:ObjectId, ref:'AppSchema', required: true}
+	, app: {type:ObjectId, ref:'App', required: true}
 	, versionCode : {
 			type: Number,
 			min: 1,
@@ -51,9 +51,9 @@ var UserSchema = new Schema ({
 });
 
 var DeveloperRoleSchema = new Schema({
-	user: {type:ObjectId, ref:'UserSchema', required:true}
+	user: {type:ObjectId, ref:'User', required:true}
 	, testResult: {type: String, default: '0', enum:['0', '1', '2']}
-	, app: {type:ObjectId, ref:'AppSchema', required:true}
+	, app: {type:ObjectId, ref:'App', required:true}
 })
 
 var AdminRoleSchema = new Schema({
