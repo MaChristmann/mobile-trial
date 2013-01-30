@@ -12,13 +12,13 @@ Mobile-Trial
 	* _DONE 12-05-2012_ ValidTime set to 0 should return a validtime till the end of trial period
 	* _DONE 11-30-2012_ Activate/Deactive the license check 
 	* _DONE 01-27-2012_ List all developers for an app
-	* List all admins
+	* _DONE 01-30-2012_ List all admins (by listing users which have an admin object)
 *	Security
 	* _DONE 01-17-2013_ Use HTTPS instead of HTTP
 	* _DONE 11-20-2012_ Create digital signature with openssl and sign response data with RSA privatekey
 	* _DONE 11-18-2012_ Use hashed passwords for user accounts 
 	* _DONE 12-05-2012_ Allow access of admins and developers based on ip v4 addresses/range
-	* Allow access of admins and developers based on ip v6 addresses/range
+	*  Allow access of admins and developers based on ip v6 addresses/range
 * Privacy
 	* _DONE 12-04-2012_ Hash account emails from customers using sha1.. They don't need to be readable
 * Tests (Currently 163 test cases)
