@@ -69,9 +69,9 @@ Mobile-Trial
 		* Admin should be able to set Grace Retrycount  
 		* Admin should be able to set max. versionCode number
 		* Admin should be able to set update versionCode number
+		* Admin should be able to set/unset user as developer
 	* User configuration
 		* Admin should be able to create/delete user
-		* Admin should be able to set/unset user as developer
 		* Admin should be able to set/unset user as admin
 	* License Test
 		* Developer should be able to set testResponse
