@@ -18,6 +18,7 @@ exports.get = function(account, next){
 			next(null,null);
 			return;
 		}	
+		
 		next(null, user);
 	});
 };
@@ -92,23 +93,17 @@ exports.delete = function(user, next){
 
 
 exports.clean = function(next){
-	db.AdminRole.remove({}, function(err){
+	db.DeveloperRole.remove({}, function(err){
 		if(err){
 			next(err);
 			return;
 		}
-		db.DeveloperRole.remove({}, function(err){
+		db.User.remove({}, function(err){
 			if(err){
 				next(err);
 				return;
 			}
-			db.User.remove({}, function(err){
-				if(err){
-					next(err);
-					return;
-				}
-				next();
-			});
+			next();
 		});
 	});
 }
@@ -120,13 +115,12 @@ exports.assignToAdmin = function(user, next){
 		return;
 	}
 
-	var admin = new db.AdminRole();
-	admin.user = user;
-	admin.save(function(err){
+	user.adminRole.isAdmin = true;
+	user.save(function(err){
 		if(err){
 			next(err);
 			return;
-		} 
+		}
 
 		next(null, user);
 	});
@@ -139,7 +133,8 @@ exports.revokeFromAdmin = function(user, next){
 		return;
 	}
 
-	db.AdminRole.remove({'user': user}, function(err){
+	user.adminRole.isAdmin = false;
+	user.save(function(err){
 		if(err){
 			next(err);
 			return;

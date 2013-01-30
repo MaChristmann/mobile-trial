@@ -45,20 +45,11 @@ exports.admin = function(account, password, next){
 			return;
 		}
 
-	
-
-		db.AdminRole.findOne({'user': user}, function(err, admin){
-			if(err){
-				next(err);
-				return;
-			} 
-
-			if(admin == null){
-				next(null, false);
-				return;
-			}
+		if(user.adminRole.isAdmin){
 			next(null, true);
-		});
+		} else{
+			next(null, false);
+		}
 	});
 }
 

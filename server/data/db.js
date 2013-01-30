@@ -36,18 +36,22 @@ CustomerSchema.pre('save', function (next) {
 	this.modifiedAt = new Date();
   next();
 });
+
 CustomerSchema.path('versionCode').set(function(v){
 	this._prevVersionCode = this.versionCode ? this.versionCode : 1;
 	return Math.floor(v);
 });
+
 CustomerSchema.path('versionCode').validate(function(val){
 	return this._prevVersionCode <= Math.floor(val); 
 }, "versionCode must be higher or equal than its prior value");
 
-
 var UserSchema = new Schema ({
 	account: {type:String, index:true, unique:true, required:true}
 	,	password: {type: String, required:true}
+	, adminRole: {
+		isAdmin: {type:Boolean, default:false}
+	}
 });
 
 var DeveloperRoleSchema = new Schema({
@@ -55,10 +59,11 @@ var DeveloperRoleSchema = new Schema({
 	, testResult: {type: String, default: '0', enum:['0', '1', '2']}
 	, app: {type:ObjectId, ref:'App', required:true}
 })
-
+/*
 var AdminRoleSchema = new Schema({
 	user: {type:ObjectId, ref:'UserSchema', required:true}
 })
+*/
 
 var LicenseModel = mongoose.model('License', LicenseSchema);
 exports.License = LicenseModel;
@@ -75,6 +80,7 @@ exports.User = UserModel;
 var DeveloperRoleModel = mongoose.model('DeveloperRole', DeveloperRoleSchema);
 exports.DeveloperRole = DeveloperRoleModel;
 
+/*
 var AdminRoleModel = mongoose.model('AdminRole', AdminRoleSchema);
 exports.AdminRole = AdminRoleModel;
-
+*/
