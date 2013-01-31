@@ -122,6 +122,7 @@ exports.update = function(app, newApp, next){
 			app.licenses = newApp.licenses 	
 		}
 
+		app.enabled 					= typeof newApp.enabled != 'undefined'	? newApp.enabled : app.enabled;
 		app.maxVersionCode 		= newApp.maxVersionCode 		? newApp.maxVersionCode : app.maxVersionCode;
 		app.updateVersionCode = newApp.updateVersionCode 	? newApp.updateVersionCode : app.updateVersionCode; 
 		app.graceInterval 		= newApp.graceInterval 			? newApp.graceInterval : app.graceInterval;

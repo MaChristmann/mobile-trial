@@ -44,7 +44,6 @@ describe('app.update', function(){
 
 
 	it('should return error for undefined newApp', function(done){
-		console.log("TEST APP.UPDATE");
 		var undefinedParameter;
 
 		appSv.update(appInstance, undefinedParameter, function(err, app){
@@ -54,8 +53,6 @@ describe('app.update', function(){
 	});
 
 	it('should return error for newApp is null', function(done){
-		console.log("TEST APP.UPDATE");
-
 		appSv.update(appInstance, null, function(err, app){
 			assert.notEqual(err, null);
 			done();
@@ -63,7 +60,6 @@ describe('app.update', function(){
 	});
 
 	it('should return error for undefined app', function(done){
-		console.log("TEST APP.UPDATE");
 		var undefinedParameter;
 
 		appSv.update(undefinedParameter, appObj, function(err, app){
@@ -73,8 +69,6 @@ describe('app.update', function(){
 	});
 
 	it('should return error for app is null', function(done){
-		console.log("TEST APP.UPDATE");
-
 		appSv.update(null, appObj, function(err, app){
 			assert.notEqual(err, null);
 			done();
@@ -83,7 +77,6 @@ describe('app.update', function(){
 
 
 	it('should return error for newApp.license is an empty Array', function(done){
-		console.log("TEST APP.UPDATE");
 		appObj.licenses = new Array();
 
 		appSv.update(null, appObj, function(err, app){
@@ -93,8 +86,6 @@ describe('app.update', function(){
 	});
 
 	it('should return app with nothing updated', function(done){
-		console.log("TEST APP.UPDATE");
-
 		appSv.update(appInstance, {}, function(err, app){
 			assert.ifError(err);
 			done();
@@ -102,13 +93,23 @@ describe('app.update', function(){
 	});
 
 	it('should return app with updated maxVersionCode', function(done){	
-		console.log("TEST APP.UPDATE");
 		appObj.maxVersionCode = 10;
 
 		appSv.update(appInstance, appObj, function(err, app){
 			assert.ifError(err);
 			assert.notEqual(app, null);
 			assert.equal(app.maxVersionCode, 10);
+			done();
+		});
+	});
+
+	it('should return app with app.enabled == false', function(done){
+		appObj.enabled = false;
+
+		appSv.update(appInstance, appObj, function(err, app){
+			assert.ifError(err);
+			assert.notEqual(app, null);
+			assert.equal(app.enabled, false);
 			done();
 		});
 	});
