@@ -25,6 +25,7 @@ Mobile-Trial
 	* _DONE 12-19-2012_ Test License service
 	* _DONE 12-26-2012_ Test Developer service
 		* _DONE 01-27-2013_ Test developer.list
+		* _DONE 02-01-2013_ Test set testResult parameter with valid response codes 0,1,4
 	* _DONE 12-26-2012_ Test Customer service
 	* _DONE 12-18-2012_ Test App service
 		* _DONE 01-31-2013_ Test App.update is setting 'enabled' parameter correctly

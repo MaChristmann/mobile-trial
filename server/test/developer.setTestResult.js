@@ -118,16 +118,33 @@ describe('developer.setTestResult', function(){
 		});
 	});
 
-	it('should return an error for an invalid testResult code [valid: 0,1,2]', function(done){
+	it('should return an error for an invalid testResult code 2 [valid: 0,1,4]', function(done){
+		developerSv.setTestResult(developerInstance, '2', function(err, developer){
+			assert.notEqual(err, null);
+			done();
+		});
+	});
+
+	it('should return an error for an invalid testResult code 3 [valid: 0,1,4]', function(done){
 		developerSv.setTestResult(developerInstance, '3', function(err, developer){
 			assert.notEqual(err, null);
 			done();
 		});
 	});
 
+	it('should change the testResult from LICENSED (code=0) to SERVER_ERROR (code=4) and return developer', function(done){
+		var previousResult = developerInstance.testResult;
+		assert.equal(previousResult, '0');
+		developerSv.setTestResult(developerInstance, '4', function(err, developer){
+			assert.ifError(err);
+			assert.equal(developer.testResult, '4');
+			done();
+		});
+	});
+
 	it('should change the testResult from LICENSED (code=0) to NOTLICENSED (code=1) and return developer', function(done){
 		var previousResult = developerInstance.testResult;
-		assert.notEqual(previousResult, '1');
+		assert.equal(previousResult, '0');
 		developerSv.setTestResult(developerInstance, '1', function(err, developer){
 			assert.ifError(err);
 			assert.equal(developer.testResult, '1');
