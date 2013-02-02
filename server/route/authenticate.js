@@ -7,7 +7,7 @@ var authenticationSv = require('./../service/authenticate');
 exports.developer = function(req, res, next){
 
 	//Check ip range
-	checkDeveloperIpRange(req, res, function(err, inRange){
+	checkIpRange(req, res, 'developer', function(err, inRange){
 		if(err){
 			logger.error('On checking for ip in developer range: ' + err);
 			res.send(500, err);
@@ -55,7 +55,7 @@ exports.developer = function(req, res, next){
 exports.admin = function(req, res, next){ 
 	var logger = res.locals.logger;
 
-	checkAdminIpRange(req, res, function(err, inRange){
+	checkIpRange(req, res, 'admin', function(err, inRange){
 		if(err){
 			logger.error('On checking for ip in admin range: ' + err);
 			res.send(500, err);
@@ -96,42 +96,22 @@ exports.admin = function(req, res, next){
 			next();
 		});
 	});
-
 }
 
-
-function checkDeveloperIpRange(req, res, next){
+function checkIpRange (req, res, role, next){
 	var ip = req.header('x-forwarded-for') || req.connection.remoteAddress || null;
 
-	if(typeof config.iprange == 'undefined' || typeof config.iprange.developer == 'undefined'){
+	if(typeof config.iprange == 'undefined' || typeof config.iprange[role] == 'undefined'){
 		next(null, true);
 		return;
 	}
 
-	authenticationSv.checkIpRange(ip, config.iprange.developer, function(err, inRange){
+	authenticationSv.checkIpRange(ip, config.iprange[role], function(err, inRange){
 		if(err){
 			next(err);
 			return;
 		}
 
-		next(null, inRange);
-	});
-}
-
-
-function checkAdminIpRange(req, res, next){
-	var ip = req.header('x-forwarded-for') || req.connection.remoteAddress || null;
-
-	if(typeof config.iprange == 'undefined' || typeof config.iprange.admin == 'undefined'){
-		next(null, true);
-		return;
-	}
-
-	authenticationSv.checkIpRange(ip, config.iprange.admin, function(err, inRange){
-		if(err){
-			next(err);
-			return;
-		}
 		next(null, inRange);
 	});
 }
