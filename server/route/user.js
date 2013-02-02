@@ -1,4 +1,5 @@
-var userSv = require('./../service/user');
+var userSv = require('./../service/user'), 
+		developerSv = require('./../service/developer');
 
 /* Get user as middleware */
 exports.middleware = function(req, res, next){
@@ -91,7 +92,6 @@ exports.delete = function(req, res, next){
 			res.send(500, err);
 			return;
 		}
-
 		developerSv.deleteByUser(user, function(err, user){
 			if(err){
 				logger.error('On developer deleteByUser: ' + err);
