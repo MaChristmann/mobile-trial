@@ -63,6 +63,7 @@ server.post('/authorize/:app/customer/:account', [licenseRoute.authorize]);
 /* User Management */ 
 server.get('/user', 									[authenticateRoute.admin, userRoute.list]);
 server.post('/user',									[authenticateRoute.admin, userRoute.create]);
+server.get('/user/:user',							[authenticateRoute.user, 	userRoute.get]);
 server.del('/user/:user', 						[authenticateRoute.admin, userRoute.delete]);
 server.put('/user/:user/admin', 			[authenticateRoute.admin, userRoute.assignToAdmin]);
 server.del('/user/:user/admin', 			[authenticateRoute.admin, userRoute.revokeFromAdmin]); 
