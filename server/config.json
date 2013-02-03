@@ -10,6 +10,12 @@
 		"certificate": "./certificate.pem" 
 	},
 	"iprange": {
+		"user": {
+			"v4": [
+				"127.0.0.1",
+				"192.168.x.x"
+			]
+		},
 		"admin": {
 			"v4":	[
 				"127.0.0.1",
