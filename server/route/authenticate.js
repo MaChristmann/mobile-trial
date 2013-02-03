@@ -52,6 +52,29 @@ exports.admin = function(req, res, next){
 	});
 }
 
+exports.user = function(req, res, next){
+	var logger = res.locals.logger;
+
+	checkIpRange(req, res, 'user', function(){
+		checkUserAuth(req, res, function(user){
+			authenticationSv.user(user, function(err, authorized){
+				if(err){
+					logger.error('On auth username as user: ' + err);
+					res.send(500, err);
+					return;
+				}
+
+				if(!authorized){
+					logger.info('User-pass combination is not an user');
+					res.send(401, new Error('Unauthorized'));
+					return;
+				}
+				next();
+			});
+		});
+	});
+}
+
 
 function checkIpRange (req, res, role, next){
 	var logger = res.locals.logger;

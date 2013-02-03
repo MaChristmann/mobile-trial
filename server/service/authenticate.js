@@ -53,6 +53,22 @@ exports.admin = function(userObj, next){
 	});
 }
 
+exports.user = function(userObj, next){
+	authenticateUser(userObj.account, userObj.password, function(authErr, user){
+		if(authErr){
+			next(authErr);
+			return;
+		}
+
+		if(user == null){
+			next(null, false);
+			return;
+		}
+
+		next(null, true);
+	});
+}
+
 /* User authentication */
 function authenticateUser(account, password, next) {
 	if(!account){
