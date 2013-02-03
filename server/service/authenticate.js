@@ -5,8 +5,8 @@ var bcrypt = require('bcrypt'),
 var db = require('../data/db');
 
 
-exports.developer = function(account, password, next){
-	authenticateUser(account, password, function(authErr, user){
+exports.developer = function(userObj, app, next){
+	authenticateUser(userObj.account, userObj.password, function(authErr, user){
 		if(authErr){
 			next(authErr);
 			return;
@@ -17,7 +17,7 @@ exports.developer = function(account, password, next){
 			return;
 		}
 
-		db.DeveloperRole.findOne({'user': user}, function(err, developer){
+		db.DeveloperRole.findOne({'user': user, 'app': app}, function(err, developer){
 			if(err){
 				next(err);
 				return;
@@ -33,8 +33,8 @@ exports.developer = function(account, password, next){
 	});
 }
 
-exports.admin = function(account, password, next){
-	authenticateUser(account, password, function(authErr, user){
+exports.admin = function(userObj, next){
+	authenticateUser(userObj.account, userObj.password, function(authErr, user){
 		if(authErr){
 			next(authErr);
 			return;

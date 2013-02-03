@@ -21,7 +21,7 @@ Mobile-Trial
 	*  Allow access of admins and developers based on ip v6 addresses/range
 * Privacy
 	* _DONE 12-04-2012_ Hash account emails from customers using sha1.. They don't need to be readable
-* Tests (Currently 166 test cases)
+* Tests (Currently 167 test cases)
 	* _DONE 12-19-2012_ Test License service
 	* _DONE 12-26-2012_ Test Developer service
 		* _DONE 01-27-2013_ Test developer.list
@@ -31,6 +31,7 @@ Mobile-Trial
 		* _DONE 01-31-2013_ Test App.update is setting 'enabled' parameter correctly
 	* _DONE 12-27-2012_ Test User service
 	* _DONE 12-21-2012_ Test Authenticate service
+		* _DONE 02-03-2013_ Test that developer authentication is related to apps and user instead of just an user
 * Refactoring
 	* _DONE 11-29-2012_ Merge Register service and App service to App service
 	* _DONE 11-30-2012_ Branch services into routing layer and service layer (Make's testing easier)

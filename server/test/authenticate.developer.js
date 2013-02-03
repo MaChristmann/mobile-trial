@@ -21,6 +21,17 @@ describe('authenticate.developer', function(){
 		 	}]
 	 	};
 
+	var appObj2 =
+		{
+			identifier: "de.second.unit.test"
+			, maxVersionCode: 2
+			, updateVersionCode: 2			 	
+			, licenses: [{
+		 		trialtype: "time"
+		 		, value: 1
+		 	}]
+	 	};
+
 	var userObj = {
 			account: "developer@mobiletrial.de",
 			password: "devPassword"
@@ -36,7 +47,7 @@ describe('authenticate.developer', function(){
 		}; 
 
 	var developerInstance;
-	var appInstance;
+	var appInstance, appInstance2;
 	var err = null;
 	
 	// Connect to Mongo DB
@@ -52,21 +63,26 @@ describe('authenticate.developer', function(){
 
 			appSv.create(appObj, function(err, app){
 				if(err) throw err;
-				appInstance = app;
+					appInstance = app;
 
-				userSv.clean(function(err){
+				appSv.create(appObj2, function(err, app2){
 					if(err) throw err;
+					appInstance2 = app2;
 
-					userSv.create(userObj, function(err, user){
+					userSv.clean(function(err){
 						if(err) throw err;
 
-						developerSv.create(appInstance, developerObj, function(err, developer){
+						userSv.create(userObj, function(err, user){
 							if(err) throw err;
-							developerInstance = developer;
 
-							userSv.create(anotherUserObj, function(err, otherUser){
+							developerSv.create(appInstance, developerObj, function(err, developer){
 								if(err) throw err;
-								done();
+								developerInstance = developer;
+
+								userSv.create(anotherUserObj, function(err, otherUser){
+									if(err) throw err;
+									done();
+								});
 							});
 						});
 					});
@@ -83,14 +99,22 @@ describe('authenticate.developer', function(){
 
 	it('should return an error for undefined account parameter', function(done){
 		var undefinedParameter;
-		authenticateSv.developer(undefinedParameter, userObj.password, function(err, isAuthorized){
+		var tmpUser = {
+			account: undefinedParameter,
+			password: userObj.password
+		};
+		authenticateSv.developer(tmpUser, appInstance, function(err, isAuthorized){
 			assert.notEqual(err, null);
 			done();
 		});
 	});
 
 	it('should return an error for null account parameter', function(done){
-		authenticateSv.developer(null, userObj.password, function(err, isAuthorized){
+		var tmpUser = {
+			account: null,
+			password: userObj.password
+		};
+		authenticateSv.developer(tmpUser, appInstance, function(err, isAuthorized){
 			assert.notEqual(err, null);
 			done();
 		});
@@ -98,21 +122,29 @@ describe('authenticate.developer', function(){
 
 	it('should return an error for undefined password parameter', function(done){
 		var undefinedParameter;
-		authenticateSv.developer(userObj.account, undefinedParameter, function(err, isAuthorized){
+		var tmpUser = {
+			account: userObj.account,
+			password: undefinedParameter
+		};
+		authenticateSv.developer(tmpUser, appInstance, function(err, isAuthorized){
 			assert.notEqual(err, null);
 			done();
 		});
 	});	
 
 	it('should return an error for null password parameter', function(done){
-		authenticateSv.developer(userObj.account, null, function(err, isAuthorized){
+		var tmpUser = {
+			account: userObj.account,
+			password: null
+		};
+		authenticateSv.developer(tmpUser, appInstance, function(err, isAuthorized){
 			assert.notEqual(err, null);
 			done();
 		});
 	});	
 
 	it('should disallow access for existing user that is not an developer', function(done){ 
-		authenticateSv.developer(anotherUserObj.account, anotherUserObj.password, function(err, isAuthorized){
+		authenticateSv.developer(anotherUserObj, appInstance, function(err, isAuthorized){
 			assert.ifError(err);
 			assert.equal(isAuthorized, false);
 			done();
@@ -120,7 +152,11 @@ describe('authenticate.developer', function(){
 	});
 
 	it('should disallow access for account that does not exist', function(done){
-		authenticateSv.developer("notexist@mobiletrial.de", "anyPassword", function(err, isAuthorized){
+		var tmpUser = {
+			account: 'notexist@mobiletrial.de',
+			password: 'anyPassword'
+		};
+		authenticateSv.developer(tmpUser, appInstance, function(err, isAuthorized){
 			assert.ifError(err);
 			assert.equal(isAuthorized, false);
 			done();
@@ -128,7 +164,19 @@ describe('authenticate.developer', function(){
 	});
 
 	it('should disallow access for existing developer but wrong password', function(done){
-		authenticateSv.developer(userObj.account, "wrongPassword", function(err, isAuthorized){
+		var tmpUser = {
+			account: userObj.account,
+			password: 'wrongPassword'
+		};
+		authenticateSv.developer(tmpUser, appInstance, function(err, isAuthorized){
+			assert.ifError(err);
+			assert.equal(isAuthorized, false);
+			done();
+		});
+	});
+
+	it('should disallow access for an existing developer for a different app', function(done){
+		authenticateSv.developer(userObj, appInstance2, function(err, isAuthorized){
 			assert.ifError(err);
 			assert.equal(isAuthorized, false);
 			done();
@@ -136,7 +184,7 @@ describe('authenticate.developer', function(){
 	});
 
 	it('should allow access for valid combination of account and password', function(done){
-		authenticateSv.developer(userObj.account, userObj.password, function(err, isAuthorized){
+		authenticateSv.developer(userObj, appInstance, function(err, isAuthorized){
 			assert.ifError(err);
 			assert.equal(isAuthorized, true);
 			done();

@@ -56,14 +56,22 @@ describe('authenticate.admin', function(){
 
 	it('should return an error for undefined account parameter', function(done){
 		var undefinedParameter;
-		authenticateSv.admin(undefinedParameter, adminObj.password, function(err, isAuthorized){
+		var tmpUser = {
+			account: undefinedParameter,
+			password: adminObj.password
+		};
+		authenticateSv.admin(tmpUser, function(err, isAuthorized){
 			assert.notEqual(err, null);
 			done();
 		});
 	});
 
 	it('should return an error for null account parameter', function(done){
-		authenticateSv.admin(null, adminObj.password, function(err, isAuthorized){
+		var tmpUser = {
+			account: null,
+			password: adminObj.password
+		};
+		authenticateSv.admin(tmpUser, function(err, isAuthorized){
 			assert.notEqual(err, null);
 			done();
 		});
@@ -71,21 +79,29 @@ describe('authenticate.admin', function(){
 
 	it('should return an error for undefined password parameter', function(done){
 		var undefinedParameter;
-		authenticateSv.admin(adminObj.account, undefinedParameter, function(err, isAuthorized){
+		var tmpUser = {
+			account: adminObj.account,
+			password: undefinedParameter
+		};
+		authenticateSv.admin(tmpUser, function(err, isAuthorized){
 			assert.notEqual(err, null);
 			done();
 		});
 	});	
 
 	it('should return an error for null password parameter', function(done){
-		authenticateSv.admin(adminObj.account, null, function(err, isAuthorized){
+		var tmpUser = {
+			account: adminObj.account,
+			password: null
+		};
+		authenticateSv.admin(tmpUser, function(err, isAuthorized){
 			assert.notEqual(err, null);
 			done();
 		});
 	});	
 
 	it('should disallow access for existing user that is not an admin', function(done){ 
-		authenticateSv.admin(userObj.account, userObj.password, function(err, isAuthorized){
+		authenticateSv.admin(userObj, function(err, isAuthorized){
 			assert.ifError(err);
 			assert.equal(isAuthorized, false);
 			done();
@@ -93,7 +109,11 @@ describe('authenticate.admin', function(){
 	});
 
 	it('should disallow access for account that does not exist', function(done){
-		authenticateSv.admin("notexist@mobiletrial.de", "anyPassword", function(err, isAuthorized){
+		var tmpUser = {
+			account: 'notexist@mobiletrial.de',
+			password: 'anyPassword'
+		};
+		authenticateSv.admin(tmpUser, function(err, isAuthorized){
 			assert.ifError(err);
 			assert.equal(isAuthorized, false);
 			done();
@@ -101,7 +121,11 @@ describe('authenticate.admin', function(){
 	});
 
 	it('should disallow access for existing admin but wrong password', function(done){
-		authenticateSv.admin(adminObj.account, "wrongPassword", function(err, isAuthorized){
+		var tmpUser = {
+			account: adminObj.account,
+			password: 'wrongPassword'
+		};	
+		authenticateSv.admin(tmpUser, function(err, isAuthorized){
 			assert.ifError(err);
 			assert.equal(isAuthorized, false);
 			done();
@@ -109,7 +133,7 @@ describe('authenticate.admin', function(){
 	});
 
 	it('should allow access for valid combination of account and password', function(done){
-		authenticateSv.admin(adminObj.account, adminObj.password, function(err, isAuthorized){
+		authenticateSv.admin(adminObj, function(err, isAuthorized){
 			assert.ifError(err);
 			assert.equal(isAuthorized, true);
 			done();
