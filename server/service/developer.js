@@ -53,6 +53,23 @@ exports.list = function(app, next){
 		});
 }
 
+exports.listByUser = function(user, next){
+	if(!user){
+		next(new Error('Missing parameter user'));
+		return;
+	}
+
+	db.DeveloperRole.find({'user': user})
+		.populate('app')
+		.exec(function(err, developers){
+			if(err){
+				next(err);
+				return;
+			}
+			next(null, developers);
+		});
+}
+
 exports.create = function(app, developerObj, next){
 	if(!app){
 		next(new Error('Missing paramater app'));

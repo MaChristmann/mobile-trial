@@ -67,6 +67,9 @@ server.get('/user/:user',							[authenticateRoute.user, 	userRoute.get]);
 server.del('/user/:user', 						[authenticateRoute.admin, userRoute.delete]);
 server.put('/user/:user/admin', 			[authenticateRoute.admin, userRoute.assignToAdmin]);
 server.del('/user/:user/admin', 			[authenticateRoute.admin, userRoute.revokeFromAdmin]); 
+// List all developer roles for an user
+server.get('/user/:user/developer',		[authenticateRoute.user, userRoute.listDeveloperRoles]);
+
 
 /* Developer Management */ 
 server.get ('/app/:app/developer', 							[authenticateRoute.admin, 		developerRoute.list])

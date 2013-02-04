@@ -13,6 +13,7 @@ Mobile-Trial
 	* _DONE 11-30-2012_ Activate/Deactive the license check 
 	* _DONE 01-27-2013_ List all developers for an app
 	* _DONE 01-30-2013_ List all admins (by listing users which have an admin object)
+	* _DONE 02-04-2013_ List all apps of an user where the user has developer role
 *	Security
 	* _DONE 01-17-2013_ Use HTTPS instead of HTTP
 	* _DONE 11-20-2012_ Create digital signature with openssl and sign response data with RSA privatekey
@@ -21,11 +22,12 @@ Mobile-Trial
 	*  Allow access of admins and developers based on ip v6 addresses/range
 * Privacy
 	* _DONE 12-04-2012_ Hash account emails from customers using sha1.. They don't need to be readable
-* Tests (Currently 174 test cases)
+* Tests (Currently 178 test cases)
 	* _DONE 12-19-2012_ Test License service
 	* _DONE 12-26-2012_ Test Developer service
 		* _DONE 01-27-2013_ Test developer.list
 		* _DONE 02-01-2013_ Test set testResult parameter with valid response codes 0,1,4
+		* _DONE 02-04-2013_ Test developer.listByUser
 	* _DONE 12-26-2012_ Test Customer service
 	* _DONE 12-18-2012_ Test App service
 		* _DONE 01-31-2013_ Test App.update is setting 'enabled' parameter correctly

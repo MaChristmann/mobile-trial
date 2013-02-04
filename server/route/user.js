@@ -146,3 +146,16 @@ exports.revokeFromAdmin = function(req, res, next){
 		res.send(user);
 	});
 }
+
+exports.listDeveloperRoles = function(req, res, next){
+	var logger = res.locals.logger;
+	var user = res.locals.user;
+	developerSv.listByUser(user, function(err, developers){
+		if(err){
+			logger.error('On user listDeveloperRoles: ' + err);
+			res.send(500, err);
+			return;
+		}
+		res.send(developers);
+	});
+}
