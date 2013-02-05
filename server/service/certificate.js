@@ -19,33 +19,19 @@ exports.create = function(packageName, next){
 				return;
 			}
 		
-			//Get Private Key	
-			var indexPrivateEnd = data.indexOf("-----END PRIVATE KEY-----") + "-----END PRIVATE KEY-----".length;
-			var privateKey = data.slice(0, indexPrivateEnd);
+			data = data.replace(/\s/gm, '');
+			var tmpArr = data.split('-----');
 
-			//Get Public Key
-			var indexPublicEnd = data.indexOf("-----END PUBLIC KEY-----") + "-----END PUBLIC KEY-----".length;
-			var publicKey = data.slice(indexPrivateEnd+1, indexPublicEnd);
-			// Remove divider
-			publicKey = publicKey.replace("-----BEGIN PUBLIC KEY-----", "");
-			publicKey = publicKey.replace("-----END PUBLIC KEY-----", "");
-			// Remove Linebreaks
-			publicKey = publicKey.replace(/\s/gm, '');
-
-			//Get Certificate
-			var certificate = data.slice(indexPublicEnd+1);
-			// Remove divider
-			publicKey = publicKey.replace("-----BEGIN CERTIFICATE-----", "");
-			publicKey = publicKey.replace("-----END CERTIFICATE-----", "");
-			// Remove Linebreaks
-			certificate = certificate.replace(/\s/gm, '');
+			var privateKey = tmpArr[2];
+			var publicKey = tmpArr[6];
+			var certificate = "trololol";
 
 			fs.unlink(certificateFile, function(err){
 				if(err){
 					next(err);
 					return;
 				}
-				next(null, publicKey, privateKey, certificate);
+				next(null, publicKey, privateKey);
 			});
 		});
 	});

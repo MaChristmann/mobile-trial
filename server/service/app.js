@@ -84,7 +84,7 @@ exports.create = function(appObj, next){
 		app.licenses = licenses;
 
 		//Create the public private key for signin
-		certificateSv.create(appObj.identifier, function(err, pub, priv, cert){
+		certificateSv.create(appObj.identifier, function(err, pub, priv){
 			if(err){
 				next(err);
 				return;
