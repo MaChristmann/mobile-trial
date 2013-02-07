@@ -57,6 +57,7 @@ Mobile-Trial
 ## Sample
 * _DONE 01-25-2013_ Add sample: time based, close app after trial expired
 * _DONE 01-25-2013_ Add sample: time based, restrict features after trial expired
+* Add sample: time based, nagware after trial expired
 
 ## GitHub Documentation
 * Add HowTo documentation
