@@ -24,9 +24,9 @@ exports.create = function(packageName, next){
 			console.log(tmpArr);
 
 		//Get Private Key	
-			var indexPrivateEnd = data.indexOf("-----END PRIVATE KEY-----") != 1 
+			var indexPrivateEnd = data.indexOf("-----END PRIVATE KEY-----") != -1 
 															? data.indexOf("-----END PRIVATE KEY-----") + "-----END PRIVATE KEY-----".length
-															: data.indexOf("-----BEGIN RSA PRIVATE KEY-----") + "-----END RSA PRIVATE KEY-----".length;
+															: data.indexOf("-----END RSA PRIVATE KEY-----") + "-----END RSA PRIVATE KEY-----".length;
 			var privateKey = data.slice(0, indexPrivateEnd);
 
 			//Get Public Key
