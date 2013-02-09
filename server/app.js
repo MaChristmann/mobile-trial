@@ -30,9 +30,13 @@ var server = restify.createServer(serverOptions);
 // Connect to Mongo DB
 mongoose.connect(config.mongodb.production); 
 
+//Sanitize url like //foo/////bar// to /foo/bar
+server.pre(restify.pre.sanitizePath());
+
 // Enable Bundles
 server.use(restify.bodyParser());
 server.use(restify.authorizationParser());
+
 
 /* Url Parameter */
 //Initialize express.js like locals object for url parameter results
