@@ -19,11 +19,7 @@ exports.create = function(packageName, next){
 				return;
 			}
 		
-			var tmpArr = data.split("\n-----");
-
-			console.log(tmpArr);
-
-		//Get Private Key	
+			//Get Private Key	
 			var indexPrivateEnd = data.indexOf("-----END PRIVATE KEY-----") != -1 
 															? data.indexOf("-----END PRIVATE KEY-----") + "-----END PRIVATE KEY-----".length
 															: data.indexOf("-----END RSA PRIVATE KEY-----") + "-----END RSA PRIVATE KEY-----".length;
@@ -37,14 +33,6 @@ exports.create = function(packageName, next){
 			publicKey = publicKey.replace("-----END PUBLIC KEY-----", "");
 			// Remove Linebreaks
 			publicKey = publicKey.replace(/\s/gm, '');
-
-			//Get Certificate
-			var certificate = data.slice(indexPublicEnd+1);
-			// Remove divider
-			publicKey = publicKey.replace("-----BEGIN CERTIFICATE-----", "");
-			publicKey = publicKey.replace("-----END CERTIFICATE-----", "");
-			// Remove Linebreaks
-			certificate = certificate.replace(/\s/gm, '');
 
 			fs.unlink(certificateFile, function(err){
 				if(err){
