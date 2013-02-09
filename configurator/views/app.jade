@@ -1,0 +1,53 @@
+extends configurator
+
+block content
+
+	.container
+		h2 Apps
+
+	if typeof err != 'undefined'
+		div.alert.alert-block.alert-error 
+			button(type="button", class="close", data-dismiss="alert") &times;
+			h4 Error!
+			| #{err}
+
+	.container
+		form.form-horizontal.form-create(method='post')
+			h3 Create new app
+			.control-group
+				label.control-label(for="identifier") 
+					| App Identifier
+				.controls 
+					input(name='identifier', type='text', class='text span5', placeholder='e.g. com.mycompany.appname') 
+					span.help-block
+						span(class='label label-important') Important
+						br  
+						| Use the packagename of your app which is defined in the AndroidManifest.xml file of your app
+			.control-group
+				.controls
+					input(type='submit', value='Create', class='btn btn-primary')
+
+
+
+	.container	
+		table.table.table-striped
+			tr
+				th Identifier
+				th Status
+				th Developer
+				th Delete
+			each app in appList
+				tr
+					td
+						a(href='/cfg/app/#{app.identifier}') #{app.identifier}
+					td
+						if app.enabled
+							span.badge.badge-success Ok
+						else
+							span.badge Disabled
+					td
+						a(href='/cfg/app/#{app.identifier}/developer') Developer
+					td
+						form(method='post', action='/cfg/app/#{app.identifier}')
+							input(type='hidden', name='_method', value='delete')
+							input(type='submit', value='Delete app', class='btn btn-danger')

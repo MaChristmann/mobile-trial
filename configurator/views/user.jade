@@ -1,0 +1,66 @@
+extends configurator
+
+block content
+
+	.container
+		h2 User
+
+	if typeof err != 'undefined'
+		div.alert.alert-block.alert-error 
+			button(type="button", class="close", data-dismiss="alert") &times;
+			h4 Error!
+			| #{err}
+
+	.container
+		form.form-horizontal.form-create(method='post')
+			h3 Create new user
+			.control-group
+				label.control-label(for="account") 
+					| User account
+				.controls 
+					input(name='account', type='text', class='text span5', placeholder='e.g. john.doe@gmail.com') 
+					span.help-block
+						span(class='label label-important') Important
+						br  
+						| In order to test: use an account that is also a valid account for your app. For example use a gmail address if you publish your app on Google PlayStore
+			.control-group
+				label.control-label(for='password')
+					| Password
+				.controls
+					input(name='password', type='password', class='password span5', placeholder='e.g. UseAR3allyG00dP4ssw0rdPhr4se')
+			.control-group
+				.controls
+					input(type='submit', value='Create', class='btn btn-primary')
+
+
+
+	.container	
+		table.table.table-striped
+			tr
+				th Account
+				th Administrator
+				th Delete
+			each theUser in userList
+				tr
+					td
+						| #{theUser.account}
+					td
+						form(name='userIsAdmin', action='/cfg/user/#{encodeURIComponent(theUser.account)}', method='post')
+							input(type='hidden', name='_method', value='put')
+
+							if theUser.account == user 
+								input(name='you', type='checkbox', class='checkbox', checked='checked', disabled='disabled')
+							else
+								if theUser.adminRole.isAdmin
+									input(name='isAdmin', type='checkbox', class='checkbox', checked='checked') 
+								else
+									input(name='isAdmin', type='checkbox', class='checkbox')
+					td
+						if theUser.account == user 
+							input(type='submit', value='Delete user', class='btn btn-danger', disabled='disabled')
+						else
+							form(method='post', action='/cfg/user/#{encodeURIComponent(theUser.account)}')
+								input(type='hidden', name='_method', value='delete')
+								input(type='submit', value='Delete user', class='btn btn-danger')
+
+		

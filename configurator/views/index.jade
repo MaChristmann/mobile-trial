@@ -1,0 +1,28 @@
+extends configurator
+
+block content
+	.container
+		.page-header
+			h1
+				| Welcome, #{user} 
+				br
+				small you are logged in to MobileTrial Server #{server}
+
+
+	.container
+		.row
+			div.span4
+				h2 Configure Server
+				p 
+					| Use the configurator to manage your trial apps. Changing trial license, or provide a new update to your customers is easy. You can also add developers to test simulated trial responses
+			div.span4
+				h2 Contact me
+				p
+					| Need help? Found bugs? Feature request? Feel free to contact me via GitHub or send a mail to martin.christmann&lt;at&gt;gmail.com 
+			div.span4
+				h2 Watch on GitHub
+				p
+					| If you are interested in the source code or just want to see the newest improvements, take a look at the GitHub project site.
+				p
+					a(href='https://github.com/MaChristmann/mobile-trial', target='_blank', class='btn')
+						| Visit GitHub »

@@ -1,0 +1,45 @@
+extends configurator
+
+block content
+	.container
+		h2 Developer
+		h3 #{user}
+
+	if typeof err != 'undefined'
+		div.alert.alert-block.alert-error 
+			button(type="button", class="close", data-dismiss="alert") &times;
+			h4 Error!
+			| #{err}
+
+
+	.container	
+		table.table.table-striped
+			tr
+				th App 
+				th Status
+				th TestResult
+			each developer in developerList
+				tr
+					td
+						| #{developer.app.identifier}
+					td
+						if developer.app.enabled
+							span.badge.badge-success Ok
+						else
+							span.badge Disabled
+					td
+						form(name='setTestResult', action='/cfg/app/#{developer.app.identifier}/developer/#{encodeURIComponent(user)}', method='post')
+							input(type='hidden', name='_method', value='put')
+							select(name='testResult', class='select span3')
+								if developer.testResult == 0
+									option(value='0', selected='selected') LICENSED
+								else 
+									option(value='0') LICENSED
+								if developer.testResult == 1
+									option(value='1', selected='selected') NOT_LICENSED
+								else 
+									option(value='1') NOT_LICENSED
+								if developer.testResult == 4								
+									option(value='4', selected='selected') SERVER_ERROR
+								else 
+									option(value='4') SERVER_ERROR

@@ -1,0 +1,64 @@
+extends configurator
+
+block content
+
+	.container
+		if app 
+			a(href='/cfg/app', class='btn right') Back
+			h2 App settings
+			h3  #{app.identifier}
+
+	if typeof err != 'undefined'
+		div.alert.alert-block.alert-error 
+			button(type="button", class="close", data-dismiss="alert") &times;
+			h4 Error!
+			| #{err}
+
+
+	if app
+		.container
+			form(method='post')
+				input(type='hidden', name='_method', value='put')
+				label(class='checkbox')
+					if app.enabled
+						input(name='enabled', type='checkbox', checked='checked') 
+						| License check active -
+						span.green Yes, it is.
+					else
+						input(name='enabled', type='checkbox') 
+						| License check active - 
+						span.red No, currently not.
+				label.text
+					| Maximum Version Code of your App 
+					br
+					input(name='maxVersionCode', type='text', class='text', value='#{app.maxVersionCode}')
+				label.text
+					| Update Version Code of your App
+					br
+					input(name='updateVersionCode', type='text', class='text', value='#{app.updateVersionCode}')
+				label.text
+					| Grace Interval you are giving the customers
+					br
+					input(name='graceInterval', type='text', class='text', value='#{app.graceInterval}')
+				label.text
+					| Grace Retrys you are giving the customers
+					br 
+					input(name='graceRetrys', type='text', class='text', value='#{app.graceRetrys}')
+				label.text
+					| Valid time of a successful license check 
+					br
+					input(name='validTime', type='text', class='text', value='#{app.validTime}')
+
+				each license in app.licenses
+					label.text
+						| Trial days
+						br 
+						input(name='licenseValue', type='text', class='text', value='#{license.value}')
+
+				label.textarea
+					| Public key of app
+					br 
+					textarea(class='textarea span5', rows='5')
+						| #{app.publicKey}
+
+				input(type='submit', value='Save settings', class='btn btn-primary btn-large')

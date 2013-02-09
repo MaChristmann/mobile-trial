@@ -1,0 +1,26 @@
+{
+  "name": "mobile-trial-configurator",
+  "version": "0.0.1",
+  "private": true,
+  "author":  "Martin Christmann <martin.christmann@gmail.com>",
+  "scripts": {
+    "start": "nodemon --watch app.js --watch routes app.js" 
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MaChristmann/mobile-trial"
+  },
+  "keywords": [
+    "android",
+    "trial",
+    "authorization",
+    "license",
+    "demo", 
+    "lite"
+  ], 
+  "dependencies": {
+    "express": "3.1.x",
+    "jade": "*",
+    "restify": "1.4.x"
+  }
+}

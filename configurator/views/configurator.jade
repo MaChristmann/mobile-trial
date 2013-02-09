@@ -1,0 +1,24 @@
+extends layout
+
+block navigation
+	div(class='navbar navbar-inverse navbar-fixed-top')
+		div(class='navbar-inner')
+			div(class='container')
+				a(class='btn btn-navbar', data-toggle='collapse', data-target='.nav-collapse')
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+				a(class='brand', href='/cfg') MobileTrial
+				div(class='nav-collapse collapse')
+					ul(class='nav')
+						li
+							a(href='/cfg') Home
+						if isAdmin
+							li 
+								a(href='/cfg/app') Apps
+							li
+								a(href='/cfg/user') User
+						li 
+							a(href='/cfg/user/#{encodeURIComponent(user)}/developer') Developer
+						li
+							a(href='/logout') Logout

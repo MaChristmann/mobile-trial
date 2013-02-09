@@ -1,0 +1,53 @@
+extends configurator
+
+block content
+
+	.container
+		if app 
+			a(href='/cfg/app', class='btn right') Back
+			h2 App developer settings
+			h3  #{app.identifier}
+
+	if typeof err != 'undefined'
+		div.alert.alert-block.alert-error 
+			button(type="button", class="close", data-dismiss="alert") &times;
+			h4 Error!
+			| #{err}
+
+
+	.container
+		form.form-horizontal.form-create(method='post')
+			h3 Add a developer
+			.control-group
+				label.control-label(for='account') 
+					| Pick a user
+				.controls 
+					if userList.length == 0
+						input(type='text', disabled='disabled', class='text', value='No more users available')
+					else
+						select(name='account', class='select span4')
+							each user in userList
+								option #{user.account}
+			.control-group
+				.controls
+					if userList.length == 0
+						input(type='submit', value='Add developer', class='btn btn-primary', disabled='disabled')
+					else 
+						input(type='submit', value='Add developer', class='btn btn-primary')
+
+
+
+	.container	
+		table.table.table-striped
+			tr
+				th Developer account
+				th Test result
+				th Delete
+			each developer in developerList
+				tr
+					td #{developer.user.account}
+					td #{developer.testResult}
+					td 
+						form(method='post', action='/cfg/app/#{app.identifier}/developer/#{encodeURIComponent(developer.user.account)}')
+							input(type='hidden', name='_method', value='delete')
+							input(type='submit', value='Delete developer', class='btn btn-danger')
