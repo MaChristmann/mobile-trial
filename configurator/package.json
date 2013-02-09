@@ -21,6 +21,6 @@
   "dependencies": {
     "express": "3.1.x",
     "jade": "*",
-    "restify": "1.4.x"
+    "restify": "2.1.x"
   }
 }
