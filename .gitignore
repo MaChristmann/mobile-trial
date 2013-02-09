@@ -26,5 +26,7 @@ sample/ExitAfterExpired/bin
 sample/ExitAfterExpired/gen
 sample/RestrictAfterExpired/bin
 sample/RestrictAfterExpired/gen
+sample/NagwareAfterExpired/bin
+sample/NagwareAfterExpired/gen
 test/bin
 test/gen
