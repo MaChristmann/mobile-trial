@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.android.vending.licensing;
+package org.mobiletrial.license;
+
+import com.google.android.vending.licensing.Obfuscator;
+import com.google.android.vending.licensing.ValidationException;
 
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -73,5 +76,15 @@ public class PreferenceObfuscator {
             mEditor.commit();
             mEditor = null;
         }
+        
+    }
+    
+    public void clear() {
+        if (mEditor == null) {
+            mEditor = mPreferences.edit();
+        }
+    	mEditor.clear();
+    	mEditor.commit();
+    	mEditor = null;
     }
 }

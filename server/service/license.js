@@ -80,7 +80,7 @@ exports.processRequest = function(app, account, bodyParams, next){
 	//User ServerTimestamp for Validation and Extras
 	var serverTimestamp = new Date().getTime();
 	//Initialize licResponse object
-	licResponse[PARAM_TIMESTAMP] 		= clientTimestamp;
+	licResponse[PARAM_TIMESTAMP] 		= serverTimestamp;
 	licResponse[PARAM_NONCE] 				= nonce;
 	licResponse[PARAM_VERSIONCODE	] = versionCode;
 	licResponse[PARAM_PACKAGENAME]	= app.identifier;

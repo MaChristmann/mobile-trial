@@ -9,11 +9,11 @@ import org.mobiletrial.license.LicenseCheckerCallback;
 import org.mobiletrial.license.NotLicensedDialog;
 import org.mobiletrial.license.PlaystoreAccountType;
 import org.mobiletrial.license.RetryDialog;
+import org.mobiletrial.license.ServerManagedPolicy;
 import org.mobiletrial.restrictafterexpired.R;
 
 import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.Policy;
-import com.google.android.vending.licensing.ServerManagedPolicy;
 
 import android.net.Uri;
 import android.os.Bundle;

@@ -49,6 +49,7 @@ Mobile-Trial
 * Security
 	* _DONE 01-23-2013_ Use HTTPS instead of HTTP
 	* _DONE 11-21-2013_ Verify signed response with RSA public key
+	* _DONE 02-12-2013_ Detect if clock was changed to a time in past
 * Test
 	* _DONE 01-25-2013_ Add test project
 * JavaDoc

@@ -16,10 +16,10 @@
 
 package com.android.vending.licensing;
 
+import org.mobiletrial.license.PreferenceObfuscator;
 import org.mobiletrial.simplesample.MainActivity;
 import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.Obfuscator;
-import com.google.android.vending.licensing.PreferenceObfuscator;
 
 import android.app.Activity;
 import android.content.Context;
@@ -79,6 +79,11 @@ public class ObfuscatedPreferencesTest extends ActivityInstrumentationTestCase2<
 
     public void testGetDefaultNullString() {
         assertEquals(null, op.getString("noExist", null));
+    }
+    
+    public void testEmptyAfterClean() {
+    	op.clear();
+    	assertEquals(0, sp.getAll().size());
     }
 
     public void testCorruptDataRetunsDefaultString() {

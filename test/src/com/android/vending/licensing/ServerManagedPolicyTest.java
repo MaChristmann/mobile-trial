@@ -17,11 +17,11 @@
 package com.android.vending.licensing;
 
 
+import org.mobiletrial.license.ServerManagedPolicy;
 import org.mobiletrial.simplesample.MainActivity;
 import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.Policy;
 import com.google.android.vending.licensing.ResponseData;
-import com.google.android.vending.licensing.ServerManagedPolicy;
 
 import android.provider.Settings;
 import android.test.ActivityInstrumentationTestCase2;
