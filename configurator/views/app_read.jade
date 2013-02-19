@@ -3,7 +3,7 @@ extends configurator
 block content
 
 	.container
-		if app 
+		if typeof app != 'undefined'
 			a(href='/cfg/app', class='btn right') Back
 			h2 App settings
 			h3  #{app.identifier}
@@ -15,9 +15,9 @@ block content
 			| #{err}
 
 
-	if app
+	if typeof app != 'undefined'
 		.container
-			form(method='post')
+			form(name="appsettings", method='post')
 				input(type='hidden', name='_method', value='put')
 				label(class='checkbox')
 					if app.enabled
@@ -30,30 +30,118 @@ block content
 						span.red No, currently not.
 				label.text
 					| Maximum Version Code of your App 
-					br
-					input(name='maxVersionCode', type='text', class='text', value='#{app.maxVersionCode}')
+					.input-append
+						input(name='maxVersionCode', type='text', class='text', value='#{app.maxVersionCode}', disabled='disabled')
+						input(name='maxVersionCode', type='hidden', value='#{app.maxVersionCode}')
+						a.btn.minus(href="#")
+							i.icon-minus
+						a.btn.plus(href="#")
+							i.icon-plus
 				label.text
 					| Update Version Code of your App
-					br
-					input(name='updateVersionCode', type='text', class='text', value='#{app.updateVersionCode}')
+					.input-append
+						input(name='updateVersionCode', type='text', class='text', value='#{app.updateVersionCode}', disabled='disabled')
+						input(name='updateVersionCode', type='hidden', value='#{app.updateVersionCode}')
+						a.btn.minus(href="#")
+							i.icon-minus
+						a.btn.plus(href="#")
+							i.icon-plus
 				label.text
-					| Grace Interval you are giving the customers
-					br
-					input(name='graceInterval', type='text', class='text', value='#{app.graceInterval}')
+					| Grace Interval you are giving the customers [milliseconds]
+					.input-append
+						input(name='graceInterval', type='text', class='text', value='#{app.graceInterval}', placeholder='time in ms')
+						.btn-group
+							a.btn.dropdown-toggle(data-toggle='dropdown')
+								| Choose period 
+								span.caret
+							ul.dropdown-menu
+								li
+									a(href='')
+										| No grace
+								li 
+									a(href='')
+										| 1 hour
+								li 
+									a(href='')
+										| 3 hours
+								li 
+									a(href='')
+										| 12 hours
+								li 
+									a(href='')
+										| a day
+								li 
+									a(href='')
+										| 3 days
+
+
+
 				label.text
 					| Grace Retrys you are giving the customers
-					br 
-					input(name='graceRetrys', type='text', class='text', value='#{app.graceRetrys}')
+					.input-append
+						input(name='graceRetrys', type='text', class='text', value='#{app.graceRetrys}', disabled='disabled')
+						input(name='graceRetrys', type='hidden', value='#{app.graceRetrys}')
+						a.btn.minus(href="#")
+							i.icon-minus
+						a.btn.plus(href="#")
+							i.icon-plus
 				label.text
 					| Valid time of a successful license check 
-					br
-					input(name='validTime', type='text', class='text', value='#{app.validTime}')
+					.input-append
+						input(name='validTime', type='text', class='text', value='#{app.validTime}', placeholder='time in ms')
+						.btn-group
+							a.btn.dropdown-toggle(data-toggle='dropdown')
+								| Choose period 
+								span.caret
+							ul.dropdown-menu
+								li
+									a(href='')
+										| Cache till end of trial
+								li 
+									a(href='')
+										| 12 hours
+								li 
+									a(href='')
+										| a day
+								li 
+									a(href='')
+										| 3 days
+								li 
+									a(href='')
+										| 7 days
+
 
 				each license in app.licenses
 					label.text
 						| Trial days
-						br 
-						input(name='licenseValue', type='text', class='text', value='#{license.value}')
+						.input-append
+							input(name='licenseValue', type='text', class='text', value='#{license.value}', placeholder='time in days')
+							.btn-group
+								a.btn.dropdown-toggle(data-toggle='dropdown')
+									| Choose period 
+									span.caret
+								ul.dropdown-menu
+									li
+										a(href='')
+											| Cache till end of trial
+									li 
+										a(href='')
+											| 1 day
+									li 
+										a(href='')
+											| 3 days
+									li 
+										a(href='')
+											| 7 days
+									li 
+										a(href='')
+											| 10 days
+									li 
+										a(href='')
+											| 14 days
+									li 
+										a(href='')
+											| a month
 
 				label.textarea
 					| Public key of app
