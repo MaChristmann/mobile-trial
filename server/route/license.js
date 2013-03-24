@@ -82,6 +82,7 @@ function stringifyResponse(lic){
 			result += licenseSv.EXTRA_VALIDTIME + "=" + lic[licenseSv.EXTRA_VALIDTIME];
 			result += "&" + licenseSv.EXTRA_GRACETIME + "=" + lic[licenseSv.EXTRA_GRACETIME];
 			result += "&" + licenseSv.EXTRA_GRACERETRYS + "=" + lic[licenseSv.EXTRA_GRACERETRYS];
+			console.log(result);
 			return result;
 }
 

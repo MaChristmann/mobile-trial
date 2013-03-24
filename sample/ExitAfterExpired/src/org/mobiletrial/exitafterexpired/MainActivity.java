@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
 	};
 	
 	// Change server url to your MobileTrial server 
-	private static final String MOBILETRIAL_SERVER_URL = "http://mobiletrial.jit.su/";
+	private static final String MOBILETRIAL_SERVER_URL = "http://mobiletrial.jitsu.com/";
 
 	private TextView mStatusText;
 	private LicenseCheckerCallback mLicenseCheckerCallback;

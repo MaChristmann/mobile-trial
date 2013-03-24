@@ -34,15 +34,15 @@ public class MainActivity extends Activity {
 	
 	// Enter your public key here you get from the MobileTrial server
 	private static final String BASE64_PUBLIC_KEY = 
-		"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDSy6+kWBOxMUHC2hT+pB/YNAKCV1LjbIZuRXEmE4AXVNgIy3CPFa+gpUjc6ro32XDKHpdZFrH/ulroJJwlAFvsmQnDLdbZxCsvssw0pJEQsabXd6xbizFKMUfxxPJcZF1+FJ57gYKWoUTOgzdVNyaTdzu/ZWXONEmQZLEyG34J5QIDAQAB";
-	// Generate your own 20 random bytes, and put them here.
+		"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCh4x66P923b2ZsuekI+rFmIFRyNJ82w/cQwXDAEVI6zz4b+8f1pe0RXnIZS9DD8MnO9Wya3p8nSsftH4Kedvt/FkMtF+oZHBvOI1HuNSqSnFzMY/Y5OikvRYoH6ZUurvdySIMWH5BTP+TYqNbskQtID+89WkXiNy7jRpjqDZryTwIDAQAB";
+		// Generate your own 20 random bytes, and put them here.
 	private static final byte[] SALT = new byte[] {
 		-46, 65, 30, -128, -103, -57, 74, -64, 51, 88, -95, -45, 77, -117, -36, -113, -11, 32, -64,
 		89
 	};
 	
 	// Change server url to your MobileTrial server 
-	private static final String MOBILETRIAL_SERVER_URL = "http://mobiletrial.jit.su/";
+	private static final String MOBILETRIAL_SERVER_URL = "http://mobiletrial.jitsu.com/";
 
 	private TextView mStatusText;
 	private LicenseCheckerCallback mLicenseCheckerCallback;

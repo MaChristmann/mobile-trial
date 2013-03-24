@@ -29,7 +29,7 @@ block content
 						| License check active - 
 						span.red No, currently not.
 				label.text
-					| Maximum Version Code of your App 
+					| Maximum Version Code of your App [integer]
 					.input-append
 						input(name='maxVersionCode', type='text', class='text', value='#{app.maxVersionCode}', disabled='disabled')
 						input(name='maxVersionCode', type='hidden', value='#{app.maxVersionCode}')
@@ -38,7 +38,7 @@ block content
 						a.btn.plus(href="#")
 							i.icon-plus
 				label.text
-					| Update Version Code of your App
+					| Update Version Code of your App [integer]
 					.input-append
 						input(name='updateVersionCode', type='text', class='text', value='#{app.updateVersionCode}', disabled='disabled')
 						input(name='updateVersionCode', type='hidden', value='#{app.updateVersionCode}')
@@ -77,7 +77,7 @@ block content
 
 
 				label.text
-					| Grace Retrys you are giving the customers
+					| Grace Retrys you are giving the customers [integer]
 					.input-append
 						input(name='graceRetrys', type='text', class='text', value='#{app.graceRetrys}', disabled='disabled')
 						input(name='graceRetrys', type='hidden', value='#{app.graceRetrys}')
@@ -86,7 +86,7 @@ block content
 						a.btn.plus(href="#")
 							i.icon-plus
 				label.text
-					| Valid time of a successful license check 
+					| Valid time of a successful license check [milliseconds]
 					.input-append
 						input(name='validTime', type='text', class='text', value='#{app.validTime}', placeholder='time in ms')
 						.btn-group
@@ -95,7 +95,7 @@ block content
 								span.caret
 							ul.dropdown-menu
 								li
-									a(href='')
+									a(href='', data='0')
 										| Cache till end of trial
 								li 
 									a(href='')
@@ -113,7 +113,7 @@ block content
 
 				each license in app.licenses
 					label.text
-						| Trial days
+						| Trial period [days]
 						.input-append
 							input(name='licenseValue', type='text', class='text', value='#{license.value}', placeholder='time in days')
 							.btn-group
@@ -121,9 +121,7 @@ block content
 									| Choose period 
 									span.caret
 								ul.dropdown-menu
-									li
-										a(href='')
-											| Cache till end of trial
+								
 									li 
 										a(href='')
 											| 1 day

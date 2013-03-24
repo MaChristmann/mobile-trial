@@ -67,7 +67,7 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 	// Enter your public key here you get from the MobileTrial server
 	private static final String BASE64_PUBLIC_KEY = 
-		"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDGSjbsY79HufVHxx5wm3OdJJGGPi28Y9vQMENiQTFl0BQkyzuVzUniD0FRlhDgXs9f1dPbvo+E4JyfkauNVKqWRo4RTsKtx/UrWn9M0SqcnoAe0BgYeJRcoi0bYpy6ib59vqf/EPdqy5tQdx1s4+bVpqHLhf9rhFYJKpSC1RUd1QIDAQAB";
+		"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDMMBY8FOl8y/wzA0Dos2PNDRtq5fGiSQqkYGLJow8aDUyyzQYjupgWPusFg+7kpEd3knzXPuuuK3Rq2ccGVWPPfllh8ROdKus87GhaqIbO47bhNSaXdCmS9nPYI4l1dEalT5GV3ZsIue9EWDbshFG7DfYyS7F+64Jp6akeNypAnQIDAQAB";
 		
 	// Generate your own 20 random bytes, and put them here.
 	private static final byte[] SALT = new byte[] {
@@ -76,7 +76,7 @@ public class MainActivity extends Activity {
 	};
 
 	// Change server url to your MobileTrial server 
-	private static final String MOBILETRIAL_SERVER_URL = "https://192.168.1.3:443/";
+	private static final String MOBILETRIAL_SERVER_URL = "http://mobiletrial.jitsu.com/";
 	
 	private static final int BUYAPP_REQUEST = 1337;
 	
