@@ -19,13 +19,14 @@
     "lite"
   ], 
   "dependencies": {
-    "restify": "2.1.x",
-    "mongoose": "3.5.x",
+    "restify": "2.3.x",
+    "mongoose": "3.6.x",
     "async": "0.2.x",
     "bcrypt": "0.7.x",
     "winston": "0.6.x"
    }, 
   "devDependencies": {
-    "mocha": "1.8.x"
+    "mocha": "1.8.x",
+    "nodemon": "0.7.4"
   }
 }

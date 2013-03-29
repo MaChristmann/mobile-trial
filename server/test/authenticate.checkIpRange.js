@@ -150,8 +150,8 @@ describe('authenticate.admin', function(){
 	IPv6
 	**/ 
 
-	it('should allow IPv6 if there is no v4 restriction in range parameter', function(done){
-		var anyIPv6 = "::1/128";
+	it('should allow IPv6 if there is no v6 restriction in range parameter', function(done){
+		var anyIPv6 = "::1";
 		var noRestrictionRange = {};
 
 		authenticateSv.checkIpRange(anyIPv6, noRestrictionRange, function(err, inRange){

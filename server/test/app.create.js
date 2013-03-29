@@ -38,7 +38,6 @@ describe('app.create', function(){
 
 	
 	it('should return error for undefined parameter appObj', function(done){
-		console.log("TEST APP.CREATE");
 		var undefinedParameter;
 		appSv.create(undefinedParameter, function(err1, app){
 			assert.notEqual(err1, null);
@@ -48,7 +47,6 @@ describe('app.create', function(){
 
 
 	it('should return error for parameter appObj==null', function(done){
-		console.log("TEST APP.CREATE");
 		appSv.create(null, function(err2, app){
 			assert.notEqual(err2, null);
 			done();
@@ -56,7 +54,6 @@ describe('app.create', function(){
 	});
 
 	it('should return error for appObj with missing identifier', function(done){
-		console.log("TEST APP.CREATE");
 		delete appObj['identifier'];
 
 		appSv.create(appObj, function(err3, app){
@@ -66,7 +63,6 @@ describe('app.create', function(){
 	});
 
 	it('should return error for appObj with empty string identifier', function(done){
-		console.log("TEST APP.CREATE");
 		appObj.identifier = '';
 
 		appSv.create(appObj, function(err4, app){
@@ -77,7 +73,6 @@ describe('app.create', function(){
 
 
 	it('should return error for appObj with whitespace string identifier', function(done){
-		console.log("TEST APP.CREATE");
 		appObj.identifier = ' \n';
 
 		appSv.create(appObj, function(err5, app){
@@ -88,7 +83,6 @@ describe('app.create', function(){
 
 
 	it('should return error for appObj with missing appObj.licenses', function(done){
-		console.log("TEST APP.CREATE");
 		delete appObj['licenses'];
 
 		appSv.create(appObj, function(err6, app){
@@ -99,7 +93,6 @@ describe('app.create', function(){
 
 
 	it('should return error for creating the app invalid trialtype', function(done){
-		console.log("TEST APP.CREATE");
 		appObj.licenses[0].trialtype = 'nonsense';
 
 		appSv.create(appObj, function(err7, app){
@@ -110,7 +103,6 @@ describe('app.create', function(){
 
 
 	it('should return error for creating the app with same identifier', function(done){
-		console.log("TEST APP.CREATE");
 		appSv.create(appObj, function(err, app){
 			assert.ifError(err);
 
@@ -133,7 +125,6 @@ describe('app.create', function(){
 */
 
 	it('should return new created app with db defaultValues and publicKey/privateKey', function(done){
-		console.log("TEST APP.CREATE");
 		appSv.create(appObj, function(err10, app){
 			assert.ifError(err10);
 			assert.notEqual((typeof app), 'undefined');
@@ -147,7 +138,6 @@ describe('app.create', function(){
 			assert.notEqual(typeof app.validTime, 'undefined');
 			assert.notEqual(typeof app.publicKey, 'undefined');
 			assert.notEqual(typeof app.privateKey, 'undefined');			
-			assert.notEqual(typeof app.privateKey, 'undefined');
 			done();
 		});
 	});
